@@ -196,7 +196,37 @@ const World = {
       this.addDecor(g, pieces, P, glow ? (d, f) => { glow.material.opacity = smooth(f) * 0.85; } : null);
     }
   },
-  // 4. 물리 고장 구역
+  // 4. 테스트 서버실 (에이다 합류)
+  server(r) {
+    const pts = []; for (let i = 0; i <= 12; i++) pts.push(new THREE.Vector3(Math.sin(i * 0.5) * 10 + (r() - 0.5) * 4, 0, -i * 27));
+    this.makeCurve(pts);
+    const mid = this.curve.getPointAt(0.5);
+    this.groundGrid(520, mid.x, mid.z, 0, 80);
+    const n = Math.floor(this.curve.getLength() / 7);
+    const T = new THREE.Vector3();
+    const led = [0xFF5FA2, 0xC6F432, 0x6fe7ff, 0xFFD34D];
+    for (let i = 1; i < n; i++) {
+      const s = i / n, P = this.curve.getPointAt(s); this.curve.getTangentAt(s, T);
+      const g = new THREE.Group(), pieces = [], lights = [];
+      for (const side of [-1, 1]) {
+        const off = side * (5.2 + r() * 1.2), h = 3.2 + r() * 2.2;
+        const rack = this.piece(GEO.box, 0x2c2f3a); rack.mesh.scale.set(1.4, h, 2.6); rack.mesh.position.set(off, h / 2, 0);
+        g.add(rack.mesh); pieces.push(rack);
+        for (let k = 0; k < 4; k++) { // 깜빡이는 LED 줄
+          const l = this.piece(GEO.box, pick(led, r), { basic: true, noLine: true, grayFill: 0x1a1c18 });
+          l.mesh.scale.set(0.08, 0.12, 2.0); l.mesh.position.set(off - side * 0.72, 0.6 + k * (h - 0.9) / 4, 0);
+          g.add(l.mesh); pieces.push(l); lights.push(l.mesh);
+        }
+      }
+      if (i % 3 === 0) { // 머리 위 케이블 다리
+        const B = this.piece(GEO.box, 0x4a3046); B.mesh.scale.set(11, 0.35, 0.8); B.mesh.position.set(0, 6.4, 0); g.add(B.mesh); pieces.push(B);
+      }
+      g.position.copy(P); g.rotation.y = Math.atan2(T.x, T.z);
+      const ph = r() * 6;
+      this.addDecor(g, pieces, P, (d, f) => { lights.forEach((m, k) => { m.visible = f < 0.05 ? false : Math.sin(Game.time * 3 + ph + k) > -0.6; }); });
+    }
+  },
+  // 5. 물리 고장 구역
   physics(r) {
     const pts = []; for (let i = 0; i <= 12; i++) pts.push(new THREE.Vector3(Math.sin(i * 0.6) * 11 + (r() - 0.5) * 5, 0, -i * 28));
     this.makeCurve(pts);
@@ -222,7 +252,7 @@ const World = {
       });
     });
   },
-  // 5. 보스 아레나
+  // 6. 중간 보스 아레나
   boss(r) {
     this.curve = null;
     this.groundGrid(200, 0, 0, 0, 50);

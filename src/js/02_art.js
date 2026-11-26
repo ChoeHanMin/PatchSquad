@@ -281,6 +281,7 @@ const SQUAD_LOOK = [
   { key: 'dot', hair: '#2a2f28', cap: '#C6F432', skin: '#f2c9a0', acc: '#C6F432' },
   { key: 'rex', hair: '#7a3210', cap: '#FFD34D', skin: '#e8b48a', acc: '#FFD34D' },
   { key: 'pin', hair: '#1d2f6e', cap: '#6fe7ff', skin: '#f6d2b0', acc: '#6fe7ff' },
+  { key: 'ada', hair: '#3a2418', cap: '#FF5FA2', skin: '#f4cba6', acc: '#FF5FA2' },
 ];
 function portraitCanvas(s) {
   const c = document.createElement('canvas'); c.width = c.height = 24; const g = c.getContext('2d');
@@ -310,7 +311,7 @@ function charCanvas(s, i) {
   P(10, 9, 12, 11, s.hair); P(10, 8, 12, 4, s.cap); P(9, 10, 2, 3, s.cap); P(9, 13, 2, 5, '#2a2f28'); P(21, 13, 2, 5, '#2a2f28');
   P(12, 18, 8, 2, s.skin);
   // 총 (오른쪽 위로 비스듬히)
-  const gc = ['#C6F432', '#FFD34D', '#6fe7ff'][i] || '#C6F432';
+  const gc = ['#C6F432', '#FFD34D', '#6fe7ff', '#FF5FA2'][i] || '#C6F432';
   for (let k = 0; k < (i === 2 ? 14 : 10); k++) P(25 + Math.floor(k * 0.4), 30 - k, 2, 2, k > (i === 2 ? 11 : 7) ? gc : '#3a4037');
   return c;
 }

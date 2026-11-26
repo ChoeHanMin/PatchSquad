@@ -29,6 +29,10 @@ const ASSET_SPEC = {
   cover_side_forest: { height: 1500 }, cover_side_city: { height: 1500 }, cover_side_subway: { height: 1500 }, cover_side_physics: { height: 1500 }, cover_side_boss: { height: 1500 }, cover_forest: { width: 2172 }, cover_city: { width: 2172 }, cover_subway: { width: 2172 }, cover_physics: { width: 2172 }, cover_boss: { width: 2172 },
   // 스토리 그림 (선택, 16:9) — 없으면 게임 그림으로 장면을 꾸밈
   story_intro1: { width: 1600 }, story_intro2: { width: 1600 }, story_intro3: { width: 1600 }, story_intro4: { width: 1600 }, story_intro5: { width: 1600 },
+  // 새 분대원 에이다 + 테스트 서버실
+  portrait_ada: { size: 192 }, char_ada: { width: C, keep: true }, char_ada_flinch: { width: C, keep: true }, char_ada_hurt: { width: C, keep: true },
+  char_ada_run: { width: C, keep: true }, char_ada_run2: { width: C, keep: true }, gun_ada: { width: 1448 }, proj_capsule: { size: 192 }, drone_ada: { size: 256 },
+  cover_server: { width: 2172 }, cover_side_server: { height: 1500 }, story_ada_join: { width: 1600 },
   story_end1: { width: 1600 }, story_end2: { width: 1600 }, story_end3: { width: 1600 }, story_end4: { width: 1600 },
 };
 

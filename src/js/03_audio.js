@@ -148,12 +148,12 @@ const MUS = {
   start(stageIdx, seed) {
     if (!SND.ctx) return;
     this.stop();
-    const roots = [146.83, 130.81, 164.81, 138.59, 123.47]; // D, C, E, C#, B
-    this.keyRoot = roots[stageIdx % 5];
-    this.mode = stageIdx === 4 ? 'boss' : 'stage';
+    const roots = [146.83, 130.81, 164.81, 155.56, 138.59, 123.47]; // D, C, E, C#, B
+    this.keyRoot = roots[stageIdx % roots.length];
+    this.mode = STAGES[stageIdx] && STAGES[stageIdx].boss ? 'boss' : 'stage';
     this.tempo = this.mode === 'boss' ? 146 : 96 + stageIdx * 6;
-    const progs = [[0, 5, 2, 6, 0, 5, 6, 0], [0, 3, 5, 4, 0, 3, 6, 4], [0, 5, 6, 0, 3, 5, 6, 4], [0, 6, 5, 4, 0, 6, 5, 6], [0, 0, 5, 6, 0, 0, 3, 4]];
-    this.prog = progs[stageIdx % 5];
+    const progs = [[0, 5, 2, 6, 0, 5, 6, 0], [0, 3, 5, 4, 0, 3, 6, 4], [0, 5, 6, 0, 3, 5, 6, 4], [0, 6, 5, 4, 0, 6, 5, 6], [0, 0, 5, 6, 0, 0, 3, 4], [0, 4, 5, 3, 0, 4, 6, 5]];
+    this.prog = progs[stageIdx % progs.length];
     this.theme = (seed + stageIdx) % 2 ? this.THEME_B : this.THEME_A;
     this.layer = 0;
     this._go();

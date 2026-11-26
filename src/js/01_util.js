@@ -54,6 +54,8 @@ const Store = {
   },
 };
 Store.init();
+// v1.3: 스테이지 4(테스트 서버실)가 새로 들어가서 예전 기록의 물리 구역·보스 번호를 한 칸씩 뒤로
+(() => { try { const rec = Store.get('records', null); if (rec && rec.stages && !rec.v13) { const st = rec.stages, n = {}; for (const k of Object.keys(st)) n[+k >= 3 ? +k + 1 : +k] = st[k]; rec.stages = n; rec.v13 = true; Store.set('records', rec); } else if (!rec || !rec.v13) { Store.set('records', Object.assign(rec || {}, { v13: true })); } } catch (e) { /* 무시 */ } })();
 
 // 언어: 한국어(ko) / English(en). 처음엔 시스템 언어를 따르고, 언어/Language 버튼으로 바꾸면 저장 후 다시 불러옴
 const LANGS = ['ko', 'en', 'ja', 'zh'];

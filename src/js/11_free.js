@@ -20,9 +20,14 @@ const FREE_SKILLS = [
     e: { name: L('프로파일 스캔', 'Profile Scan', 'プロファイルスキャン', '性能扫描'), cd: 12, desc: L('주변 버그를 표시 (받는 피해 +50%, 투명 버그도 보임)', 'Mark nearby bugs (+50% damage taken, ghosts revealed)', '周りのバグをマーク(被ダメージ+50%、ゴーストも見える)', '标记周围Bug（受到伤害+50%，幽灵现形）') },
     q: { name: L('가비지 컬렉터', 'Garbage Collector', 'ガベージコレクタ', '垃圾回收'), desc: L('표시된 버그를 모두 지우는 광선', 'A beam that erases every marked bug', 'マークしたバグをすべて消すビーム', '清除所有被标记Bug的光束') },
   },
+  { // 에이다 · 테스터
+    shift: { name: L('캐시 대시', 'Cache Dash', 'キャッシュダッシュ', '缓存冲刺'), cd: 6, desc: L('미끄러지며 이동하고 지나간 자리에 회복 패치를 남김', 'Slide forward, leaving a healing patch behind', '滑って移動し、通った場所に回復パッチを残す', '滑行前进，在身后留下回复补丁') },
+    e: { name: L('테스트 드론', 'Test Drone', 'テストドローン', '测试无人机'), cd: 14, desc: L('8초 동안 버그를 자동으로 쏘는 드론', 'A drone that auto-fires at bugs for 8s', '8秒間バグを自動で撃つドローン', '8秒内自动射击Bug的无人机') },
+    q: { name: L('회귀 테스트', 'Regression Test', '回帰テスト', '回归测试'), desc: L('조준한 구역에 테스트 캡슐 비가 쏟아짐', 'A rain of test capsules on the aimed area', '狙ったエリアにテストカプセルの雨', '测试胶囊如雨般落向瞄准区域') },
+  },
 ];
 const FREE_ZONES = [0.2, 0.52, 0.84];
-const FREE_HALFW = { forest: 6, city: 7.2, subway: 3.3, physics: 6.5 };
+const FREE_HALFW = { forest: 6, city: 7.2, subway: 3.3, server: 4.2, physics: 6.5 };
 
 const Free = {
   active: false, S: null, run: null, D: null, keys: {}, locked: false,
@@ -43,7 +48,7 @@ const Free = {
       else if (e.code === 'KeyE') this.skill('e');
       else if (e.code === 'KeyQ') this.skill('q');
       else if (e.code === 'KeyF') this.rollback();
-      else if (k === '1' || k === '2' || k === '3') this.select(+k - 1);
+      else if (k >= '1' && k <= String(SQUAD.length)) this.select(+k - 1);
       if (['Space', 'Tab'].includes(e.code)) e.preventDefault();
     });
     window.addEventListener('keyup', (e) => { this.keys[e.code] = false; });
@@ -95,7 +100,7 @@ const Free = {
     for (const b of this.bugs) b.remove(); this.bugs = [];
     for (const s of this.shots) s.remove(); this.shots = [];
     for (const w of this.walls) w.remove(); this.walls = [];
-    this.covers = []; this.pops = []; this.hitDirs = []; this.marks = [];
+    this.covers = []; this.pops = []; this.hitDirs = []; this.marks = []; this.blasts = []; this.heals = []; if (this.drone) { Game.scene.remove(this.drone.spr); this.drone = null; }
     if (this.barrier) { World.group.remove(this.barrier); this.barrier = null; }
     if (this.beacon) { World.group.remove(this.beacon); this.beacon = null; }
     if (this.bossObj) { this.bossObj.remove(); this.bossObj = null; }
@@ -258,12 +263,12 @@ const Free = {
   // ----- 분대원 · 무기 -----
   cur() { return this.mem[this.member]; },
   select(i) {
-    if (i === this.member || i < 0 || i > 2) return;
+    if (i === this.member || i < 0 || i >= SQUAD.length) return;
     if (this.charge > 0) this.charge = 0;
     this.member = i; SND.play('click');
     UI.toast(`${SQUAD[i].name} · ${SQUAD[i].label}`);
   },
-  cycle(dir) { this.select((this.member + dir + 3) % 3); },
+  cycle(dir) { const N = SQUAD.length; this.select((this.member + dir + N) % N); },
   reload() { const m = this.cur(); if (m.reloadT > 0 || m.ammo >= m.d.mag || this.debugT > 0) return; m.reloadT = m.d.reload * (this.p.crouch ? 0.6 : 1); SND.play('reload'); },
   toggleCrouch() { this.p.crouch = !this.p.crouch; SND.play(this.p.crouch ? 'block' : 'move'); },
   eye() { return lerp(1.62, 0.92, this.p.crouchK) + this.p.pos.y; },
@@ -285,6 +290,7 @@ const Free = {
     if (m.d.kind === 'sniper') { this.charge = Math.min(1, this.charge + dt / m.d.charge); if (this.charge >= 1) { this.fireSniper(1); this.charge = 0; } return; }
     if (this.fireCd > 0) return;
     if (m.d.kind === 'rifle') { this.fireCd = 1 / m.d.rate; this.fireRay(m, m.d.dmg, 0.012, 'rifle'); SND.play('rifle'); }
+    else if (m.d.kind === 'launcher') { this.fireCd = 1 / m.d.rate; this.fireLauncher(m); }
     else { this.fireCd = 1 / m.d.rate; for (let i = 0; i < m.d.pellets; i++) this.fireRay(m, m.d.dmg, 0.065, 'shotgun', i > 0); SND.play('spread'); }
     if (this.debugT <= 0) m.ammo--;
     this.recoil = 1; this.run.shots += m.d.kind === 'shotgun' ? m.d.pellets : 1;
@@ -295,6 +301,29 @@ const Free = {
     if (this.debugT <= 0) m.ammo--;
     SND.play('snipe'); this.recoil = 1.6; this.run.shots++;
     if (k >= 1) this.pop(Game.W / 2, Game.H / 2 - 60, L('풀차지!', 'Full charge!', 'フルチャージ!', '满蓄力！'), '#6fe7ff');
+  },
+  // 에이다: 조준한 첫 지점(버그·엄폐물·바닥)에서 캡슐이 터짐
+  aimPoint(maxT = 40) {
+    const o = Game.camera.position, dir = this.ray().clone();
+    let t = maxT; if (dir.y < -0.02) t = Math.min(t, -o.y / dir.y);
+    const hits = this.rayTargets(o, dir, maxT); if (hits.length) t = Math.min(t, hits[0].t);
+    for (const c of this.allCovers()) { const k = this.segHitsCover(o, FV.b.copy(o).addScaledVector(dir, maxT), c); if (k >= 0) t = Math.min(t, k * maxT); }
+    return o.clone().addScaledVector(dir, t);
+  },
+  blast(at, R, dmg, kind = 'launcher') {
+    let any = false;
+    for (const b of this.bugs.slice()) if (b.alive && b.hittable() && b.hitPos().distanceTo(at) < R + b.radius()) { if (this.hitTarget(b, dmg, false, kind, FV.d.subVectors(b.pos, at).normalize().clone())) any = true; }
+    for (const s of this.shots) if (s.alive && s.kind === 'missile' && s.pos.distanceTo(at) < R) { this.hitTarget(s, dmg, false, kind); any = true; }
+    if (this.bossObj) for (const n of this.bossObj.nodes) if (n.alive && n.pos.distanceTo(at) < R + 1.1) { this.bossObj.hit(n, dmg * 0.6); any = true; }
+    this.marks.push({ pos: at.clone(), t: 0, dur: 0.45, kind: 'blast', R: 0 });
+    PFX.spark(at, [1, 0.37, 0.64], 12, 6);
+    return any;
+  },
+  fireLauncher(m) {
+    const at = this.aimPoint();
+    this.tracers.push({ a: Game.camera.position.clone().add(FV.d.set(0, -0.3, 0)), b: at.clone(), t: 0, c: m.d.color, w: 5 });
+    if (this.blast(at, 2.4, m.d.dmg)) { this.run.hits++; this.hitMark = 0.15; }
+    SND.play('boom'); Game.shake = Math.max(Game.shake || 0, 0.12);
   },
   // 히트스캔: 카메라에서 조준 방향으로
   fireRay(m, dmg, spread, kind, silent, pierce) {
@@ -380,13 +409,13 @@ const Free = {
     UI.banner('PATCH APPLIED', S.def.name, 2.6, true);
     setTimeout(() => {
       if (!this.active) return;
-      if (S.idx >= 4) { this.unlock(); Game.state = 'paused'; Story.ending(() => this.showResult()); return; }
+      if (S.def.boss) { this.unlock(); Game.state = 'paused'; Story.ending(() => this.showResult()); return; }
       this.unlock(); Game.state = 'paused';
-      $('#clrTitle').textContent = L(`패치 완료 ${S.idx + 1}/5`, `Patch applied ${S.idx + 1}/5`, `パッチ完了 ${S.idx + 1}/5`, `补丁完成 ${S.idx + 1}/5`);
+      $('#clrTitle').textContent = L(`패치 완료 ${S.idx + 1}/${STAGES.length}`, `Patch applied ${S.idx + 1}/${STAGES.length}`, `パッチ完了 ${S.idx + 1}/${STAGES.length}`, `补丁完成 ${S.idx + 1}/${STAGES.length}`);
       const acc = this.run.shots ? this.run.hits / this.run.shots : 0;
       $('#clrStats').innerHTML = [[L('스테이지', 'Stage', 'ステージ', '关卡'), S.def.name], [L('고친 버그', 'Bugs fixed', '修復したバグ', '修复的Bug'), S.fixed], [L('남은 안정성', 'Stability left', '残り安定性', '剩余稳定性'), Math.round(this.p.hp) + '% (+' + bonus.toLocaleString() + ')'], [L('명중률', 'Accuracy', '命中率', '命中率'), Math.round(acc * 100) + '%']]
         .map(([k, v]) => `<span class="k">${k}</span><span class="v">${v}</span>`).join('') + `<span class="k full">${L('총점', 'Total', '合計', '总分')}</span><span class="v full">${this.run.score.toLocaleString()}</span>`;
-      $('#btnNext').textContent = S.idx === 3 ? L('보스 "메인 루프" ▶', 'Boss "Main Loop" ▶', 'ボス「メインループ」 ▶', 'Boss“主循环” ▶') : L('다음 스테이지 ▶', 'Next stage ▶', '次のステージ ▶', '下一关 ▶');
+      $('#btnNext').textContent = STAGES[S.idx + 1] && STAGES[S.idx + 1].boss ? L('중간 보스 "메인 루프" ▶', 'Mid-boss "Main Loop" ▶', '中ボス「メインループ」 ▶', '中Boss“主循环” ▶') : L('다음 스테이지 ▶', 'Next stage ▶', '次のステージ ▶', '下一关 ▶');
       UI.only('#scrClear');
     }, 2700);
   },
@@ -439,7 +468,7 @@ const Free = {
         for (const b of this.bugs.slice()) if (b.alive && b.role !== 'item' && b.pos.distanceTo(p.pos) < 10) { b.noSplit = true; b.damage(14, false, 'shotgun', FV.d.subVectors(b.pos, p.pos).normalize().clone()); if (b.alive) b.push(FV.d.clone(), 7); }
         for (const s of this.shots) if (s.alive && s.pos.distanceTo(p.pos) < 10) s.kill(true);
       }
-    } else {
+    } else if (i === 2) {
       if (slot === 'shift') { p.vy = 11; p.hover = 1.3; SND.play('move'); }
       if (slot === 'e') {
         let n = 0; for (const b of this.bugs) if (b.alive && b.role !== 'item' && b.pos.distanceTo(p.pos) < 32) { b.markT = 6; n++; }
@@ -453,7 +482,37 @@ const Free = {
         if (this.bossObj) for (const nd of this.bossObj.nodes) if (nd.alive) { this.bossObj.hit(nd, 12); }
         UI.banner('', 'GARBAGE COLLECTED ×' + n, 1.4);
       }
+    } else {
+      if (slot === 'shift') { p.dashV.copy(fw).multiplyScalar(26); p.dashT = 0.3; p.iT = 0.25; this.heals.push({ pos: p.pos.clone(), t: 5 }); SND.play('rush'); }
+      if (slot === 'e') {
+        if (this.drone) Game.scene.remove(this.drone.spr);
+        const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: Free.droneTex || TEX.glow, color: Free.droneTex ? 0xffffff : 0xFF5FA2, transparent: true, fog: false }));
+        spr.scale.setScalar(0.9); Game.scene.add(spr);
+        this.drone = { t: 8, fireT: 0.3, spr, pos: p.pos.clone().add(FV.d.set(0, 2.4, 0)) }; SND.play('unlock');
+      }
+      if (slot === 'q') {
+        const at = this.aimPoint(34); at.y = 0;
+        for (let k = 0; k < 10; k++) this.blasts.push({ at: at.clone().add(FV.d.set(rnd(-4.5, 4.5), 0.6, rnd(-4.5, 4.5))), t: 0.25 + k * 0.16 });
+        this.marks.push({ pos: at, t: 0, dur: 1.9, kind: 'rain', R: 6 }); SND.play('aim'); UI.banner('', 'REGRESSION TEST', 1.4);
+      }
     }
+  },
+  updateAda(dt) {
+    const p = this.p;
+    if (this.member === 3 && p.dashT > 0 && Math.random() < 0.5) this.heals.push({ pos: p.pos.clone(), t: 5 });
+    this.heals = this.heals.filter((h) => (h.t -= dt) > 0);
+    if (this.heals.some((h) => Math.hypot(h.pos.x - p.pos.x, h.pos.z - p.pos.z) < 2.2)) p.hp = Math.min(100, p.hp + 6 * dt);
+    this.blasts = this.blasts.filter((b) => { b.t -= dt; if (b.t > 0) return true; this.blast(b.at, 2.6, 6, 'launcher'); SND.play('boom'); return false; });
+    const d = this.drone; if (!d) return;
+    d.t -= dt; d.fireT -= dt;
+    const want = FV.d.copy(p.pos).add(FV.a.set(Math.cos(Game.time * 1.3) * 1.6, 2.4, Math.sin(Game.time * 1.3) * 1.6));
+    d.pos.lerp(want, Math.min(1, dt * 4)); d.spr.position.copy(d.pos);
+    if (d.fireT <= 0) {
+      d.fireT = 0.45;
+      let best = null, bd = 22; for (const b of this.bugs) if (b.alive && b.role !== 'item' && b.hittable()) { const k = b.pos.distanceTo(d.pos); if (k < bd) { bd = k; best = b; } }
+      if (best) { this.tracers.push({ a: d.pos.clone(), b: best.hitPos().clone(), t: 0, c: '#FF5FA2', w: 2 }); best.damage(1.6, false, 'drone', null); SND.play('tick'); }
+    }
+    if (d.t <= 0) { Game.scene.remove(d.spr); d.spr.material.dispose(); this.drone = null; }
   },
   rollback() {
     const S = this.S; if (S.phase !== 'fight') return;
@@ -509,6 +568,7 @@ const Free = {
     this.recoil = Math.max(0, this.recoil - dt * 8);
     this.hitMark = Math.max(0, (this.hitMark || 0) - dt);
     this.updateWeapon(dt);
+    this.updateAda(dt * ws);
     // 구역 진행
     if (S.phase === 'travel' && !S.def.boss) {
       const z = this.zones[S.zi];
@@ -553,10 +613,13 @@ const Free = {
     for (const m of this.marks) {
       m.t += dt; const k = m.t / m.dur; const c = this.project(m.pos); if (!c) continue;
       g.globalAlpha = Math.max(0, 1 - k);
-      g.strokeStyle = m.kind === 'scan' ? '#6fe7ff' : m.kind === 'wave' ? '#FFD34D' : '#C6F432'; g.lineWidth = 4;
-      g.beginPath(); g.ellipse(c.x, c.y, 40 + k * (m.R ? 500 : 120), 12 + k * (m.R ? 140 : 36), 0, 0, 6.283); g.stroke();
+      g.strokeStyle = m.kind === 'scan' ? '#6fe7ff' : m.kind === 'wave' ? '#FFD34D' : m.kind === 'blast' || m.kind === 'rain' ? '#FF5FA2' : '#C6F432'; g.lineWidth = 4;
+      const big = m.R && m.kind !== 'rain';
+      g.beginPath(); g.ellipse(c.x, c.y, 40 + k * (big ? 500 : 120), 12 + k * (big ? 140 : 36), 0, 0, 6.283); g.stroke();
     }
     this.marks = this.marks.filter((m) => m.t < m.dur); g.globalAlpha = 1;
+    for (const h of this.heals || []) { const c = this.project(h.pos); if (!c) continue; g.globalAlpha = Math.min(1, h.t) * 0.7; g.fillStyle = 'rgba(198,244,50,.25)'; g.strokeStyle = '#C6F432'; g.lineWidth = 2; g.beginPath(); g.ellipse(c.x, c.y, 46, 14, 0, 0, 6.283); g.fill(); g.stroke(); }
+    g.globalAlpha = 1;
     // 버그 표시: 체력, 예고, 표시(마크), 정지
     const fwd = this.ray();
     for (const b of this.bugs) {
@@ -616,6 +679,9 @@ const Free = {
       g.save(); g.imageSmoothingEnabled = true; g.drawImage(im, x, y, w, h);
       if (this.recoil > 0.5 && im.muzzle) { const mx = x + im.muzzle.x * w, my = y + im.muzzle.y * h, r = w * 0.07; const gr = g.createRadialGradient(mx, my, 0, mx, my, r); gr.addColorStop(0, 'rgba(255,255,230,.95)'); gr.addColorStop(0.4, this.cur().d.color); gr.addColorStop(1, 'rgba(198,244,50,0)'); g.fillStyle = gr; g.beginPath(); g.arc(mx, my, r, 0, 6.283); g.fill(); }
       g.restore();
+    } else if (Game.gunImgs && Game.gunImgs[this.member]) { // 그림이 아직 없으면 코드로 그린 총
+      const c = Game.gunImgs[this.member], w = Math.min(W * 0.34, H * 0.5), h = w * c.height / c.width;
+      g.save(); g.imageSmoothingEnabled = false; g.drawImage(c, W - w * 1.3 + this.recoil * 14, H - h * 1.45 + this.recoil * 18 + bob + low * h, w, h); g.restore();
     }
   },
   drawHUD(g, mono) {
@@ -646,8 +712,8 @@ const Free = {
     g.font = `bold 22px ${mono}`; g.fillStyle = '#E8EDE2'; g.fillText(obj, W / 2, 64);
     if (this.debugT > 0) { g.fillStyle = '#FFD34D'; g.font = `bold 18px ${mono}`; g.fillText(`DEBUG MODE ${this.debugT.toFixed(1)}s`, W / 2, 92); }
     // 분대원 (아래 가운데)
-    const bw = 150, bh = 74, bx = W / 2 - (bw * 3 + 20) / 2, by = H - bh - 26;
-    for (let i = 0; i < 3; i++) {
+    const NM = this.mem.length, bw = NM > 3 ? 128 : 150, bh = 74, bx = W / 2 - (bw * NM + 10 * (NM - 1)) / 2, by = H - bh - 26;
+    for (let i = 0; i < NM; i++) {
       const x = bx + i * (bw + 10), m = this.mem[i], sel = i === this.member;
       box(x, by, bw, bh); if (sel) { g.strokeStyle = m.d.color; g.lineWidth = 3; g.strokeRect(x, by, bw, bh); }
       const im = IMG.portrait && IMG.portrait[i]; if (im) { g.imageSmoothingEnabled = im instanceof HTMLImageElement; g.drawImage(im, x + 6, by + 6, 44, 44); }

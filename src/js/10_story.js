@@ -11,14 +11,15 @@ const STORY = {
   ending: [
     { pic: 'end1', t: 'BUILD SUCCESS', b: L('폭주하던 메인 루프가 다시 박자를 찾았습니다.', 'The runaway Main Loop found its rhythm again.', '暴走していたメインループが、再びリズムを取り戻した。', '失控的主循环重新找回了节奏。'), art: 'loop' },
     { pic: 'end2', t: L('색과 음악이 돌아왔습니다', 'Color and music returned', '色と音楽が戻ってきた', '色彩和音乐回来了'), b: L('회색 선뿐이던 숲에도, 복붙 도시에도, 지하철에도.<br>세상 전체에 색이 차올랐습니다.', 'To the grey forest, the copy-paste city, the subway.<br>Color flooded back into the whole world.', '灰色の森にも、コピペシティにも、地下鉄にも。<br>世界中に色が満ちていった。', '无论是灰色森林、复制粘贴之城，还是地铁。<br>整个世界都重新充满了色彩。'), art: 'world' },
-    { pic: 'end3', t: L('패치 스쿼드', 'The Patch Squad', 'パッチ・スクワッド', '补丁小队'), b: L('도트: "수고했어, 다들."<br>렉스: "다음 버그는 어디야? 다 갈아엎어 주지!"<br>핀: "…방금 메인 루프가 웃은 것 같은데."', 'Dot: "Good work, everyone."<br>Rex: "Where\'s the next bug? I\'ll refactor it all!"<br>Pin: "...Did the Main Loop just smile?"', 'ドット:「おつかれ、みんな。」<br>レックス:「次のバグはどこだ? 全部リファクタしてやる!」<br>ピン:「…今、メインループが笑った気がする。」', '多特：“辛苦了，大家。”<br>雷克斯：“下一个Bug在哪？我全给它重构了！”<br>平：“……刚才主循环好像笑了。”'), art: 'squad' },
-    { pic: 'end4', t: L('그런데…', 'But...', 'でも…', '可是……'), b: L('이 세계를 처음 망가뜨린 건<br>누구였을까?', 'who broke this world<br>in the first place?', 'この世界を最初に壊したのは<br>誰だったのだろう?', '最初把这个世界弄坏的<br>到底是谁？'), art: 'mystery' },
+    { pic: 'end3', t: L('패치 스쿼드', 'The Patch Squad', 'パッチ・スクワッド', '补丁小队'), b: L('도트: "수고했어, 다들."<br>렉스: "다음 버그는 어디야? 다 갈아엎어 주지!"<br>핀: "…방금 메인 루프가 웃은 것 같은데."<br>에이다: "회귀 테스트까지 통과! 완벽해."', 'Dot: "Good work, everyone."<br>Rex: "Where\'s the next bug? I\'ll refactor it all!"<br>Pin: "...Did the Main Loop just smile?"<br>Ada: "Regression tests passed! Perfect."', 'ドット:「おつかれ、みんな。」<br>レックス:「次のバグはどこだ? 全部リファクタしてやる!」<br>ピン:「…今、メインループが笑った気がする。」<br>エイダ:「回帰テストもパス! 完璧!」', '多特：“辛苦了，大家。”<br>雷克斯：“下一个Bug在哪？我全给它重构了！”<br>平：“……刚才主循环好像笑了。”<br>艾达：“回归测试也通过了！完美。”'), art: 'squad' },
+    { pic: 'end4', t: L('그런데…', 'But...', 'でも…', '可是……'), b: L('이 세계를 처음 망가뜨린 건<br>누구였을까?<br><br><b>— 1장 끝 · 다음 임무 준비 중 —</b>', 'who broke this world<br>in the first place?<br><br><b>— END OF CHAPTER 1 · NEXT MISSION IN PREPARATION —</b>', 'この世界を最初に壊したのは<br>誰だったのだろう?<br><br><b>— 第1章 完 · 次の任務 準備中 —</b>', '最初把这个世界弄坏的<br>到底是谁？<br><br><b>— 第1章 完 · 下一个任务准备中 —</b>'), art: 'mystery' },
   ],
   // 스테이지 시작 대사: [분대원 번호(0 도트·1 렉스·2 핀), 대사]
   lines: [
     [0, L('회색 숲이네. 고치는 만큼 색이 돌아올 거야.', 'A grey forest. Every bug we fix brings the color back.', '灰色の森か。直すたびに色が戻ってくるはずだ。', '灰色的森林啊。每修好一个，色彩就会回来。')],
     [1, L('복붙엔 산탄이지! 한꺼번에 갈아엎자!', 'Copy-paste? That calls for a Spread shot! Let\'s refactor them all!', 'コピペには散弾だろ! まとめてリファクタだ!', '复制粘贴就得用散弹！一起重构掉！')],
     [2, L('…보이지 않는 버그가 있어. 그건 내가 맡을게.', '...There are bugs you can\'t see. Leave those to me.', '…見えないバグがいる。それは私が引き受ける。', '……有看不见的Bug。那些交给我。')],
+    [3, L('안녕, 신입 테스터 에이다야! 테스트 안 한 코드는 고장 난 코드라고~', 'Hi, I\'m Ada, your new tester! Untested code is broken code~', 'やっほー、新人テスターのエイダだよ! テストしてないコードは壊れたコードだからね~', '嗨，我是新来的测试员艾达！没测过的代码就是坏代码哦~')],
     [0, L('중력이 제멋대로야. 미사일은 숨어도 맞으니까 쏴서 떨어뜨려!', 'Gravity\'s gone haywire. Missiles hit you even in cover — shoot them down!', '重力がめちゃくちゃだ。ミサイルは隠れても当たるから撃ち落とせ!', '重力乱套了。导弹隐蔽也会被击中，把它们打下来！')],
     [1, L('저게 메인 루프야? 세상의 심장이 폭주하고 있어!', 'That\'s the Main Loop? The heart of the world is running wild!', 'あれがメインループ? 世界の心臓が暴走してる!', '那就是主循环？世界的心脏正在失控！')],
   ],
@@ -36,7 +37,7 @@ const Story = {
       case 'loop': return `<div class="stc">${im('bug_loop', 'sthero')}</div>`;
       case 'broken': return `<div class="stc stgrey">${im('cover_side_city', 'stwall')}${im('cover_city', 'stcover')}</div>`;
       case 'bugs': return `<div class="stc strow">${['bug_basic', 'bug_clone', 'bug_throw', 'bug_ghost', 'bug_404'].map((k) => im(k, 'stbug')).join('')}</div>`;
-      case 'squad': return `<div class="stc strow">${S.map((k) => im('char_' + k, 'stchar')).join('')}</div>`;
+      case 'squad': return `<div class="stc strow">${SQUAD.map((d) => im('char_' + d.key, 'stchar')).join('')}</div>`;
       case 'dot': return `<div class="stc">${im('char_dot', 'stchar big')}</div>`;
       case 'world': return `<div class="stc strow">${['cover_forest', 'cover_city', 'cover_subway'].map((k) => im(k, 'stcov')).join('')}</div>`;
       case 'mystery': return `<div class="stc"><div class="stq">?</div></div>`;

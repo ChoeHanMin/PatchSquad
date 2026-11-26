@@ -11,22 +11,22 @@ Steamworks 스토어 설명 칸은 BBCode를 써요 (`[h2]`, `[b]`, `[list][*]`)
 
 ### 한국어
 ```
-게임이라는 세계가 망가졌습니다. 깨진 코드 틈에서 버그가 몰려옵니다. 연사·산탄·저격을 맡은 3인 분대 '패치 스쿼드'를 이끌고, 엄폐물 위로 나와 쏘고 숨어서 재장전하며 버그를 고치세요. 버그를 고칠 때마다 회색으로 깨진 세상에 색이 다시 차오릅니다. 크래시가 나기 전에 세계의 심장 '메인 루프'까지 고치는 엄폐 사격 게임.
+게임이라는 세계가 망가졌습니다. 깨진 코드 틈에서 버그가 몰려옵니다. 연사·산탄·저격·런처를 맡은 4인 분대 '패치 스쿼드'를 이끌고, 엄폐물 위로 나와 쏘고 숨어서 재장전하며 버그를 고치세요. 버그를 고칠 때마다 회색으로 깨진 세상에 색이 다시 차오릅니다. 크래시가 나기 전에 세계의 심장 '메인 루프'까지 고치는 엄폐 사격 게임.
 ```
 
 ### English
 ```
-In a world called a game, something broke — and bugs are pouring out of the cracks. Lead a three-person Patch Squad: pop up from cover to shoot, duck down to reload, and patch every bug before the world crashes. Each fix floods color back into a grey, glitching world.
+In a world called a game, something broke — and bugs are pouring out of the cracks. Lead the four-member Patch Squad: pop up from cover to shoot, duck down to reload, and patch every bug before the world crashes. Each fix floods color back into a grey, glitching world.
 ```
 
 ### 日本語
 ```
-ゲームという世界が壊れ、コードのすき間からバグがあふれ出した。連射・散弾・狙撃の3人分隊「パッチ・スクワッド」を率いて、遮蔽物から出て撃ち、隠れてリロードしながらバグを直そう。直すたびに灰色の世界に色が戻ってくる。クラッシュする前に、世界の心臓「メインループ」まで修復するカバーシューター。
+ゲームという世界が壊れ、コードのすき間からバグがあふれ出した。連射・散弾・狙撃・ランチャーの4人分隊「パッチ・スクワッド」を率いて、遮蔽物から出て撃ち、隠れてリロードしながらバグを直そう。直すたびに灰色の世界に色が戻ってくる。クラッシュする前に、世界の心臓「メインループ」まで修復するカバーシューター。
 ```
 
 ### 简体中文
 ```
-名为“游戏”的世界坏掉了，Bug正从代码的裂缝中涌出。率领由连射、散弹、狙击组成的三人“补丁小队”，探出掩体射击、躲回掩体换弹，把Bug一个个修好。每修好一个，灰色的世界就会重新染上色彩。在崩溃之前，修好世界的心脏“主循环”吧！一款掩体射击游戏。
+名为“游戏”的世界坏掉了，Bug正从代码的裂缝中涌出。率领由连射、散弹、狙击、发射器组成的四人“补丁小队”，探出掩体射击、躲回掩体换弹，把Bug一个个修好。每修好一个，灰色的世界就会重新染上色彩。在崩溃之前，修好世界的心脏“主循环”吧！一款掩体射击游戏。
 ```
 
 ---
@@ -48,11 +48,12 @@ In a world called a game, something broke — and bugs are pouring out of the cr
 [*]엄폐물을 뚫는 관통 미사일은 쏴서 떨어뜨리세요.
 [/list]
 
-[h2]3인 분대[/h2]
+[h2]4인 분대[/h2]
 [list]
 [*][b]도트[/b] — 연사. 침착한 분대장. "버그는 재현만 되면 잡을 수 있어."
 [*][b]렉스[/b] — 산탄. 7발을 넓게 퍼뜨리고 달려오는 버그를 밀어내요. "다 갈아엎으면 돼!"
 [*][b]핀[/b] — 저격. 충전해서 쏘면 겹친 적과 단단한 껍질을 꿰뚫어요.
+[*][b]에이다[/b] — 런처. 새로 들어온 밝은 QA 테스터. 테스트 캡슐이 터지며 몰려 있는 버그를 한꺼번에 고쳐요. "테스트 안 한 코드는 고장 난 코드야!"
 [/list]
 버그마다 약점 무기가 달라요. 상황에 맞게 분대원을 바꿔 가며 싸우세요. 위급할 땐 분대 스킬 [b]롤백[/b]으로 3초 동안 시간을 늦추고, 날아오던 공격을 되감으세요.
 
@@ -64,7 +65,7 @@ In a world called a game, something broke — and bugs are pouring out of the cr
 [list]
 [*][b]자유 작전 (NEW)[/b] — WASD로 3D 세상을 자유롭게 누비며, 분대원마다 다른 스킬 3개(Shift · E · Q 궁극기)로 싸우는 1인칭 모드
 [*]스토리 인트로와 엔딩, 스테이지마다 분대원의 한마디
-[*]스테이지 4개 + 3단계 보스 "메인 루프": 텍스처 없는 숲, 복붙 도시, 렌더링 지하철, 물리 고장 구역
+[*]스테이지 5개 + 3단계 중간 보스 "메인 루프": 텍스처 없는 숲, 복붙 도시, 렌더링 지하철, 테스트 서버실, 물리 고장 구역 (1장 · 다음 임무 준비 중)
 [*]각기 다른 버그 7종과 관통 미사일, 핫픽스 아이템 — 도감에서 공략과 약점 확인
 [*]난이도 하 · 중 · 상 (상은 중을 깨면 열림), 매일 패턴이 바뀌는 [b]오늘의 빌드[/b]
 [*]직접 해 보며 배우는 튜토리얼 훈련장
@@ -90,11 +91,12 @@ You are the [b]Patch Squad[/b], a bug-repair team. Every bug you patch brings co
 [*]Piercing missiles go straight through cover. Shoot them down.
 [/list]
 
-[h2]A Squad of Three[/h2]
+[h2]A Squad of Four[/h2]
 [list]
 [*][b]Dot[/b] — Rapid fire. The calm squad leader. "If a bug can be reproduced, it can be fixed."
 [*][b]Rex[/b] — Spread shot. Seven pellets that knock charging bugs back. "Just refactor it all!"
 [*][b]Pin[/b] — Sniper. Charge up to pierce lined-up enemies and armored shells.
+[*][b]Ada[/b] — Launcher. The squad's cheerful new QA tester. Her test capsules burst and fix whole swarms at once. "Untested code is broken code!"
 [/list]
 Every bug has a weak weapon. Swap squad members to match the fight. In a pinch, use the squad skill [b]Rollback[/b] to slow time for 3 seconds and rewind incoming attacks.
 
@@ -106,7 +108,7 @@ Patch bugs in a row to repair glitches, and shoot a floating [b]Hotfix[/b] to re
 [list]
 [*][b]Free Ops (NEW)[/b] — a first-person mode: roam the 3D world with WASD and fight with three unique skills per squad member (Shift, E and a Q ultimate)
 [*]A story intro and ending, plus a line from the squad at every stage
-[*]4 stages plus a 3-phase boss, "Main Loop": the Textureless Forest, Copy-Paste City, Render Subway and the Broken Physics Zone
+[*]5 stages plus a 3-phase mid-boss, "Main Loop": the Textureless Forest, Copy-Paste City, Render Subway, Test Server Room and the Broken Physics Zone (Chapter 1 — more missions on the way)
 [*]7 distinct bug types, piercing missiles and hotfix items, with tips and weaknesses in the Bug Dex
 [*]Easy, Normal and Hard difficulty (Hard unlocks after clearing Normal), plus a [b]Daily Build[/b] that changes every day
 [*]A hands-on tutorial training ground
@@ -132,11 +134,12 @@ Patch bugs in a row to repair glitches, and shoot a floating [b]Hotfix[/b] to re
 [*]遮蔽物を貫通する貫通ミサイルは撃ち落とそう。
 [/list]
 
-[h2]3人の分隊[/h2]
+[h2]4人の分隊[/h2]
 [list]
 [*][b]ドット[/b] — 連射。冷静な分隊長。「再現できるバグなら、必ず直せる。」
 [*][b]レックス[/b] — 散弾。7発を広く撃ち、突っ込んでくるバグを押し返す。「全部リファクタすればいい!」
 [*][b]ピン[/b] — 狙撃。チャージして撃てば、重なった敵や硬い殻も貫く。
+[*][b]エイダ[/b] — ランチャー。明るい新人QAテスター。テストカプセルが弾けて、群れたバグをまとめて直す。「テストしてないコードは壊れたコード!」
 [/list]
 バグごとに弱点武器が違う。状況に合わせてメンバーを切り替えながら戦おう。ピンチのときは分隊スキル[b]ロールバック[/b]で3秒間時間を遅くし、飛んでくる攻撃を巻き戻せ。
 
@@ -148,7 +151,7 @@ Patch bugs in a row to repair glitches, and shoot a floating [b]Hotfix[/b] to re
 [list]
 [*][b]フリー作戦 (NEW)[/b] — WASDで3D世界を自由に動き回り、メンバーごとに異なる3つのスキル(Shift・E・Qアルティメット)で戦う1人称モード
 [*]ストーリーのイントロとエンディング、ステージごとの分隊のひとこと
-[*]4つのステージ + 3段階のボス「メインループ」: テクスチャのない森、コピペシティ、レンダリング地下鉄、物理崩壊エリア
+[*]5つのステージ + 3段階の中ボス「メインループ」: テクスチャのない森、コピペシティ、レンダリング地下鉄、テストサーバールーム、物理崩壊エリア (第1章・次の任務も準備中)
 [*]7種類のバグと貫通ミサイル、ホットフィックス — 攻略と弱点はバグ図鑑で確認
 [*]難易度イージー・ノーマル・ハード(ハードはノーマルクリアで解放)、毎日パターンが変わる[b]今日のビルド[/b]
 [*]実際に試しながら学べるチュートリアル訓練場
@@ -174,11 +177,12 @@ Patch bugs in a row to repair glitches, and shoot a floating [b]Hotfix[/b] to re
 [*]会穿透掩体的穿透导弹要把它打下来。
 [/list]
 
-[h2]三人小队[/h2]
+[h2]四人小队[/h2]
 [list]
 [*][b]多特[/b] — 连射。冷静的队长。“只要能复现的Bug，就一定能修好。”
 [*][b]雷克斯[/b] — 散弹。一次散射7发，把冲来的Bug击退。“全部重构就行了！”
 [*][b]平[/b] — 狙击。蓄力射击可以贯穿重叠的敌人和坚硬的外壳。
+[*][b]艾达[/b] — 发射器。开朗的新人QA测试员。测试胶囊爆开，一次修好成群的Bug。“没测过的代码就是坏代码！”
 [/list]
 每种Bug的弱点武器都不同，根据情况切换队员作战。危急时使用小队技能[b]回滚[/b]，让时间变慢3秒并把飞来的攻击倒带。
 
@@ -190,7 +194,7 @@ Patch bugs in a row to repair glitches, and shoot a floating [b]Hotfix[/b] to re
 [list]
 [*][b]自由作战 (NEW)[/b] — 第一人称模式：用WASD在3D世界中自由移动，每名队员拥有3个独特技能（Shift、E、Q终极技能）
 [*]剧情开场与结局，每关都有队员的一句台词
-[*]4个关卡 + 3阶段Boss“主循环”：无贴图森林、复制粘贴之城、渲染地铁、物理故障区
+[*]5个关卡 + 3阶段中Boss“主循环”：无贴图森林、复制粘贴之城、渲染地铁、测试服务器机房、物理故障区（第1章·更多任务准备中）
 [*]7种不同的Bug、穿透导弹和热修复道具 — 在Bug图鉴中查看攻略与弱点
 [*]简单、普通、困难三种难度（通关普通后解锁困难），每天变化的[b]今日构建[/b]
 [*]亲手体验的教程训练场
