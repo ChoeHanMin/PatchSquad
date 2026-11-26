@@ -80,11 +80,8 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
 .menu{width:min(300px,86vw);display:flex;flex-direction:column;gap:10px;margin-top:10px}
 .row2{display:flex;gap:10px}
 .foot{position:absolute;bottom:calc(10px + env(safe-area-inset-bottom));font-size:11px;color:#7d8478;font-family:var(--mono)}
-.rot{font-size:12px;color:var(--yel);display:none}
-@media (orientation:portrait) and (pointer:coarse){.rot{display:block}}
 
 .how{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-@media (max-width:560px){.how{grid-template-columns:1fr}}
 .card{background:#151913;border:2px solid #2f342c;padding:10px;text-align:center;font-size:13px}
 .card b{display:block;margin:6px 0 2px;color:var(--lime)}
 .card p{margin:0;color:#b9c0b2;line-height:1.45}
@@ -129,28 +126,11 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
 .newch{font-size:13px;color:var(--yel);font-family:var(--mono)}
 
 #toast{position:absolute;left:50%;top:18%;transform:translateX(-50%);background:var(--lime);color:#11140c;font-weight:800;padding:8px 14px;box-shadow:3px 3px 0 #000;pointer-events:none;font-size:14px;white-space:nowrap}
-/* 좁은 화면(세로 폰): 진행률을 한 줄 아래로 */
-@media (max-width:640px){
-  .hud-c{top:calc(62px + env(safe-area-inset-top))}
-  .bar.stab{width:104px}
-  .bar.prog{width:62vw}
-  #hud .big{font-size:18px}
-  #hud .lbl{font-size:10px}
-  .wpn{min-width:70px;height:52px}
-  #hint{font-size:12px;white-space:normal;text-align:center;width:max-content}
-}
 /* assets/ 그림 */
 .pic img.asset{width:64px;height:64px;object-fit:contain}
 .cbug img.asset{width:72px;height:72px;object-fit:contain;transform:rotate(180deg)}
 .logoimg{display:block;width:min(620px,86vw);height:auto;animation:logogl 3.2s infinite steps(1)}
 @keyframes logogl{0%{transform:none}6%{transform:translate(5px,-2px) skewX(-8deg);filter:hue-rotate(60deg)}9%{transform:translate(-4px,1px)}12%{transform:none;filter:none}}
-/* 세로 폰: 무기 버튼을 왼쪽으로 (오른쪽은 손에 든 패치 건 자리) */
-@media (max-width:640px) and (orientation:portrait){
-  #weapons{left:calc(10px + env(safe-area-inset-left));transform:none;gap:6px}
-  #hud.flipped #weapons{left:auto;right:calc(10px + env(safe-area-inset-right))}
-  .wpn{min-width:62px;padding:4px 6px}
-  #hint{bottom:calc(150px + env(safe-area-inset-bottom))}
-}
 /* 패치 로그 (왼쪽 코드 창) */
 #codeLog{margin-top:8px;width:min(270px,44vw);background:rgba(8,10,8,.78);border:1px solid #2f342c;font-family:var(--mono);font-size:11px;line-height:1.45;pointer-events:none}
 .cl-h{display:flex;align-items:center;gap:4px;padding:3px 6px;background:#161a14;border-bottom:1px solid #2f342c;color:#7d8478;font-size:10px}
@@ -162,10 +142,8 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
 .cl-b .ok,.cl-b .err{animation:clpop .25s steps(2)}
 @keyframes clpop{0%{opacity:0}50%{opacity:1;transform:translateX(3px)}}
 #hud.flipped #codeLog{margin-left:auto}
-@media (max-width:640px){#codeLog{margin-top:64px;font-size:9.5px}.cl-b{height:calc(7 * 1.45em)}}
 /* 난이도 선택 */
 .diffs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-@media (max-width:560px){.diffs{grid-template-columns:1fr}}
 .dcard{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:14px;background:#151913;border:2px solid #2f342c;box-shadow:3px 3px 0 #000}
 .dcard b{font-family:var(--mono);font-size:30px;line-height:1;color:var(--lime)}
 .dcard .dn{font-weight:800;font-size:15px}
@@ -193,7 +171,6 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
 .mem.locked .lock{display:flex}
 .touch .mem .k{display:none}
 .wpn.rb{min-width:64px;height:62px}
-@media (max-width:640px){.mem{width:68px;height:56px;grid-template-columns:24px 1fr}.mem .pt{width:24px;height:24px}.mem .mn{font-size:12px}.wpn.rb{min-width:54px;height:56px}}
 .mem .pt{image-rendering:auto}
 /* 안내 카드 */
 #tutor{position:absolute;inset:0;background:rgba(6,8,6,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
@@ -211,7 +188,6 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
 @keyframes blink{50%{opacity:.3}}
 /* 도감 */
 .dex{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-@media (max-width:560px){.dex{grid-template-columns:1fr}}
 .dx{display:grid;grid-template-columns:64px 1fr;gap:4px 10px;background:#151913;border:2px solid #2f342c;padding:10px}
 .dx canvas,.dx img{grid-row:1/5;width:64px;height:64px;image-rendering:pixelated;object-fit:contain}
 .dx .dn{font-weight:800;font-size:15px}
@@ -221,9 +197,6 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
 .dx.locked{opacity:.5}.dx.locked canvas,.dx.locked img{filter:brightness(0)}
 .dexh{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--yel);margin:10px 0 4px}
 .chip{display:inline-block;font-size:11px;padding:0 5px;border:1px solid currentColor;margin-left:4px}
-/* 폰 가로 안내 */
-#rotate{position:absolute;inset:0;z-index:40;background:#0E100D;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:16px}
-#rotate .ri{font-size:46px}#rotate b{font-size:20px;color:var(--lime)}#rotate p{margin:0;color:#cfd6c8;font-size:14px;line-height:1.5}
 /* 추천 표시 */
 .mem.suggest,.wpn.rb.suggest{animation:sug .6s infinite steps(2)}
 @keyframes sug{50%{border-color:#fff;box-shadow:0 0 14px rgba(255,255,255,.55)}}
@@ -244,7 +217,6 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
 #spotCard .tb .role{font-family:var(--mono);font-size:11px;color:#1a1d19;background:var(--yel);padding:0 5px;margin-right:4px}
 #spotCard .tgo{font-family:var(--mono);font-size:11px;color:#8a9084;text-align:right;animation:blink 1s infinite steps(2)}
 .diffs{grid-template-columns:repeat(4,1fr)}
-@media (max-width:640px){.diffs{grid-template-columns:1fr 1fr}}
 .dcard.tut b{color:var(--yel)}.dcard.tut{border-color:#5a5330}
 /* PC: 1920×1080 기준 화면을 창에 맞게 축소·확대, 남는 곳은 검은 여백 */
 body.pc{background:#000}

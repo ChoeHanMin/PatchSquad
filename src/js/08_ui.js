@@ -67,9 +67,6 @@ const UI = {
     const tutTap = (e) => { e.preventDefault(); e.stopPropagation(); Tut.tap(); };
     $('#spotCatch').addEventListener('pointerdown', tutTap);
     $('#spotCard').addEventListener('pointerdown', tutTap);
-    window.addEventListener('resize', () => this.checkRotate());
-    window.addEventListener('orientationchange', () => setTimeout(() => this.checkRotate(), 200));
-    this.checkRotate();
     click('#btnSettings', () => this.showSettings('#scrTitle'));
     click('#btnAskTutYes', () => { Store.set('tutAsked', true); this.only(); Game.newRun(false, 'tutorial'); });
     click('#btnAskTutNo', () => { Store.set('tutAsked', true); this.showDiff(); });
@@ -129,12 +126,6 @@ const UI = {
   soundHint() {
     const el = $('#sndHint'); if (!el) return;
     el.classList.toggle('hidden', !settings.sound || SND.running());
-  },
-  // ----- 폰 가로 화면: 세로로 돌려 달라고 안내 -----
-  checkRotate() {
-    const land = IS_TOUCH && window.innerWidth > window.innerHeight && window.innerHeight < 600;
-    $('#rotate').classList.toggle('hidden', !land);
-    if (land && Game.state === 'play') this.pause();
   },
   // ----- 도감 -----
   dexSeen(t) {
@@ -486,7 +477,7 @@ const UI = {
       ta.classList.remove('hidden'); $('#resNote').classList.add('hidden');
       ta.focus(); ta.select();
       let ok = false; try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
-      if (ok) done(); else { $('#btnCopy').textContent = '길게 눌러 복사하세요'; this.toast('복사가 막혀 있어요 — 글자를 길게 눌러 복사하세요'); }
+      if (ok) done(); else { $('#btnCopy').textContent = '글자를 선택해 Ctrl+C'; this.toast('복사가 막혀 있어요 — 글자를 선택해 Ctrl+C로 복사하세요'); }
     };
     try {
       if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fallback);

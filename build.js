@@ -1,5 +1,6 @@
 // src/ 여러 파일 + assets/ 그림 → dist/index.html 하나로 합치기
-// 사용: node build.js        (출품용)
+// 스팀판 빌드 (saaskr 제출본과 따로 관리)
+// 사용: node build.js        (스팀판)
 //       node build.js --dev  (테스트용 window.__BH 노출)
 const fs = require('fs');
 const path = require('path');
@@ -8,22 +9,24 @@ const src = (p) => fs.readFileSync(path.join(__dirname, 'src', p), 'utf8');
 
 // 게임 안에 넣는 그림 목록: assets/<이름>.png 가 있으면 줄여서 넣고, 없으면 코드로 그린 그림 사용
 // (assets/README.md 참고)
+// 스팀판: 4MB 제한이 없으니 1920×1080 화면(고해상도 모니터 ×2까지)에 맞춰 크게 넣음
+const B = 256, C = 460; // 버그·아이템 정사각형 / 캐릭터 가로
 const ASSET_SPEC = {
-  bug_basic: { size: 96 }, bug_clone: { size: 96 }, bug_mini: { size: 96 },
-  bug_ghost: { size: 96 }, bug_404: { size: 96 }, bug_loop: { size: 96 },
-  logo: { width: 900 }, item_hotfix: { size: 96 }, gun: { width: 640 }, gun_refactor: { width: 640 }, gun_sniper: { width: 640 },
-  bug_throw: { size: 96 }, proj_missile: { size: 64 }, proj_packet: { size: 64 },
-  portrait_dot: { size: 128 }, portrait_rex: { size: 128 }, portrait_pin: { size: 128 },
+  bug_basic: { size: B }, bug_clone: { size: B }, bug_mini: { size: B },
+  bug_ghost: { size: B }, bug_404: { size: B }, bug_loop: { size: B },
+  logo: { width: 1600 }, item_hotfix: { size: B }, gun: { width: 1448 }, gun_refactor: { width: 1448 }, gun_sniper: { width: 1448 },
+  bug_throw: { size: B }, proj_missile: { size: 192 }, proj_packet: { size: 192 },
+  portrait_dot: { size: 192 }, portrait_rex: { size: 192 }, portrait_pin: { size: 192 },
   // 캐릭터 자세 그림: 여백을 자르지 않음 (기본·움찔·고통의 위치가 어긋나지 않게)
-  char_dot: { width: 230, keep: true }, char_dot_flinch: { width: 230, keep: true }, char_dot_hurt: { width: 230, keep: true },
-  char_rex: { width: 230, keep: true }, char_rex_flinch: { width: 230, keep: true }, char_rex_hurt: { width: 230, keep: true },
-  char_pin: { width: 230, keep: true }, char_pin_flinch: { width: 230, keep: true }, char_pin_hurt: { width: 230, keep: true },
+  char_dot: { width: C, keep: true }, char_dot_flinch: { width: C, keep: true }, char_dot_hurt: { width: C, keep: true },
+  char_rex: { width: C, keep: true }, char_rex_flinch: { width: C, keep: true }, char_rex_hurt: { width: C, keep: true },
+  char_pin: { width: C, keep: true }, char_pin_flinch: { width: C, keep: true }, char_pin_hurt: { width: C, keep: true },
   // 이동 중 달리는 뒷모습 (2장을 번갈아 보여 줌, 2번째는 선택)
-  char_dot_run: { width: 230, keep: true }, char_dot_run2: { width: 230, keep: true },
-  char_rex_run: { width: 230, keep: true }, char_rex_run2: { width: 230, keep: true },
-  char_pin_run: { width: 230, keep: true }, char_pin_run2: { width: 230, keep: true },
-  cover: { width: 800 }, cover_side: { height: 860 },
-  cover_side_forest: { height: 860 }, cover_side_city: { height: 860 }, cover_side_subway: { height: 860 }, cover_side_physics: { height: 860 }, cover_side_boss: { height: 860 }, cover_forest: { width: 800 }, cover_city: { width: 800 }, cover_subway: { width: 800 }, cover_physics: { width: 800 }, cover_boss: { width: 800 },
+  char_dot_run: { width: C, keep: true }, char_dot_run2: { width: C, keep: true },
+  char_rex_run: { width: C, keep: true }, char_rex_run2: { width: C, keep: true },
+  char_pin_run: { width: C, keep: true }, char_pin_run2: { width: C, keep: true },
+  cover: { width: 2172 }, cover_side: { height: 1500 },
+  cover_side_forest: { height: 1500 }, cover_side_city: { height: 1500 }, cover_side_subway: { height: 1500 }, cover_side_physics: { height: 1500 }, cover_side_boss: { height: 1500 }, cover_forest: { width: 2172 }, cover_city: { width: 2172 }, cover_subway: { width: 2172 }, cover_physics: { width: 2172 }, cover_boss: { width: 2172 },
 };
 
 async function loadAssets() {
@@ -41,8 +44,8 @@ async function loadAssets() {
         ? img.resize(spec.size, spec.size, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
         : spec.height ? img.resize({ height: spec.height, withoutEnlargement: true })
         : img.resize({ width: spec.width, withoutEnlargement: true });
-      buf = await img.png({ palette: true, quality: 90, compressionLevel: 9 }).toBuffer();
-      mime = 'image/png';
+      buf = await img.webp({ quality: 92, alphaQuality: 100, effort: 5 }).toBuffer(); // 스팀판: 색 줄이지 않음
+      mime = 'image/webp';
     }
     out[name] = `data:${mime};base64,${buf.toString('base64')}`;
     console.log(`  그림 ${name}: ${(buf.length / 1024).toFixed(1)} KB`);
@@ -81,8 +84,6 @@ async function loadAssets() {
   const out = path.join(__dirname, 'dist', dev ? 'index.dev.html' : 'index.html');
   fs.writeFileSync(out, html);
   const kb = Buffer.byteLength(html) / 1024;
-  console.log(`${path.relative(__dirname, out)}  ${kb.toFixed(0)} KB  (제한 4096 KB, 목표 1536 KB)`);
-  if (kb > 4096) { console.error('오류: 4MB 초과!'); process.exitCode = 1; }
-  else if (kb > 1536) console.warn('주의: 목표 1.5MB 초과');
+  console.log(`${path.relative(__dirname, out)}  ${kb.toFixed(0)} KB  (스팀판)`);
   if (/(src|href)=["']https?:/i.test(html.replace(three, ''))) console.warn('경고: 외부 URL 참조 발견');
 })();

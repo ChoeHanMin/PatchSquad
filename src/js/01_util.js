@@ -39,11 +39,11 @@ const MMDD = String(NOW.getMonth() + 1).padStart(2, '0') + String(NOW.getDate())
 const TODAY_KEY = NOW.getFullYear() + '-' + MMDD;
 const DAILY_VER = 'v1.' + MMDD;
 const DAILY_SEED = hashStr('bughunter-' + TODAY_KEY);
-const IS_TOUCH = (window.matchMedia && matchMedia('(pointer: coarse)').matches) || (navigator.maxTouchPoints > 0 && 'ontouchstart' in window);
-if (IS_TOUCH) document.body.classList.add('touch');
+// 스팀판: 항상 PC 모드 (터치스크린 노트북도 폰 화면으로 바뀌지 않게)
+const IS_TOUCH = false;
 
 // PC는 1920×1080 기준 화면을 창 크기에 맞게 통째로 확대·축소 (남는 곳은 검은 여백)
-const VIEW = { pc: !IS_TOUCH, w: 1920, h: 1080, s: 1, ox: 0, oy: 0,
+const VIEW = { pc: true, w: 1920, h: 1080, s: 1, ox: 0, oy: 0,
   fit() {
     const app = document.getElementById('app');
     if (!this.pc) { this.w = window.innerWidth; this.h = window.innerHeight; this.s = 1; this.ox = this.oy = 0; if (app) app.style.cssText = ''; return; }

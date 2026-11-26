@@ -72,7 +72,7 @@ const Tut = {
     const c = $('#spotCard');
     c.querySelector('.tt').textContent = title;
     c.querySelector('.tb').innerHTML = body;
-    c.querySelector('.tgo').textContent = tapToGo ? '탭해서 계속 ▶' : '직접 해 보세요';
+    c.querySelector('.tgo').textContent = tapToGo ? '클릭해서 계속 ▶' : '직접 해 보세요';
     c.classList.toggle('act', !tapToGo);
     $('#spotCatch').classList.toggle('hidden', !tapToGo);
     c.classList.remove('hidden');
