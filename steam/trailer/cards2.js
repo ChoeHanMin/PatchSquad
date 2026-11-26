@@ -12,7 +12,7 @@ const glitchText = (lines, size, accent) => {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080"><rect width="1920" height="1080" fill="#050605"/>${bars}${layer(-7, 0, '#FF4D5E', 0.85)}${layer(7, 0, '#33f0ff', 0.7)}${layer(0, 0, '#F2F5EE', 1)}${accent || ''}</svg>`;
 };
 (async () => {
-  await sharp(Buffer.from(glitchText(['AN AI MADE THIS GAME.'], 92))).png().toFile(D + 'open1.png');
+  await sharp(Buffer.from(glitchText(['IN A WORLD', 'CALLED A GAME...'], 110))).png().toFile(D + 'open1.png');
   await sharp(Buffer.from(glitchText(['IT WENT', 'HORRIBLY WRONG.'], 118))).png().toFile(D + 'open2.png');
   // 로고 슬램 카드 (검은 배경 + 큰 로고 + COMING SOON)
   const logo = await sharp('/home/user/bughunter-steam/assets/logo.png').trim({ threshold: 1 }).resize({ width: 1500 }).png().toBuffer();
@@ -39,7 +39,7 @@ const glitchText = (lines, size, accent) => {
     <rect x="${960 - 470 + 12}" y="${640 + 12}" width="940" height="116" fill="#000"/>
     <rect x="${960 - 470}" y="640" width="940" height="116" fill="#C6F432"/>
     <text x="960" y="718" font-family="JetBrains Mono" font-weight="800" font-size="60" fill="#11140c" text-anchor="middle">WISHLIST NOW ON STEAM</text>
-    <text x="960" y="850" font-family="JetBrains Mono" font-weight="700" font-size="34" fill="#E8EDE2" text-anchor="middle">Soodal Games</text>
+    <text x="960" y="850" font-family="JetBrains Mono" font-weight="700" font-size="34" fill="#E8EDE2" text-anchor="middle">Soodal Games (Choi Hanmin)</text>
     <text x="960" y="900" font-family="JetBrains Mono" font-size="26" fill="#9aa096" text-anchor="middle">English · 한국어 · Windows</text></svg>`;
   await sharp(bg).composite([{ input: logo2, left: Math.round((1920 - l2.width) / 2), top: 360 - Math.round(l2.height / 2) }, { input: Buffer.from(txt), left: 0, top: 0 }]).png().toFile(D + 'endcard.png');
   console.log('ok');
