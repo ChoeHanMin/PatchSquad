@@ -1,8 +1,8 @@
 {
-  "name": "bughunter",
-  "productName": "Bug Hunter",
+  "name": "patchsquad",
+  "productName": "Patch Squad",
   "version": "1.0.0",
-  "description": "Bug Hunter (Steam)",
+  "description": "Patch Squad (Steam)",
   "main": "main.js",
   "author": "겜타즈 2027",
   "license": "UNLICENSED",

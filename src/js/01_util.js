@@ -30,15 +30,15 @@ function shuffle(arr, r = RNG) { for (let i = arr.length - 1; i > 0; i--) { cons
 
 // localStorage는 막혀 있을 수 있음 → 항상 try/catch
 const Store = {
-  get(k, d) { try { const v = localStorage.getItem('bughunter_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
-  set(k, v) { try { localStorage.setItem('bughunter_' + k, JSON.stringify(v)); } catch (e) { /* 저장 없이 진행 */ } },
+  get(k, d) { try { const v = localStorage.getItem('patchsquad_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('patchsquad_' + k, JSON.stringify(v)); } catch (e) { /* 저장 없이 진행 */ } },
 };
 
 const NOW = new Date();
 const MMDD = String(NOW.getMonth() + 1).padStart(2, '0') + String(NOW.getDate()).padStart(2, '0');
 const TODAY_KEY = NOW.getFullYear() + '-' + MMDD;
 const DAILY_VER = 'v1.' + MMDD;
-const DAILY_SEED = hashStr('bughunter-' + TODAY_KEY);
+const DAILY_SEED = hashStr('patchsquad-' + TODAY_KEY);
 // 스팀판: 항상 PC 모드 (터치스크린 노트북도 폰 화면으로 바뀌지 않게)
 const IS_TOUCH = false;
 

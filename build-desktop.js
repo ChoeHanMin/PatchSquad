@@ -1,5 +1,5 @@
 // 스팀판 Windows 앱 만들기 (Wine 필요 없음)
-// 사용: node build-desktop.js   → desktop-out/BugHunter-win32-x64/ + BugHunter_win64_v<버전>.zip
+// 사용: node build-desktop.js   → desktop-out/PatchSquad-win32-x64/ + PatchSquad_win64_v<버전>.zip
 // 1) node build.js 로 dist/index.html 만들기  2) desktop/app 에 복사  3) Electron으로 포장
 // 4) exe에 아이콘·버전 정보 넣기(resedit, 순수 JS)  5) zip
 const fs = require('fs');
@@ -30,7 +30,7 @@ const VER4 = (VER + '.0.0.0').split('.').slice(0, 4).map(Number);
   const electronVersion = require('electron/package.json').version;
   fs.rmSync(R('desktop-out'), { recursive: true, force: true });
   const [outDir] = await packager({
-    dir: R('desktop'), out: R('desktop-out'), name: 'BugHunter', executableName: 'BugHunter',
+    dir: R('desktop'), out: R('desktop-out'), name: 'PatchSquad', executableName: 'PatchSquad',
     platform: 'win32', arch: 'x64', electronVersion, asar: true, overwrite: true, prune: false,
     ignore: [/icon_src\.png$/, /icon\.ico$/],
     // win32metadata/icon은 Wine이 필요해서 쓰지 않고 아래 resedit으로 넣음
@@ -38,7 +38,7 @@ const VER4 = (VER + '.0.0.0').split('.').slice(0, 4).map(Number);
 
   // 4) exe 아이콘·버전 정보
   const ResEdit = require('resedit');
-  const exePath = path.join(outDir, 'BugHunter.exe');
+  const exePath = path.join(outDir, 'PatchSquad.exe');
   const exe = ResEdit.NtExecutable.from(fs.readFileSync(exePath));
   const res = ResEdit.NtExecutableResource.from(exe);
   const iconFile = ResEdit.Data.IconFile.from(ico);
@@ -50,8 +50,8 @@ const VER4 = (VER + '.0.0.0').split('.').slice(0, 4).map(Number);
   vi.setFileVersion(...VER4); vi.setProductVersion(...VER4);
   for (const lang of vi.getAllLanguagesForStringValues()) {
     vi.setStringValues(lang, {
-      FileDescription: 'Bug Hunter', ProductName: 'Bug Hunter', InternalName: 'BugHunter',
-      OriginalFilename: 'BugHunter.exe', CompanyName: '겜타즈 2027', LegalCopyright: '© 2026 겜타즈 2027',
+      FileDescription: 'Patch Squad', ProductName: 'Patch Squad', InternalName: 'PatchSquad',
+      OriginalFilename: 'PatchSquad.exe', CompanyName: '겜타즈 2027', LegalCopyright: '© 2026 겜타즈 2027',
       FileVersion: VER4.join('.'), ProductVersion: VER4.join('.'),
     });
   }
@@ -61,7 +61,7 @@ const VER4 = (VER + '.0.0.0').split('.').slice(0, 4).map(Number);
   console.log('exe 아이콘·버전 정보:', VER4.join('.'));
 
   // 5) zip
-  const zipName = `BugHunter_win64_v${VER4.join('.')}.zip`;
+  const zipName = `PatchSquad_win64_v${VER4.join('.')}.zip`;
   fs.rmSync(R('desktop-out', zipName), { force: true });
   execFileSync('zip', ['-r', '-q', '-9', zipName, path.basename(outDir)], { cwd: R('desktop-out') });
   console.log('완료:', path.join('desktop-out', zipName), (fs.statSync(R('desktop-out', zipName)).size / 1048576).toFixed(1) + ' MB');

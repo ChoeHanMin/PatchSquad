@@ -1,6 +1,6 @@
-# Bug Hunter — 스팀판
+# Patch Squad (패치 스쿼드) — 스팀판
 
-팀 겜타즈 2027 · 스팀 앱 이름: **Bug Hunter** (스팀판 한정. saaskr 제출본 이름은 그대로)
+팀 겜타즈 2027 · 스팀 앱 이름: **Patch Squad** (원래 게임 이름 "버그 헌터"는 스팀에 같은 이름이 있어 바꿈) (스팀판 한정. saaskr 제출본 이름은 그대로)
 
 > 이 레포는 **스팀 출시용**이에요. saaskr 게임 어워드 제출본은 [ChoeHanMin/BugHunter](https://github.com/ChoeHanMin/BugHunter)에서 따로 관리해요 (그쪽 `dist/index.html`은 건드리지 않음).
 
@@ -12,11 +12,13 @@
 - **그림 화질:** 4MB 제한이 없으니 크게 넣음 (캐릭터 230→460px, 엄폐물 800→2172px, 옆 벽 860→1500px, 버그 96→256px, 총 640→1448px), PNG 팔레트 → webp(q92). 결과 `dist/index.html` 약 3.8MB
 - 확인한 화면 크기: 1920×1080, 1366×768, 1280×800(터치), 1280×1024, 2560×1440
 
+- **이름:** 스팀판은 **Patch Squad**(패치 스쿼드). 창 제목, exe(`PatchSquad.exe`), 크래시 대사, 패치 노트, 타이틀 로고(코드로 그린 글자) 모두 바꿈. 예전 "BUG HUNTER" 로고 그림은 `assets/old/`로 옮겨서 게임에 안 들어감 → 새 로고는 `assets/logo.png`로 넣으면 됨 (프롬프트는 `PROMPTS.md` [7])
+
 ## Windows 앱 만들기 (Electron, Wine 필요 없음)
 
 ```bash
 npm install
-node build-desktop.js   # → desktop-out/BugHunter-win32-x64/ + desktop-out/BugHunter_win64_v1.0.0.0.zip
+node build-desktop.js   # → desktop-out/PatchSquad-win32-x64/ + desktop-out/PatchSquad_win64_v1.0.0.0.zip
 ```
 
 - 버전은 `desktop/package.json`의 `version`만 바꾸면 exe 버전 정보와 zip 이름에 같이 들어가요.
@@ -29,20 +31,20 @@ node build-desktop.js   # → desktop-out/BugHunter-win32-x64/ + desktop-out/Bug
 | 전체 화면 전환 | F11 또는 Alt+Enter, 설정 → "전체 화면" 체크 |
 | 소리 | 실행하자마자 타이틀 음악이 나옴 (클릭 안내 문구 안 뜸) |
 | 게임 종료 | 타이틀 화면 "게임 종료" 버튼 (데스크톱 앱에서만 보임) |
-| 저장 | 기록·설정은 `%APPDATA%\BugHunter`에 저장 |
+| 저장 | 기록·설정은 `%APPDATA%\PatchSquad`에 저장 |
 | 기타 | 메뉴바 없음, 중복 실행 막음, 배포판은 개발자 도구 꺼짐 |
 
 데스크톱 코드: `desktop/main.js`(창·단축키·저장), `desktop/preload.js`(게임에 `window.bhDesktop` 제공). 게임 쪽은 `window.bhDesktop`이 있을 때만 종료 버튼·전체 화면 설정을 보여 줘요.
 
 ## 스팀 업로드 (SteamCMD)
 
-`steam/app_build.vdf`의 `APP_ID`, `DEPOT_ID`를 Steamworks 값으로 바꾸고, `BugHunter-win32-x64` 폴더 **안의 파일들**을 `content/`에 넣은 뒤:
+`steam/app_build.vdf`의 `APP_ID`, `DEPOT_ID`를 Steamworks 값으로 바꾸고, `PatchSquad-win32-x64` 폴더 **안의 파일들**을 `content/`에 넣은 뒤:
 
 ```
 steamcmd.exe +login <계정> +run_app_build <경로>\steam\app_build.vdf +quit
 ```
 
-Steamworks → 설치 → 일반 설치에서 실행 옵션: 실행 파일 `BugHunter.exe`, 운영체제 Windows.
+Steamworks → 설치 → 일반 설치에서 실행 옵션: 실행 파일 `PatchSquad.exe`, 운영체제 Windows.
 
 ## 게임 방식: 쏘고 숨는 엄폐 사격 (2026.11 개편)
 

@@ -1,8 +1,8 @@
 "AppBuild"
 {
-	"AppID" "APP_ID"	// Steamworks에서 받은 버그 헌터 앱 ID로 바꾸기
-	"Desc" "Bug Hunter v1.0.0.0"
-	"ContentRoot" "..\content\"	// BugHunter-win32-x64 폴더 안의 파일들을 여기에 풀기
+	"AppID" "APP_ID"	// Steamworks에서 받은 Patch Squad 앱 ID로 바꾸기
+	"Desc" "Patch Squad v1.0.0.0"
+	"ContentRoot" "..\content\"	// PatchSquad-win32-x64 폴더 안의 파일들을 여기에 풀기
 	"BuildOutput" "..\output\"
 	"Depots"
 	{

@@ -48,7 +48,7 @@ const UI = {
   pendingDaily: false, setReturn: null, _hud: {},
   init() {
     $('#verBadge').textContent = DAILY_VER;
-    if (ASSETS.logo) $('#logo').innerHTML = `<img class="logoimg" src="${ASSETS.logo}" alt="BUG HUNTER">`;
+    if (ASSETS.logo) $('#logo').innerHTML = `<img class="logoimg" src="${ASSETS.logo}" alt="PATCH SQUAD">`;
     $('#crashBug').append(bugImgCanvas('basic'));
     const click = (id, fn) => $(id).addEventListener('click', (e) => { SND.init(); SND.play('click'); fn(e); });
     click('#btnStart', () => this.start(false));
@@ -362,7 +362,7 @@ const UI = {
   showCrash() {
     $('#hud').classList.add('hidden'); this.hint('');
     const msgs = [
-      '버그 헌터가 버그에게 졌습니다. 아이러니하네요.',
+      '패치 스쿼드가 버그에게 졌습니다. 아이러니하네요.',
       '안정성이 0%가 되어 세상이 잠시 멈췄습니다.',
       '버그를 잡으러 왔다가 버그가 되었습니다.',
       'Ctrl+Z를 눌렀지만 아무 일도 일어나지 않았습니다.',
@@ -374,7 +374,7 @@ const UI = {
     $('#crashCode').textContent =
       `ERR_TOO_MANY_BUGS  (0xB06${r.stage + 1}${r.st.crashes % 10})\n` +
       `at stage${r.stage + 1}.${STAGES[r.stage].key}()\n` +
-      `at bugHunter.patch(stability = 0%)\n\n` +
+      `at patchSquad.patch(stability = 0%)\n\n` +
       (STAGES[r.stage].boss && (r.bossCk || 1) > 1 ? `> 체크포인트: 보스 ${r.bossCk}단계부터 다시 빌드합니다.` : `> 이 스테이지 처음부터 다시 빌드합니다. 판 전체는 유지돼요.`) +
       (help ? `\n> 도움 모드 ON: 버그 속도 -20% · 적 공격 느리게 · 피해 -20% · 엄폐물 +40%` : '');
     this.only('#scrCrash');
@@ -476,7 +476,7 @@ const UI = {
     known.push('알려진 문제: 정상화된 메인 루프가 가끔 웃음');
     known.push('알려진 문제: 텍스처 없는 숲이 너무 예뻐짐');
     lines.push(known[0]);
-    return `🐛 Bug Hunter ${ver} 패치 노트 — 등급: ${grade} · 난이도 ${Game.D.name}\n` + lines.map((l) => '• ' + l).join('\n') + `\n점수 ${r.score.toLocaleString()} · #버그헌터`;
+    return `🐛 Patch Squad ${ver} 패치 노트 — 등급: ${grade} · 난이도 ${Game.D.name}\n` + lines.map((l) => '• ' + l).join('\n') + `\n점수 ${r.score.toLocaleString()} · #패치스쿼드`;
   },
   copyNote() {
     const text = $('#resNote').textContent;

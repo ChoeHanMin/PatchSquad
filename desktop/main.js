@@ -1,10 +1,10 @@
-// 버그 헌터 스팀판 데스크톱 앱 (Electron)
+// 패치 스쿼드(Patch Squad) 스팀판 데스크톱 앱 (Electron)
 // app/index.html = 루트의 node build.js 결과(dist/index.html)를 복사한 것
 const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
-app.setName('BugHunter'); // 저장 위치(%APPDATA%\BugHunter)가 바뀌지 않게 고정
+app.setName('PatchSquad'); // 저장 위치(%APPDATA%\PatchSquad)가 바뀌지 않게 고정
 // 실행하자마자 소리가 나오게 (브라우저의 "첫 클릭 전 소리 막기"를 끔)
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
 
@@ -29,7 +29,7 @@ let win = null;
 function createWindow() {
   const st = loadState();
   win = new BrowserWindow({
-    title: 'Bug Hunter',
+    title: 'Patch Squad',
     width: Math.max(1024, st.width), height: Math.max(576, st.height),
     minWidth: 1024, minHeight: 576,
     useContentSize: true,
