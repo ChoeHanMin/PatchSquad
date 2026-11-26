@@ -51,7 +51,7 @@ const VER4 = (VER + '.0.0.0').split('.').slice(0, 4).map(Number);
   for (const lang of vi.getAllLanguagesForStringValues()) {
     vi.setStringValues(lang, {
       FileDescription: 'Patch Squad', ProductName: 'Patch Squad', InternalName: 'PatchSquad',
-      OriginalFilename: 'PatchSquad.exe', CompanyName: '겜타즈 2027', LegalCopyright: '© 2026 겜타즈 2027',
+      OriginalFilename: 'PatchSquad.exe', CompanyName: 'Soodal Games (Choi Hanmin)', LegalCopyright: '© 2026 Soodal Games (Choi Hanmin)',
       FileVersion: VER4.join('.'), ProductVersion: VER4.join('.'),
     });
   }

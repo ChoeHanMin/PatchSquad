@@ -1,6 +1,6 @@
 # Patch Squad (패치 스쿼드) — 스팀판
 
-팀 겜타즈 2027 · 스팀 앱 이름: **Patch Squad** (원래 게임 이름 "버그 헌터"는 스팀에 같은 이름이 있어 바꿈) (스팀판 한정. saaskr 제출본 이름은 그대로)
+개발·배급: **Soodal Games (Choi Hanmin)** · https://www.soodalgames.com/ · 스팀 앱 이름: **Patch Squad** (원래 게임 이름 "버그 헌터"는 스팀에 같은 이름이 있어 바꿈) (스팀판 한정. saaskr 제출본 이름은 그대로)
 
 > 이 레포는 **스팀 출시용**이에요. saaskr 게임 어워드 제출본은 [ChoeHanMin/BugHunter](https://github.com/ChoeHanMin/BugHunter)에서 따로 관리해요 (그쪽 `dist/index.html`은 건드리지 않음).
 
@@ -22,7 +22,7 @@ node build-desktop.js   # → desktop-out/PatchSquad-win32-x64/ + desktop-out/Pa
 ```
 
 - 버전은 `desktop/package.json`의 `version`만 바꾸면 exe 버전 정보와 zip 이름에 같이 들어가요.
-- exe 아이콘·버전 정보(회사명 겜타즈 2027)는 resedit(순수 JS)으로 넣어서 rcedit을 따로 돌릴 필요가 없어요.
+- exe 아이콘·버전 정보(회사명 Soodal Games (Choi Hanmin))는 resedit(순수 JS)으로 넣어서 rcedit을 따로 돌릴 필요가 없어요.
 - 아이콘: `desktop/icon_src.png`(정사각형, 투명 배경)를 넣으면 그 그림을 씀. 없으면 기본 버그 그림(`assets/bug_basic.png`).
 
 | 기능 | 내용 |
