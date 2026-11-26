@@ -2,15 +2,15 @@
 // role: rush(엄폐물까지 달려와 물기 — 숨어도 맞음) / shoot(멀리 서서 예고 후 에러 패킷 — 숨으면 막힘)
 //       missile(관통 미사일 — 숨어도 맞음, 쏴서 떨어뜨려야 함) / item(핫픽스)
 const BUGDEF = {
-  basic: { name: L('기본 버그', 'Basic Bug'), role: 'rush', hp: 5, pts: 100, spd: 3.0, size: 1.8, dmg: 14 },
-  clone: { name: L('복제 버그', 'Clone Bug'), role: 'rush', hp: 6, pts: 0, spd: 2.7, size: 2.0, dmg: 14, tip: L('맞으면 둘로 분열해요!', 'Splits in two when hit!') },
-  mini: { name: L('작은 복제', 'Mini Clone'), role: 'rush', hp: 2, pts: 50, spd: 3.8, size: 1.15, dmg: 7 },
-  throw: { name: L('throw 버그', 'Throw Bug'), role: 'shoot', hp: 8, pts: 150, spd: 4.2, size: 1.8, dmg: 10, fire: [2.0, 3.3], tip: L('빨간 원이 뜨면 손을 떼서 숨으세요!', 'Red circle? Let go and hide!') },
-  ghost: { name: L('투명 버그', 'Ghost Bug'), role: 'shoot', hp: 6, pts: 200, spd: 4, size: 1.8, dmg: 10, fire: [2.3, 3.6], tip: L('보일 때만 맞아요', 'Only hittable while visible') },
-  e404: { name: L('404 버그', '404 Bug'), role: 'shoot', hp: 8, pts: 250, spd: 4, size: 1.9, dmg: 10, fire: [2.2, 3.5], tip: L('조준선이 1초 겹치면 순간이동!', 'Aim at it for 1s and it teleports!') },
-  loop: { name: L('무한루프 버그', 'Infinite Loop Bug'), role: 'shoot', hp: 10, pts: 300, spd: 3.4, size: 1.8, dmg: 18, fire: [4.2, 6], missile: true, tip: L('관통 미사일을 쏴요! 숨어도 맞으니 미사일을 쏴서 떨어뜨리세요', 'Fires piercing missiles! Hiding won\'t help, so shoot the missiles down') },
-  missile: { name: L('관통 미사일', 'Piercing Missile'), role: 'missile', hp: 2, pts: 50, spd: 4.4, size: 1.3, dmg: 16 },
-  hotfix: { name: L('핫픽스', 'Hotfix'), role: 'item', hp: 1, pts: 0, spd: 0, size: 2.1, dmg: 0, tip: L('쏘면 안정성 +20, 화면 고장 모두 복구!', 'Shoot it: Stability +20, all glitches repaired!') },
+  basic: { name: L('기본 버그', 'Basic Bug', 'ベーシックバグ', '基础Bug'), role: 'rush', hp: 5, pts: 100, spd: 3.0, size: 1.8, dmg: 14 },
+  clone: { name: L('복제 버그', 'Clone Bug', 'クローンバグ', '克隆Bug'), role: 'rush', hp: 6, pts: 0, spd: 2.7, size: 2.0, dmg: 14, tip: L('맞으면 둘로 분열해요!', 'Splits in two when hit!', '撃つと2匹に分裂!', '被击中会一分为二！') },
+  mini: { name: L('작은 복제', 'Mini Clone', 'ミニクローン', '迷你克隆'), role: 'rush', hp: 2, pts: 50, spd: 3.8, size: 1.15, dmg: 7 },
+  throw: { name: L('throw 버그', 'Throw Bug', 'スローバグ', '投掷Bug'), role: 'shoot', hp: 8, pts: 150, spd: 4.2, size: 1.8, dmg: 10, fire: [2.0, 3.3], tip: L('빨간 원이 뜨면 손을 떼서 숨으세요!', 'Red circle? Let go and hide!', '赤い円が出たら離して隠れて!', '出现红圈就松开隐蔽！') },
+  ghost: { name: L('투명 버그', 'Ghost Bug', 'ゴーストバグ', '幽灵Bug'), role: 'shoot', hp: 6, pts: 200, spd: 4, size: 1.8, dmg: 10, fire: [2.3, 3.6], tip: L('보일 때만 맞아요', 'Only hittable while visible', '見えている間だけ当たる', '只有现身时才能击中') },
+  e404: { name: L('404 버그', '404 Bug', '404バグ', '404 Bug'), role: 'shoot', hp: 8, pts: 250, spd: 4, size: 1.9, dmg: 10, fire: [2.2, 3.5], tip: L('조준선이 1초 겹치면 순간이동!', 'Aim at it for 1s and it teleports!', '1秒狙われるとテレポート!', '被瞄准1秒就会瞬移！') },
+  loop: { name: L('무한루프 버그', 'Infinite Loop Bug', '無限ループバグ', '无限循环Bug'), role: 'shoot', hp: 10, pts: 300, spd: 3.4, size: 1.8, dmg: 18, fire: [4.2, 6], missile: true, tip: L('관통 미사일을 쏴요! 숨어도 맞으니 미사일을 쏴서 떨어뜨리세요', 'Fires piercing missiles! Hiding won\'t help, so shoot the missiles down', '貫通ミサイルを撃ってくる! 隠れても当たるのでミサイルを撃ち落とそう', '会发射穿透导弹！隐蔽也会被击中，快把导弹打下来') },
+  missile: { name: L('관통 미사일', 'Piercing Missile', '貫通ミサイル', '穿透导弹'), role: 'missile', hp: 2, pts: 50, spd: 4.4, size: 1.3, dmg: 16 },
+  hotfix: { name: L('핫픽스', 'Hotfix', 'ホットフィックス', '热修复'), role: 'item', hp: 1, pts: 0, spd: 0, size: 2.1, dmg: 0, tip: L('쏘면 안정성 +20, 화면 고장 모두 복구!', 'Shoot it: Stability +20, all glitches repaired!', '撃つと安定性+20、画面の不具合をすべて修復!', '击中后稳定性+20，修复所有画面故障！') },
 };
 const V1 = new THREE.Vector3(), V2 = new THREE.Vector3(), V3 = new THREE.Vector3();
 
@@ -204,7 +204,7 @@ const CODE = [
   ['    fps.limit(60);', '    fps.limit(-1);'],
   ['    log("ok");', '    log(log(log("ok")));'],
   ['  }', '  } }'],
-  ['}', L('} // TODO: 끝?', '} // TODO: done?')],
+  ['}', L('} // TODO: 끝?', '} // TODO: done?', '} // TODO: 完了?', '} // TODO: 完成?')],
 ];
 class Snake {
   constructor(real, radius, dir, startAng, yOff) {
@@ -287,9 +287,9 @@ const Boss = {
       for (const s of shuffle(fake.segs.filter((x) => !x.head), this.r).slice(0, 6)) { s.fake = true; fake.setMode(s, 'fake'); }
       this.snakes.push(fake);
     }
-    if (n > 1) { Game.cover.hp = Game.cover.max; Game.cover.broken = false; UI.toast(L('엄폐물 보강 완료', 'Cover reinforced')); } // 단계마다 엄폐물 수리
-    if (n === 1) UI.hint(L('빨갛게 빛나는 "오류 줄"만 맞아요! 모두 고치면 다음 단계', 'Only the glowing red "error lines" take damage! Fix them all to advance'), 5);
-    else { UI.banner('PHASE ' + n, n === 2 ? L('속도 증가! 버그를 더 많이 뱉어요', 'Speed up! It spits out more bugs') : L('복붙 오류! 진짜만 빛나요', 'Copy-paste error! Only the real one glows'), 2.2); SND.play('phase'); Game.spawnHotfix(); }
+    if (n > 1) { Game.cover.hp = Game.cover.max; Game.cover.broken = false; UI.toast(L('엄폐물 보강 완료', 'Cover reinforced', '遮蔽物を補強しました', '掩体已加固')); } // 단계마다 엄폐물 수리
+    if (n === 1) UI.hint(L('빨갛게 빛나는 "오류 줄"만 맞아요! 모두 고치면 다음 단계', 'Only the glowing red "error lines" take damage! Fix them all to advance', '赤く光る「エラー行」だけにダメージが入る! すべて直せば次の段階へ', '只有发红光的“错误行”会受伤！全部修好进入下一阶段'), 5);
+    else { UI.banner('PHASE ' + n, n === 2 ? L('속도 증가! 버그를 더 많이 뱉어요', 'Speed up! It spits out more bugs', 'スピードアップ! バグをもっと吐き出す', '速度提升！吐出更多Bug') : L('복붙 오류! 진짜만 빛나요', 'Copy-paste error! Only the real one glows', 'コピペエラー! 本物だけが光る', '复制粘贴错误！只有真身会发光'), 2.2); SND.play('phase'); Game.spawnHotfix(); }
   },
   targets() { const out = []; for (const sn of this.snakes) for (const s of sn.segs) if ((s.err || s.fake) && !s.fixed) out.push(s); return out; },
   hit(s, dmg = 1) {

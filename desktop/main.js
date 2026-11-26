@@ -4,6 +4,16 @@ const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
+// 스팀 연결 (steamworks.js): 도전 과제 + 스팀 오버레이(Shift+Tab). 스팀 밖에서 켜면 연결 없이 그냥 실행
+const STEAM_APP_ID = 5732530;
+let steam = null;
+try {
+  const sw = require('steamworks.js');
+  steam = sw.init(STEAM_APP_ID);
+  try { sw.electronEnableSteamOverlay(); } catch (e) { /* 오버레이 없이 진행 */ }
+} catch (e) { steam = null; }
+const ACH_OK = /^ACH_[A-Z0-9_]{1,40}$/;
+
 app.setName('PatchSquad'); // 저장 위치(%APPDATA%\PatchSquad)가 바뀌지 않게 고정
 // 실행하자마자 소리가 나오게 (브라우저의 "첫 클릭 전 소리 막기"를 끔)
 app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
@@ -65,6 +75,19 @@ function createWindow() {
   win.webContents.on('will-navigate', (e, url) => { if (url.split('#')[0] !== win.webContents.getURL().split('#')[0]) e.preventDefault(); });
 }
 
+const saveFile = () => path.join(app.getPath('userData'), 'save.json');
+ipcMain.on('bh-save-load', (e) => {
+  try { e.returnValue = JSON.parse(fs.readFileSync(saveFile(), 'utf8')); }
+  catch (err) { e.returnValue = {}; }
+});
+ipcMain.on('bh-save-write', (e, json) => {
+  try { JSON.parse(json); const tmp = saveFile() + '.tmp'; fs.writeFileSync(tmp, json); fs.renameSync(tmp, saveFile()); }
+  catch (err) { /* 저장 실패해도 진행 */ }
+});
+ipcMain.on('bh-ach', (e, name) => {
+  if (!steam || !ACH_OK.test(name)) return;
+  try { if (!steam.achievement.isActivated(name)) steam.achievement.activate(name); } catch (err) { /* 스팀에 아직 등록 안 된 도전 과제 등 */ }
+});
 ipcMain.handle('bh-is-fullscreen', () => (win ? win.isFullScreen() : false));
 ipcMain.on('bh-set-fullscreen', (e, v) => { if (win) win.setFullScreen(!!v); });
 ipcMain.on('bh-quit', () => app.quit());

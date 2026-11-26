@@ -5,4 +5,9 @@ contextBridge.exposeInMainWorld('bhDesktop', {
   isFullscreen: () => ipcRenderer.invoke('bh-is-fullscreen'),
   setFullscreen: (v) => ipcRenderer.send('bh-set-fullscreen', !!v),
   onFullscreen: (fn) => ipcRenderer.on('bh-fullscreen', (e, v) => fn(v)),
+  // 저장 파일 (save.json): 시작할 때 한 번 동기로 읽고, 바뀔 때마다 씀
+  saveLoad: () => ipcRenderer.sendSync('bh-save-load'),
+  saveWrite: (json) => ipcRenderer.send('bh-save-write', String(json)),
+  // 스팀 도전 과제 달성 (예: 'ACH_RELEASE')
+  achieve: (name) => ipcRenderer.send('bh-ach', String(name)),
 });

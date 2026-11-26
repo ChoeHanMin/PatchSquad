@@ -28,20 +28,43 @@ const rint = (a, b) => Math.floor(rnd(a, b + 1));
 const pick = (arr, r = RNG) => arr[Math.floor(r() * arr.length)];
 function shuffle(arr, r = RNG) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
 
-// localStorage는 막혀 있을 수 있음 → 항상 try/catch
+// 저장: 스팀판 데스크톱 앱이면 %APPDATA%\PatchSquad\save.json 파일 하나 (스팀 클라우드가 이 파일을 동기화)
+//       브라우저에서 열면 localStorage. 둘 다 막혀 있어도 게임은 진행 (try/catch)
 const Store = {
-  get(k, d) { try { const v = localStorage.getItem('patchsquad_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
-  set(k, v) { try { localStorage.setItem('patchsquad_' + k, JSON.stringify(v)); } catch (e) { /* 저장 없이 진행 */ } },
+  file: null, // 데스크톱 앱: 파일 내용을 메모리에 들고 있다가 바뀌면 곧 파일에 씀
+  _t: 0,
+  init() {
+    const D = window.bhDesktop;
+    if (!D || !D.saveLoad) return;
+    try { this.file = D.saveLoad() || {}; } catch (e) { this.file = {}; }
+    if (!Object.keys(this.file).length) { // 처음: 예전(v1.0.x) localStorage 저장을 옮겨 옴
+      try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.startsWith('patchsquad_')) this.file[k.slice(11)] = JSON.parse(localStorage.getItem(k)); } } catch (e) { /* 없음 */ }
+      if (Object.keys(this.file).length) this.flush();
+    }
+    window.addEventListener('beforeunload', () => this.flush());
+  },
+  flush() { if (!this.file) return; clearTimeout(this._t); try { window.bhDesktop.saveWrite(JSON.stringify(this.file)); } catch (e) { /* 저장 없이 진행 */ } },
+  get(k, d) {
+    if (this.file) return k in this.file ? JSON.parse(JSON.stringify(this.file[k])) : d;
+    try { const v = localStorage.getItem('patchsquad_' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; }
+  },
+  set(k, v) {
+    if (this.file) { this.file[k] = JSON.parse(JSON.stringify(v)); clearTimeout(this._t); this._t = setTimeout(() => this.flush(), 400); return; }
+    try { localStorage.setItem('patchsquad_' + k, JSON.stringify(v)); } catch (e) { /* 저장 없이 진행 */ }
+  },
 };
+Store.init();
 
 // 언어: 한국어(ko) / English(en). 처음엔 시스템 언어를 따르고, 언어/Language 버튼으로 바꾸면 저장 후 다시 불러옴
-const LANG = (() => { try { const v = JSON.parse(localStorage.getItem('patchsquad_lang')); if (v === 'ko' || v === 'en') return v; } catch (e) { /* 저장 막힘 */ } return /^ko/i.test(navigator.language || '') ? 'ko' : 'en'; })();
-const L = (ko, en) => (LANG === 'en' ? en : ko);
+const LANGS = ['ko', 'en', 'ja', 'zh'];
+const LANG = (() => { const v = Store.get('lang', null); if (LANGS.includes(v)) return v; const n = navigator.language || ''; return /^ko/i.test(n) ? 'ko' : /^ja/i.test(n) ? 'ja' : /^zh/i.test(n) ? 'zh' : 'en'; })();
+// L(한국어, English, 日本語, 简体中文) — 일본어·중국어가 없으면 영어
+const L = (ko, en, ja, zh) => (LANG === 'ko' ? ko : LANG === 'ja' ? (ja ?? en) : LANG === 'zh' ? (zh ?? en) : en);
 document.documentElement.lang = LANG;
-// 화면 마크업의 글자: data-en 이 있는 요소는 영어일 때 그 내용으로 바꿈
-if (LANG === 'en') {
-  for (const el of document.querySelectorAll('[data-en]')) el.innerHTML = el.dataset.en;
-  for (const el of document.querySelectorAll('[data-en-aria]')) el.setAttribute('aria-label', el.dataset.enAria);
+// 화면 마크업의 글자: data-en / data-ja / data-zh 가 있는 요소는 그 언어일 때 그 내용으로 바꿈
+if (LANG !== 'ko') {
+  for (const el of document.querySelectorAll('[data-en]')) el.innerHTML = el.dataset[LANG] || el.dataset.en;
+  for (const el of document.querySelectorAll('[data-en-aria]')) el.setAttribute('aria-label', el.dataset[LANG + 'Aria'] || el.dataset.enAria);
 }
 
 const NOW = new Date();
@@ -66,11 +89,17 @@ const VIEW = { pc: true, w: 1920, h: 1080, s: 1, ox: 0, oy: 0,
   pr() { return Math.min((window.devicePixelRatio || 1) * this.s, 2); }, // 실제로 보이는 크기에 맞춘 해상도
 };
 if (VIEW.pc) document.body.classList.add('pc');
-const settings = Object.assign({ sound: true, sfx: 0.8, music: 0.6, reduceFlash: false, quality: 'auto' }, Store.get('settings', {}));
+const settings = Object.assign({ sound: true, sfx: 0.8, music: 0.6, reduceFlash: false, quality: 'auto', sens: 1, cb: false, story: true }, Store.get('settings', {}));
 function saveSettings() { Store.set('settings', settings); }
+// 스팀 도전 과제: 게임 도전 과제 키 → ACH_키 (예: release → ACH_RELEASE). 데스크톱 앱 + 스팀 실행 중일 때만
+function steamAch(key) { try { if (window.bhDesktop && window.bhDesktop.achieve) window.bhDesktop.achieve('ACH_' + String(key).toUpperCase()); } catch (e) { /* 스팀 없음 */ } }
+// 예전에 깬 도전 과제도 스팀에 맞춰 줌 (스팀판 이전 기록, 다른 PC에서 깬 기록)
+setTimeout(() => { const ch = (Store.get('records', {}).ch) || {}; for (const k of Object.keys(ch)) if (ch[k]) steamAch(k); }, 1500);
+// 색약 모드: 빨간 경고(예고 원·돌격 경고·화면 밖 화살표)를 검은 테두리의 호박색으로 + 모양(점선 고리)으로도 구분
+const WARN = () => (settings.cb ? '255,196,0' : '255,77,94');
 
-const GRADES = [L('정식 출시', 'Released'), L('베타', 'Beta'), L('알파', 'Alpha'), L('출시 연기', 'Delayed')];
+const GRADES = [L('정식 출시', 'Released', '正式リリース', '正式发布'), L('베타', 'Beta', 'ベータ', '测试版'), L('알파', 'Alpha', 'アルファ', '内测版'), L('출시 연기', 'Delayed', 'リリース延期', '延期发布')];
 // 저장된 등급은 저장할 때의 언어로 남아 있을 수 있음 → 두 언어 모두에서 순위를 찾음
-const GRADES_ALL = [['정식 출시', '베타', '알파', '출시 연기'], ['Released', 'Beta', 'Alpha', 'Delayed']];
+const GRADES_ALL = [['정식 출시', '베타', '알파', '출시 연기'], ['Released', 'Beta', 'Alpha', 'Delayed'], ['正式リリース', 'ベータ', 'アルファ', 'リリース延期'], ['正式发布', '测试版', '内测版', '延期发布']];
 const gradeIdx = (g) => { for (const list of GRADES_ALL) { const i = list.indexOf(g); if (i >= 0) return i; } return -1; };
 const gradeName = (g) => { const i = gradeIdx(g); return i >= 0 ? GRADES[i] : g; };

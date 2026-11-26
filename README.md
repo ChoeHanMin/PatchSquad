@@ -1,4 +1,4 @@
-# Patch Squad (패치 스쿼드) — 스팀판
+# Patch Squad (패치 스쿼드) — 스팀판 v1.1
 
 개발·배급: **Soodal Games (Choi Hanmin)** · https://www.soodalgames.com/ · 스팀 앱 이름: **Patch Squad** (원래 게임 이름 "버그 헌터"는 스팀에 같은 이름이 있어 바꿈) (스팀판 한정. saaskr 제출본 이름은 그대로)
 
@@ -18,6 +18,14 @@
   - 코드 문구는 `L('한국어', 'English')`로 감쌈 (`src/js/01_util.js`). 화면 마크업은 `data-en="..."` 속성 → 영어일 때 그 내용으로 바꿈.
   - 새 문구를 넣을 땐 꼭 `L()` 또는 `data-en`을 같이 넣기.
 - **타이틀 메뉴:** 게임 시작 → 언어/Language → 오늘의 빌드 → 도감·기록·설정 → 게임 종료(데스크톱 앱에서만, 네모 버튼) → 개발자 ("HUFS CES, 최한민입니다…")
+
+## v1.1 추가 (스팀판)
+
+- **스토리** (`src/js/10_story.js`): 처음 게임 시작 때 인트로 5장(클릭·스페이스 = 다음, Esc = 건너뛰기), 스테이지마다 분대원 한마디, 보스 뒤 엔딩 4장. 설정 → "스토리 인트로 다시 보기". 그림은 `assets/story_intro1~5.png`, `story_end1~4.png`(선택, 프롬프트 `steam/PROMPTS_v1.1.md`) — 없으면 게임 그림으로 꾸밈
+- **언어 4개**: 한국어 · English · 日本語 · 简体中文. 코드 문구는 `L(한국어, English, 日本語, 中文)`, 화면 마크업은 `data-en` / `data-ja` / `data-zh`. 처음엔 시스템 언어
+- **스팀 클라우드 저장**: 데스크톱 앱은 저장을 `%APPDATA%\PatchSquad\save.json` 한 파일로 (예전 localStorage 기록은 자동으로 옮김). Steamworks Auto-Cloud로 이 파일을 동기화
+- **스팀 도전 과제 9개** (`steamworks.js`, `desktop/main.js`): 게임 도전 과제 키 → `ACH_키`. 스팀 밖에서 켜면 연결 없이 그냥 실행. 목록·번역은 `steam/achievements.md`, 아이콘은 `node steam/make_ach_icons.js`
+- **설정**: 마우스 감도(0.6~1.6, 화면 가운데 기준), 색약 모드(경고를 호박색 + 검은 테두리 + 돌아가는 점선 고리로), 플레이 중 시스템 커서 숨김
 
 ## Windows 앱 만들기 (Electron, Wine 필요 없음)
 

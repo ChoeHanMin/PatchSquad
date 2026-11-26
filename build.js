@@ -27,6 +27,9 @@ const ASSET_SPEC = {
   char_pin_run: { width: C, keep: true }, char_pin_run2: { width: C, keep: true },
   cover: { width: 2172 }, cover_side: { height: 1500 },
   cover_side_forest: { height: 1500 }, cover_side_city: { height: 1500 }, cover_side_subway: { height: 1500 }, cover_side_physics: { height: 1500 }, cover_side_boss: { height: 1500 }, cover_forest: { width: 2172 }, cover_city: { width: 2172 }, cover_subway: { width: 2172 }, cover_physics: { width: 2172 }, cover_boss: { width: 2172 },
+  // 스토리 그림 (선택, 16:9) — 없으면 게임 그림으로 장면을 꾸밈
+  story_intro1: { width: 1600 }, story_intro2: { width: 1600 }, story_intro3: { width: 1600 }, story_intro4: { width: 1600 }, story_intro5: { width: 1600 },
+  story_end1: { width: 1600 }, story_end2: { width: 1600 }, story_end3: { width: 1600 }, story_end4: { width: 1600 },
 };
 
 async function loadAssets() {
@@ -70,7 +73,7 @@ async function loadAssets() {
     .replace(/console\.warn\('Scripts "build\/three\.js"[^)]*\)/, 'void 0'); // r150+ 안내 경고 제거
   const jsDir = path.join(__dirname, 'src', 'js');
   const parts = fs.readdirSync(jsDir).filter((f) => f.endsWith('.js')).sort().map((f) => `// ==== ${f} ====\n` + fs.readFileSync(path.join(jsDir, f), 'utf8'));
-  const game = `(function(){'use strict';\nconst ASSETS=${JSON.stringify(assets)};\n${parts.join('\n')}\n${dev ? 'window.__BH={Game,Boss,World,UI,FX,SND,MUS,Tut};' : ''}\n})();`;
+  const game = `(function(){'use strict';\nconst ASSETS=${JSON.stringify(assets)};\n${parts.join('\n')}\n${dev ? 'window.__BH={Game,Boss,World,UI,FX,SND,MUS,Tut,Story,Store};' : ''}\n})();`;
   const css = src('style.css').replace(/\s*\n\s*/g, '\n');
 
   // </script> 가 문자열 안에 있으면 HTML이 깨지므로 방지

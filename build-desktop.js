@@ -11,6 +11,8 @@ const VER = pkg.version; // 버전은 desktop/package.json 하나만 고치면 �
 const VER4 = (VER + '.0.0.0').split('.').slice(0, 4).map(Number);
 
 (async () => {
+  // 0) 데스크톱 앱 의존성 (steamworks.js) — 없으면 설치
+  if (!fs.existsSync(R('desktop', 'node_modules', 'steamworks.js'))) execFileSync('npm', ['install', '--no-audit', '--no-fund'], { cwd: R('desktop'), stdio: 'inherit' });
   // 1~2) 게임 빌드 + 복사
   execFileSync(process.execPath, [R('build.js')], { stdio: 'inherit' });
   fs.mkdirSync(R('desktop', 'app'), { recursive: true });
@@ -31,8 +33,8 @@ const VER4 = (VER + '.0.0.0').split('.').slice(0, 4).map(Number);
   fs.rmSync(R('desktop-out'), { recursive: true, force: true });
   const [outDir] = await packager({
     dir: R('desktop'), out: R('desktop-out'), name: 'PatchSquad', executableName: 'PatchSquad',
-    platform: 'win32', arch: 'x64', electronVersion, asar: true, overwrite: true, prune: false,
-    ignore: [/icon_src\.png$/, /icon\.ico$/],
+    platform: 'win32', arch: 'x64', electronVersion, asar: { unpack: '**/*.{node,dll}' }, overwrite: true, prune: false,
+    ignore: [/icon_src\.png$/, /icon\.ico$/, /steamworks\.js\/dist\/(linux64|osx)/, /\.lib$/, /steam_appid\.txt$/],
     // win32metadata/icon은 Wine이 필요해서 쓰지 않고 아래 resedit으로 넣음
   });
 

@@ -1,10 +1,13 @@
 {
   "name": "patchsquad",
   "productName": "Patch Squad",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Patch Squad (Steam)",
   "main": "main.js",
   "author": "Soodal Games (Choi Hanmin)",
   "license": "UNLICENSED",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "steamworks.js": "0.4.0"
+  }
 }
