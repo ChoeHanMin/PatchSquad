@@ -476,7 +476,7 @@ const UI = {
     known.push('알려진 문제: 정상화된 메인 루프가 가끔 웃음');
     known.push('알려진 문제: 텍스처 없는 숲이 너무 예뻐짐');
     lines.push(known[0]);
-    return `🐛 버그 헌터 ${ver} 패치 노트 — 등급: ${grade} · 난이도 ${Game.D.name}\n` + lines.map((l) => '• ' + l).join('\n') + `\n점수 ${r.score.toLocaleString()} · #버그헌터`;
+    return `🐛 Bug Hunter ${ver} 패치 노트 — 등급: ${grade} · 난이도 ${Game.D.name}\n` + lines.map((l) => '• ' + l).join('\n') + `\n점수 ${r.score.toLocaleString()} · #버그헌터`;
   },
   copyNote() {
     const text = $('#resNote').textContent;

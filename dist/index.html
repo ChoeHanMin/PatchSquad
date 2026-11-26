@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0E100D">
-<title>버그 헌터: 깨진 게임 속으로</title>
+<title>Bug Hunter</title>
 <style>:root{--bg:#0E100D;--line:#6B6F68;--lime:#C6F432;--red:#FF4D5E;--yel:#FFD34D;--ink:#E8EDE2;--panel:rgba(14,16,13,.92);--mono:ui-monospace,"SF Mono",Menlo,Consolas,"D2Coding",monospace}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);overflow:hidden;font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
@@ -3588,7 +3588,7 @@ const UI = {
     known.push('알려진 문제: 정상화된 메인 루프가 가끔 웃음');
     known.push('알려진 문제: 텍스처 없는 숲이 너무 예뻐짐');
     lines.push(known[0]);
-    return `🐛 버그 헌터 ${ver} 패치 노트 — 등급: ${grade} · 난이도 ${Game.D.name}\n` + lines.map((l) => '• ' + l).join('\n') + `\n점수 ${r.score.toLocaleString()} · #버그헌터`;
+    return `🐛 Bug Hunter ${ver} 패치 노트 — 등급: ${grade} · 난이도 ${Game.D.name}\n` + lines.map((l) => '• ' + l).join('\n') + `\n점수 ${r.score.toLocaleString()} · #버그헌터`;
   },
   copyNote() {
     const text = $('#resNote').textContent;

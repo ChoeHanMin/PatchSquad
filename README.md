@@ -1,6 +1,6 @@
-# 버그 헌터: 깨진 게임 속으로 — 스팀판 (BUG HUNTER, Steam)
+# Bug Hunter — 스팀판
 
-팀 겜타즈 2027
+팀 겜타즈 2027 · 스팀 앱 이름: **Bug Hunter** (스팀판 한정. saaskr 제출본 이름은 그대로)
 
 > 이 레포는 **스팀 출시용**이에요. saaskr 게임 어워드 제출본은 [ChoeHanMin/BugHunter](https://github.com/ChoeHanMin/BugHunter)에서 따로 관리해요 (그쪽 `dist/index.html`은 건드리지 않음).
 
