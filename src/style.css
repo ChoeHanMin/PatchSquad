@@ -79,6 +79,7 @@ button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
 .badge b{color:var(--lime)}
 .menu{width:min(300px,86vw);display:flex;flex-direction:column;gap:10px;margin-top:10px}
 .row2{display:flex;gap:10px}
+.devmsg{margin:4px 0 6px;color:#dfe6d8;font-size:15px;line-height:1.7}body.pc .devmsg{font-size:19px}
 .foot{position:absolute;bottom:calc(10px + env(safe-area-inset-bottom));font-size:11px;color:#7d8478;font-family:var(--mono)}
 
 .how{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}

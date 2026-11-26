@@ -94,7 +94,7 @@ Patch bugs in a row to repair glitches, and shoot a floating [b]Hotfix[/b] to re
 [*]Result grades and a shareable, copyable patch note
 [*]9 in-game challenges and personal records
 [/list]
-[i]The game is currently in Korean only.[/i]
+[i]Available in English and Korean (switch anytime with the 언어/Language button on the title screen).[/i]
 ```
 
 ---

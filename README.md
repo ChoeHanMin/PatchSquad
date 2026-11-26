@@ -14,6 +14,11 @@
 
 - **이름:** 스팀판은 **Patch Squad**(패치 스쿼드). 창 제목, exe(`PatchSquad.exe`), 크래시 대사, 패치 노트, 타이틀 로고(코드로 그린 글자) 모두 바꿈. 예전 "BUG HUNTER" 로고 그림은 `assets/old/`로 옮겨서 게임에 안 들어감 → 새 "PATCH SQUAD" 로고(ChatGPT)는 `assets/logo.png` (프롬프트는 `PROMPTS.md` [7])
 
+- **언어 (한국어 / English):** 타이틀 "게임 시작" 아래 **언어/Language** 버튼. 고르면 저장(`patchsquad_lang`)하고 다시 불러와서 모든 글자가 그 언어로 바뀜. 처음엔 시스템 언어(한국어면 ko, 아니면 en).
+  - 코드 문구는 `L('한국어', 'English')`로 감쌈 (`src/js/01_util.js`). 화면 마크업은 `data-en="..."` 속성 → 영어일 때 그 내용으로 바꿈.
+  - 새 문구를 넣을 땐 꼭 `L()` 또는 `data-en`을 같이 넣기.
+- **타이틀 메뉴:** 게임 시작 → 언어/Language → 오늘의 빌드 → 도감·기록·설정 → 게임 종료(데스크톱 앱에서만, 네모 버튼) → 개발자 ("HUFS CES, 최한민입니다…")
+
 ## Windows 앱 만들기 (Electron, Wine 필요 없음)
 
 ```bash

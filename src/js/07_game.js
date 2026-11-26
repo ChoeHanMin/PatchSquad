@@ -2,43 +2,43 @@
 // 누르고 있으면 엄폐물 위로 나와 사격, 떼면 숨어서 재장전.
 // 스테이지마다 엄폐 지점 3곳 → 웨이브를 다 처리하면 다음 엄폐물로 이동.
 const STAGES = [
-  { id: 1, key: 'forest', name: '텍스처 없는 숲', theme: 0x6BD66B, sky: 0x173a26, count: 18, mix: { basic: 5, throw: 6 }, intro: ['basic', 'throw'], fog: [18, 95, 30, 150], light: [0.8, 1.1], cover: 0x8a6a3a },
-  { id: 2, key: 'city', name: '복붙 도시', theme: 0xFF9E3D, sky: 0x2a1838, count: 22, mix: { basic: 5, throw: 4, clone: 6 }, intro: ['clone'], join: 1, fog: [22, 110, 30, 160], light: [0.8, 1.1], cover: 0x8a8a92 },
-  { id: 3, key: 'subway', name: '렌더링 지하철', theme: 0x3DE0D0, sky: 0x0b2a30, count: 26, mix: { basic: 5, throw: 3, clone: 4, ghost: 6 }, intro: ['ghost'], join: 2, fog: [6, 34, 18, 95], light: [0.25, 1.05], cover: 0x2a6a7a },
-  { id: 4, key: 'physics', name: '물리 고장 구역', theme: 0xB07CFF, sky: 0x22163a, count: 28, mix: { basic: 4, throw: 3, clone: 4, ghost: 3, e404: 5, loop: 4 }, intro: ['e404', 'loop'], fog: [18, 100, 30, 150], light: [0.75, 1.1], cover: 0x6a4a9a },
-  { id: 5, key: 'boss', name: '보스 "메인 루프"', theme: 0xC6F432, sky: 0x0f2a12, boss: true, fog: [30, 120, 40, 170], light: [0.7, 1.1], cover: 0x3a4a3a },
+  { id: 1, key: 'forest', name: L('텍스처 없는 숲', 'Textureless Forest'), theme: 0x6BD66B, sky: 0x173a26, count: 18, mix: { basic: 5, throw: 6 }, intro: ['basic', 'throw'], fog: [18, 95, 30, 150], light: [0.8, 1.1], cover: 0x8a6a3a },
+  { id: 2, key: 'city', name: L('복붙 도시', 'Copy-Paste City'), theme: 0xFF9E3D, sky: 0x2a1838, count: 22, mix: { basic: 5, throw: 4, clone: 6 }, intro: ['clone'], join: 1, fog: [22, 110, 30, 160], light: [0.8, 1.1], cover: 0x8a8a92 },
+  { id: 3, key: 'subway', name: L('렌더링 지하철', 'Render Subway'), theme: 0x3DE0D0, sky: 0x0b2a30, count: 26, mix: { basic: 5, throw: 3, clone: 4, ghost: 6 }, intro: ['ghost'], join: 2, fog: [6, 34, 18, 95], light: [0.25, 1.05], cover: 0x2a6a7a },
+  { id: 4, key: 'physics', name: L('물리 고장 구역', 'Broken Physics Zone'), theme: 0xB07CFF, sky: 0x22163a, count: 28, mix: { basic: 4, throw: 3, clone: 4, ghost: 3, e404: 5, loop: 4 }, intro: ['e404', 'loop'], fog: [18, 100, 30, 150], light: [0.75, 1.1], cover: 0x6a4a9a },
+  { id: 5, key: 'boss', name: L('보스 "메인 루프"', 'Boss "Main Loop"'), theme: 0xC6F432, sky: 0x0f2a12, boss: true, fog: [30, 120, 40, 170], light: [0.7, 1.1], cover: 0x3a4a3a },
 ];
 const COVER_U = [0.1, 0.45, 0.8]; // 엄폐 지점 (레일 위치)
 // 분대: 직접 조작 1명 + 나머지 자동 사격
 const SQUAD = [
-  { key: 'dot', name: '도트', role: '디버거', kind: 'rifle', label: '연사', color: '#C6F432', rate: 9, dmg: 1, mag: 36, reload: 1.1, heat: 2.4, aiRate: 1.0, aiDmg: 1 },
-  { key: 'rex', name: '렉스', role: '리팩터', kind: 'shotgun', label: '산탄', color: '#FFD34D', rate: 1.6, dmg: 1, pellets: 7, mag: 8, reload: 1.5, heat: 13, aiRate: 0.4, aiDmg: 2 },
-  { key: 'pin', name: '핀', role: '프로파일러', kind: 'sniper', label: '저격', color: '#6fe7ff', charge: 0.85, dmg: 8, mag: 5, reload: 1.6, heat: 22, aiRate: 0.22, aiDmg: 4 },
+  { key: 'dot', name: L('도트', 'Dot'), role: L('디버거', 'Debugger'), kind: 'rifle', label: L('연사', 'Rapid'), color: '#C6F432', rate: 9, dmg: 1, mag: 36, reload: 1.1, heat: 2.4, aiRate: 1.0, aiDmg: 1 },
+  { key: 'rex', name: L('렉스', 'Rex'), role: L('리팩터', 'Refactor'), kind: 'shotgun', label: L('산탄', 'Spread'), color: '#FFD34D', rate: 1.6, dmg: 1, pellets: 7, mag: 8, reload: 1.5, heat: 13, aiRate: 0.4, aiDmg: 2 },
+  { key: 'pin', name: L('핀', 'Pin'), role: L('프로파일러', 'Profiler'), kind: 'sniper', label: L('저격', 'Sniper'), color: '#6fe7ff', charge: 0.85, dmg: 8, mag: 5, reload: 1.6, heat: 22, aiRate: 0.22, aiDmg: 4 },
 ];
 const GLITCH = {
-  tear: { name: '화면 찢어짐', dur: 4 },
-  inv: { name: '색 반전', dur: 3 },
-  flip: { name: 'UI 뒤집힘', dur: 5 },
-  slip: { name: '조준 미끄러짐', dur: 4 },
-  pix: { name: '픽셀화', dur: 2 },
+  tear: { name: L('화면 찢어짐', 'Screen Tear'), dur: 4 },
+  inv: { name: L('색 반전', 'Color Invert'), dur: 3 },
+  flip: { name: L('UI 뒤집힘', 'UI Flip'), dur: 5 },
+  slip: { name: L('조준 미끄러짐', 'Aim Slip'), dur: 4 },
+  pix: { name: L('픽셀화', 'Pixelate'), dur: 2 },
 };
 const NORMAL_SEED = 20261125;
 // 난이도: 하 / 중 / 상
 const DIFF = {
-  easy: { key: 'easy', name: '하', label: '쉬움', spd: 0.82, dmg: 0.55, count: 0.9, maxOn: 7, glDur: 0.6, maxGl: 1, assist: 12, rb: 3, hotfix: 1, combo: 4,
+  easy: { key: 'easy', name: L('하', 'Easy'), label: L('쉬움', 'Easy'), spd: 0.82, dmg: 0.55, count: 0.9, maxOn: 7, glDur: 0.6, maxGl: 1, assist: 12, rb: 3, hotfix: 1, combo: 4,
     tele: 1.5, fireMul: 1.7, coverHp: 180, trickle: 0, scatter: false, dash: 0, heat: false, trojan: 0, bossHp: -1, bossSpd: 0.75, bossSpawn: 1.6, bossK: 2.2, helpAt: 1 },
-  normal: { key: 'normal', name: '중', label: '보통', spd: 1.02, dmg: 0.85, count: 1.15, maxOn: 9, glDur: 0.85, maxGl: 2, assist: 4, rb: 2, hotfix: 0, combo: 5,
+  normal: { key: 'normal', name: L('중', 'Normal'), label: L('보통', 'Normal'), spd: 1.02, dmg: 0.85, count: 1.15, maxOn: 9, glDur: 0.85, maxGl: 2, assist: 4, rb: 2, hotfix: 0, combo: 5,
     tele: 1.15, fireMul: 1.08, coverHp: 130, trickle: 0, scatter: false, dash: 0, heat: false, trojan: 0, bossHp: 0, bossSpd: 0.9, bossSpawn: 1.25, bossK: 3.5, helpAt: 2 },
-  hard: { key: 'hard', name: '상', label: '어려움', spd: 1.25, dmg: 1.15, count: 1.35, maxOn: 11, glDur: 1.3, maxGl: 3, assist: -6, rb: 1, hotfix: -1, combo: 8,
+  hard: { key: 'hard', name: L('상', 'Hard'), label: L('어려움', 'Hard'), spd: 1.25, dmg: 1.15, count: 1.35, maxOn: 11, glDur: 1.3, maxGl: 3, assist: -6, rb: 1, hotfix: -1, combo: 8,
     tele: 0.75, fireMul: 0.72, coverHp: 70, trickle: 4.0, scatter: true, dash: 0.28, heat: true, trojan: 0.4, bossHp: 1, bossSpd: 1.3, bossSpawn: 0.6, bossK: 4, helpAt: 2 },
 };
-DIFF.tutorial = Object.assign({}, DIFF.easy, { key: 'tutorial', name: '튜토리얼', label: '튜토리얼', maxOn: 4, count: 1 });
+DIFF.tutorial = Object.assign({}, DIFF.easy, { key: 'tutorial', name: L('튜토리얼', 'Tutorial'), label: L('튜토리얼', 'Tutorial'), maxOn: 4, count: 1 });
 // 약점 무기: 맞는 무기로 쏘면 피해 2배 (산탄은 돌격형을 밀어내고, 저격은 무한루프 껍질을 뚫음)
 const WEAK = { basic: 'shotgun', clone: 'shotgun', mini: 'shotgun', throw: 'sniper', ghost: 'sniper', loop: 'sniper', e404: 'rifle', missile: 'rifle' };
 const KIND_INFO = {
-  rifle: { member: 0, glyph: '연', color: '#C6F432', name: '연사(도트)' },
-  shotgun: { member: 1, glyph: '산', color: '#FFD34D', name: '산탄(렉스)' },
-  sniper: { member: 2, glyph: '저', color: '#6fe7ff', name: '저격(핀)' },
+  rifle: { member: 0, glyph: L('연', 'D'), color: '#C6F432', name: L('연사(도트)', 'Rapid (Dot)') },
+  shotgun: { member: 1, glyph: L('산', 'R'), color: '#FFD34D', name: L('산탄(렉스)', 'Spread (Rex)') },
+  sniper: { member: 2, glyph: L('저', 'P'), color: '#6fe7ff', name: L('저격(핀)', 'Sniper (Pin)') },
 };
 const _proj = new THREE.Vector3();
 
@@ -171,7 +171,7 @@ const Game = {
   get cur() { return this.weapon; },
   member() { return this.squad[this.weapon]; },
   selectMember(i) {
-    if (!this.memberUnlocked(i)) { UI.toast(SQUAD[i].name + '(' + SQUAD[i].role + ')는 스테이지 ' + (i + 1) + '부터 합류해요'); return; }
+    if (!this.memberUnlocked(i)) { UI.toast(SQUAD[i].name + '(' + SQUAD[i].role + L(')는 스테이지 ', ') joins at Stage ') + (i + 1) + L('부터 합류해요', '')); return; }
     if (this.weapon === i) return;
     SND.play('click');
     this.weapon = i; this.charge = 0;
@@ -199,7 +199,7 @@ const Game = {
     if (!this.out && m.ammo < m.d.mag && m.reloadT <= 0) m.reloadT = m.d.reload * (1 - m.ammo / m.d.mag * 0.5);
     if (!this.canFight()) return;
     const ready = this.out && this.outK > 0.6 && m.reloadT <= 0 && m.ammo > 0 && !(this.overT > 0);
-    if (this.out && this.overT > 0 && Math.random() < dt * 3) this.pop(this.ret.x, this.ret.y - 30, '과열!', '#FF8A3D');
+    if (this.out && this.overT > 0 && Math.random() < dt * 3) this.pop(this.ret.x, this.ret.y - 30, L('과열!', 'Overheat!'), '#FF8A3D');
     if (m.d.kind === 'sniper') {
       if (ready) { this.charge = Math.min(1, this.charge + dt / m.d.charge); if (this.charge >= 1) this.fireSniper(1); }
       else if (!this.out) this.charge = 0;
@@ -212,7 +212,7 @@ const Game = {
     } else m.cd = Math.max(m.cd, 0);
     if (this.out && m.ammo <= 0 && m.reloadT <= 0) {
       m.reloadT = m.d.reload;
-      if (!this.seen.empty) { this.seen.empty = true; UI.hint('탄창이 비었어요! 손을 떼고 숨으면 재장전이 빨라요', 3); }
+      if (!this.seen.empty) { this.seen.empty = true; UI.hint(L('탄창이 비었어요! 손을 떼고 숨으면 재장전이 빨라요', 'Out of ammo! Let go and hide to reload faster'), 3); }
     }
   },
   release() { // 손을 뗌 → 저격은 충전된 만큼 발사, 그리고 숨기
@@ -269,7 +269,7 @@ const Game = {
     let any = false;
     for (const t of hits) { if (this.damage(t, dmg, full, false, 'sniper')) any = true; }
     if (any) { this.run.st.hits++; this.S.hits++; }
-    if (full && any) this.pop(a.x, a.y - 40, '풀차지!', '#6fe7ff');
+    if (full && any) this.pop(a.x, a.y - 40, L('풀차지!', 'Full charge!'), '#6fe7ff');
   },
   allyFire(dt) { // 조작하지 않는 분대원 자동 사격 — 플레이어가 나와서 쏠 때만 같이 나와서 쏨
     if (!this.canFight() || !this.out || this.outK < 0.6) return;
@@ -326,11 +326,11 @@ const Game = {
       if (t.role === 'item') { this.collectHotfix(t); return true; }
       if (kind && WEAK[t.type] === kind) { // 약점 무기
         dmg *= 2;
-        if (!t.weakShown) { t.weakShown = true; this.pop(t.sx, t.sy - t.sr - 40, '약점! ×2', KIND_INFO[kind].color); this.run.st.weak++; }
+        if (!t.weakShown) { t.weakShown = true; this.pop(t.sx, t.sy - t.sr - 40, L('약점! ×2', 'Weak spot! ×2'), KIND_INFO[kind].color); this.run.st.weak++; }
       }
       if (kind === 'shotgun' && t.role === 'rush') t.pos.addScaledVector(this.camF, 0.45); // 산탄: 밀어냄
       if (t.type === 'loop' && !t.vuln && kind !== 'sniper') {
-        if (!ally) { if (Math.random() < 0.3) SND.play('deflect'); PFX.spark(t.pos, [0.85, 0.7, 1], 3, 3); if (Math.random() < 0.25) this.pop(t.sx, t.sy - 20, '튕김!', '#d9c2ff'); }
+        if (!ally) { if (Math.random() < 0.3) SND.play('deflect'); PFX.spark(t.pos, [0.85, 0.7, 1], 3, 3); if (Math.random() < 0.25) this.pop(t.sx, t.sy - 20, L('튕김!', 'Deflect!'), '#d9c2ff'); }
         return false;
       }
       t.hp -= dmg; t.flash = 1;
@@ -355,13 +355,13 @@ const Game = {
       World.colorizeNear(t.pos, 3);
       return true;
     }
-    if (!ally) { SND.play('deflect'); this.pop(t.sx, t.sy - 16, '가짜 줄!', '#b0505a'); PFX.spark(t.pos, [0.7, 0.3, 0.35], 4, 3); }
+    if (!ally) { SND.play('deflect'); this.pop(t.sx, t.sy - 16, L('가짜 줄!', 'Fake line!'), '#b0505a'); PFX.spark(t.pos, [0.7, 0.3, 0.35], 4, 3); }
     return false;
   },
   killMissile(b) {
     SND.play('boom'); PFX.spark(b.pos, [0.9, 0.5, 1], 16, 6); PFX.spark(b.pos, [1, 0.83, 0.3], 10, 4);
     this.addScore(b.def.pts, b.sx, b.sy); this.run.st.missiles++;
-    this.pop(b.sx, b.sy - 30, '격추!', '#d9c2ff');
+    this.pop(b.sx, b.sy - 30, L('격추!', 'Shot down!'), '#d9c2ff');
     b.remove();
   },
   split(b) {
@@ -383,7 +383,7 @@ const Game = {
     if (this.D.scatter) SND.play('tele');
     this.run.st.fixed.clone++;
     if (!this.S.def.boss) this.S.fixed++; // 보스전 진행률은 오류 줄만
-    this.pop(b.sx, b.sy - 20, this.D.scatter ? '분열… 어디로?!' : '분열!', '#FFD34D');
+    this.pop(b.sx, b.sy - 20, this.D.scatter ? L('분열… 어디로?!', 'Split… where to?!') : L('분열!', 'Split!'), '#FFD34D');
     UI.codeFix('clone');
     b.remove();
   },
@@ -398,14 +398,14 @@ const Game = {
     this.run.maxStreak = Math.max(this.run.maxStreak, this.run.streak);
     if (this.run.streak % this.D.combo === 0) {
       SND.play('combo');
-      if (this.glitches.length) { const g = this.glitches.shift(); UI.toast('연속 패치! ' + GLITCH[g.type].name + ' 복구'); }
-      else UI.toast('연속 패치 ×' + this.run.streak);
+      if (this.glitches.length) { const g = this.glitches.shift(); UI.toast(L('연속 패치! ', 'Patch streak! ') + GLITCH[g.type].name + L(' 복구', ' repaired')); }
+      else UI.toast(L('연속 패치 ×', 'Patch streak ×') + this.run.streak);
     }
   },
   collectHotfix(b) {
     if (b.trojan) { // 가짜 핫픽스: 버그 3마리가 튀어나옴
       SND.play('glitch'); PFX.spark(b.pos, [1, 0.3, 0.37], 18, 7);
-      this.pop(b.sx, b.sy - 40, '트로이 목마!', '#FF4D5E');
+      this.pop(b.sx, b.sy - 40, L('트로이 목마!', 'Trojan horse!'), '#FF4D5E');
       this.run.st.trojan++;
       for (let i = 0; i < 3; i++) {
         const p = b.pos.clone().addScaledVector(this.camR, (i - 1) * 1.6).addScaledVector(this.camU, rnd(-0.5, 0.8)).addScaledVector(this.camF, 4);
@@ -425,8 +425,8 @@ const Game = {
     PFX.fix(b.pos, [0.78, 0.96, 0.2], 1.3);
     r.st.hotfix++;
     if (r.stab - before < 5) this.addScore(500, b.sx, b.sy);
-    this.pop(b.sx, b.sy - 46, r.stab > before ? `핫픽스! 안정성 +${Math.round(r.stab - before)}` : '핫픽스! 보너스', '#E6FF7A');
-    UI.toast('핫픽스 적용 — ' + (fixedGl ? '화면 고장 복구 · ' : '') + '엄폐물 보강');
+    this.pop(b.sx, b.sy - 46, r.stab > before ? L(`핫픽스! 안정성 +${Math.round(r.stab - before)}`, `Hotfix! Stability +${Math.round(r.stab - before)}`) : L('핫픽스! 보너스', 'Hotfix! Bonus'), '#E6FF7A');
+    UI.toast(L('핫픽스 적용 — ', 'Hotfix applied — ') + (fixedGl ? L('화면 고장 복구 · ', 'glitches repaired · ') : '') + L('엄폐물 보강', 'cover reinforced'));
     UI.codeFix('hotfix');
     b.remove();
   },
@@ -434,7 +434,7 @@ const Game = {
     const pos = this.camera.position.clone().addScaledVector(this.camF, 13).addScaledVector(this.camR, (RNG() < 0.5 ? -1 : 1) * rnd(1.5, 3.5)).addScaledVector(this.camU, rnd(1, 2.4));
     const b = this.spawnBugAt('hotfix', pos, {});
     if (this.D.trojan && this.run.seenHotfix && RNG() < this.D.trojan) b.trojan = true;
-    if (!this.run.seenHotfix) { this.run.seenHotfix = true; b.label = '핫픽스'; }
+    if (!this.run.seenHotfix) { this.run.seenHotfix = true; b.label = L('핫픽스', 'Hotfix'); }
   },
   fixBug(b) {
     const perfect = this.perfectShot;
@@ -466,13 +466,13 @@ const Game = {
     const b = this.spawnBugAt('missile', pos, { ox: rnd(-1, 1) });
     SND.play('missile');
     Tut.event('missile', b);
-    if (!this.seen.missile) { this.seen.missile = true; b.label = '관통 미사일'; }
+    if (!this.seen.missile) { this.seen.missile = true; b.label = L('관통 미사일', 'Piercing Missile'); }
     return b;
   },
   updateAttacks(dt, ws) {
     for (const a of this.attacks) {
       a.t += dt * ws;
-      if (a.src && a.src.alive === false && a.t < a.dur * 0.4) { a.done = true; this.pop(a.x, a.y, '취소!', '#9CFF7A'); continue; } // 쏘기 전에 잡으면 취소
+      if (a.src && a.src.alive === false && a.t < a.dur * 0.4) { a.done = true; this.pop(a.x, a.y, L('취소!', 'Cancelled!'), '#9CFF7A'); continue; } // 쏘기 전에 잡으면 취소
       if (a.t >= a.dur) {
         a.done = true;
         const exposed = this.outK > 0.45 || this.cover.broken;
@@ -486,10 +486,10 @@ const Game = {
     const c = this.cover;
     c.hp -= dmg; this.run.st.blocked++;
     SND.play('block'); this.shake = Math.max(this.shake, 0.12);
-    this.pop(this.W / 2 + rnd(-60, 60), this.H * 0.72, '막음!', '#cfd6c8');
+    this.pop(this.W / 2 + rnd(-60, 60), this.H * 0.72, L('막음!', 'Blocked!'), '#cfd6c8');
     if (c.hp <= 0 && !c.broken) {
       c.hp = 0; c.broken = true; SND.play('crash');
-      UI.toast('엄폐물 파괴! 이제 숨어도 맞아요'); UI.tutor('cover_broken');
+      UI.toast(L('엄폐물 파괴! 이제 숨어도 맞아요', 'Cover destroyed! Hiding no longer protects you')); UI.tutor('cover_broken');
       UI.clPush([['del', 'Error: cover.integrity = 0'], ['err', '✖ Run Error(0x' + String(Math.floor(Math.random() * 1e6)).padStart(6, '0') + ')']]);
     }
   },
@@ -509,7 +509,7 @@ const Game = {
     SND.play('glitch');
     this.addGlitch();
     UI.codeError(kind === 'packet' ? 'packet' : kind === 'missile' ? 'missile' : type);
-    if (!this.S.warned && this.run.stage === 0) { this.S.warned = true; UI.hint('맞으면 안정성이 깎이고 화면이 고장 나요!', 3); }
+    if (!this.S.warned && this.run.stage === 0) { this.S.warned = true; UI.hint(L('맞으면 안정성이 깎이고 화면이 고장 나요!', 'Getting hit lowers Stability and glitches the screen!'), 3); }
     if (this.isTut()) this.run.stab = Math.max(30, this.run.stab); // 훈련장: 크래시 없음
     if (this.run.stab <= 0) this.crash();
   },
@@ -527,9 +527,9 @@ const Game = {
   },
   rollback() {
     if (this.state !== 'play' || !this.S || !this.S.started || this.S.ending) return;
-    if (!this.unlocked(2)) { UI.toast('롤백은 스테이지 3부터!'); return; }
+    if (!this.unlocked(2)) { UI.toast(L('롤백은 스테이지 3부터!', 'Rollback unlocks at Stage 3!')); return; }
     if (this.rollT > 0) return;
-    if (this.S.rb <= 0) { UI.toast('이번 스테이지 롤백을 다 썼어요'); return; }
+    if (this.S.rb <= 0) { UI.toast(L('이번 스테이지 롤백을 다 썼어요', 'No Rollbacks left this stage')); return; }
     this.S.rb--; this.rollT = 3; this.run.st.rollbacks++;
     if (this.glitches.length) this.glitches.shift(); // 화면 고장 하나 즉시 복구
     for (const a of this.attacks) a.t = Math.max(0, a.t - a.dur * 0.5); // 날아오던 공격도 되감기
@@ -538,7 +538,7 @@ const Game = {
   addHeat(v) {
     if (!this.D.heat) return;
     this.heat = Math.min(100, this.heat + v);
-    if (this.heat >= 100) this.overheat('과열! 2초 냉각');
+    if (this.heat >= 100) this.overheat(L('과열! 2초 냉각', 'Overheat! Cooling 2s'));
   },
   overheat(msg) {
     if (this.overT > 0) return;
@@ -645,7 +645,7 @@ const Game = {
     if (!this.memberUnlocked(this.weapon)) this.weapon = 0;
     this.ret.x = this.W / 2; this.ret.y = this.H * 0.42;
     FX.u.tear = FX.u.inv = FX.u.pix = FX.u.hit = FX.u.slow = 0; FX.u.wipeOn = 0;
-    if (def.boss) { this.camera.position.set(0, 1.2, 24); this.look.set(0, 5, 0); Boss.start(r.seed, r.bossCk || 1); this.S.fixed = Boss.fixed; if ((r.bossCk || 1) > 1) UI.toast('체크포인트: 보스 ' + r.bossCk + '단계부터'); }
+    if (def.boss) { this.camera.position.set(0, 1.2, 24); this.look.set(0, 5, 0); Boss.start(r.seed, r.bossCk || 1); this.S.fixed = Boss.fixed; if ((r.bossCk || 1) > 1) UI.toast(L('체크포인트: 보스 ', 'Checkpoint: from boss phase ') + r.bossCk + L('단계부터', '')); }
     else { const P = World.curve.getPointAt(this.S.u), T = World.curve.getTangentAt(this.S.u); this.camera.position.set(P.x, 1.1, P.z); this.look.copy(P).addScaledVector(T, 10); this.look.y = 1.9; }
     this.camera.lookAt(this.look);
     this.state = 'play';
@@ -655,9 +655,9 @@ const Game = {
     MUS.start(idx, r.seed);
     if (def.join) {
       const m = SQUAD[def.join];
-      setTimeout(() => { SND.play('unlock'); UI.toast(`${m.name}(${m.role}) 합류! ${m.label}` + (def.join === 2 ? ' · 롤백 해금' : '')); }, 900);
+      setTimeout(() => { SND.play('unlock'); UI.toast(L(`${m.name}(${m.role}) 합류! ${m.label}`, `${m.name} (${m.role}) joined! ${m.label}`) + (def.join === 2 ? L(' · 롤백 해금', ' · Rollback unlocked') : '')); }, 900);
     }
-    if (help) UI.hint('도움 모드: 버그 속도 -20% · 적 공격 느리게 · 피해 -20% · 엄폐물 +40%', 4);
+    if (help) UI.hint(L('도움 모드: 버그 속도 -20% · 적 공격 느리게 · 피해 -20% · 엄폐물 +40%', 'Assist mode: bugs -20% speed · slower attacks · -20% damage · +40% cover'), 4);
   },
   stageTutor() {
     const def = this.S.def;
@@ -672,7 +672,7 @@ const Game = {
     S.waveQ = (c.waves[S.wi] || []).map((q) => Object.assign({}, q));
     S.waveT = 0; S.waveIdle = 0;
     if (S.ci === S.covers.length - 1 && S.wi === 0 && !S.rush && !S.def.boss) {
-      S.rush = true; setTimeout(() => { if (this.S === S && this.state === 'play') { UI.banner('BUG RUSH', '마지막 엄폐 지점! 버그가 몰려와요', 1.8); SND.play('rush'); MUS.tempoMul = 0.82; } }, 300);
+      S.rush = true; setTimeout(() => { if (this.S === S && this.state === 'play') { UI.banner('BUG RUSH', L('마지막 엄폐 지점! 버그가 몰려와요', 'Last cover point! Here they come'), 1.8); SND.play('rush'); MUS.tempoMul = 0.82; } }, 300);
     }
   },
   rebuild() { this.restoreSnapshot(); this.startStage(this.run.stage); },
@@ -716,7 +716,7 @@ const Game = {
       S.moveT += dt;
       const k = smooth(clamp(S.moveT / 2.6, 0, 1));
       S.u = lerp(S.covers[S.ci - 1].u, S.covers[S.ci].u, k);
-      if (S.moveT >= 2.6) { S.phase = 'fight'; this.loadWave(); UI.toast(`엄폐 지점 ${S.ci + 1}/3`); }
+      if (S.moveT >= 2.6) { S.phase = 'fight'; this.loadWave(); UI.toast(L(`엄폐 지점 ${S.ci + 1}/3`, `Cover point ${S.ci + 1}/3`)); }
       return;
     }
     if (S.def.boss || S.def.tutorial) return;
@@ -740,7 +740,7 @@ const Game = {
           S.ci++; S.wi = 0; S.phase = 'move'; S.moveT = 0;
           for (const b of this.bugs) if (b.alive) b.remove();
           this.cover.hp = Math.min(this.cover.max, Math.max(this.cover.hp, this.cover.max * 0.6)); this.cover.broken = false; // 새 엄폐물
-          UI.banner('', '다음 엄폐물로 이동!', 1.4); SND.play('move');
+          UI.banner('', L('다음 엄폐물로 이동!', 'Moving to the next cover!'), 1.4); SND.play('move');
         } else this.stageClear();
       }
     } else S.waveIdle = 0;
@@ -1006,9 +1006,9 @@ const Game = {
     if (this.overT > 0) {
       this.overT -= dt;
       if (Math.random() < dt * 30) this.smoke.push({ t: 0, x: rnd(-6, 6), vx: rnd(-10, 10), vy: rnd(-50, -30), s: rnd(6, 12) });
-      if (this.overT <= 0) { this.overT = 0; this.heat = 35; SND.play('cool'); UI.toast('냉각 완료!'); }
+      if (this.overT <= 0) { this.overT = 0; this.heat = 35; SND.play('cool'); UI.toast(L('냉각 완료!', 'Cooled down!')); }
     } else this.heat = Math.max(0, this.heat - (this.out ? 14 : 40) * dt); // 숨으면 빨리 식음
-    if (S.phase === 'fight') { S.jamT -= dt; if (S.jamT <= 0) { S.jamT = rnd(18, 30); this.overheat('갑자기 과열! 2초 냉각'); } }
+    if (S.phase === 'fight') { S.jamT -= dt; if (S.jamT <= 0) { S.jamT = rnd(18, 30); this.overheat(L('갑자기 과열! 2초 냉각', 'Sudden overheat! Cooling 2s')); } }
   },
   project() {
     const cam = this.camera, W = this.W, H = this.H, k = H / 2 / this.tanHalf;
@@ -1152,7 +1152,7 @@ const Game = {
     g.fillRect(x, y, w * k, h);
     g.font = 'bold 10px ui-monospace,Menlo,monospace'; g.textAlign = 'center';
     g.fillStyle = this.overT > 0 ? '#FF8A3D' : '#cfd6c8';
-    g.fillText(this.overT > 0 ? `과열 ${this.overT.toFixed(1)}s` : 'HEAT', m.x, y - 3);
+    g.fillText(this.overT > 0 ? L(`과열 ${this.overT.toFixed(1)}s`, `Overheat ${this.overT.toFixed(1)}s`) : 'HEAT', m.x, y - 3);
   },
   pop(x, y, txt, col) { this.pops.push({ x, y, txt, col, t: 0 }); },
 
@@ -1230,7 +1230,7 @@ const Game = {
         g.strokeStyle = `rgba(${col},${0.5 + pulse * 0.5})`; g.lineWidth = 3;
         g.beginPath(); g.arc(b.sx, b.sy, b.sr + 6 + pulse * 4, 0, 6.283); g.stroke();
         g.font = `bold ${b.role === 'missile' ? 12 : 22}px ${mono}`; g.textAlign = 'center';
-        const txt = b.role === 'missile' ? '관통!' : '!';
+        const txt = b.role === 'missile' ? L('관통!', 'PIERCE!') : '!';
         g.fillStyle = '#000'; g.fillText(txt, b.sx + 2, b.sy - b.sr - 8); g.fillStyle = `rgb(${col})`; g.fillText(txt, b.sx, b.sy - b.sr - 10);
       } else if (!inView && b.dist < 24 && this.state === 'play') {
         let dx = b.sx - W / 2, dy = b.sy - H / 2;
@@ -1296,7 +1296,7 @@ const Game = {
     }
     g.globalAlpha = 1;
     g.font = `bold 12px ${mono}`; g.textAlign = 'center';
-    const txt = moving ? '이동 중…' : m.reloadT > 0 ? `재장전 ${m.reloadT.toFixed(1)}s` : this.out ? `${m.ammo}/${m.d.mag}` : '엄폐 중';
+    const txt = moving ? L('이동 중…', 'Moving…') : m.reloadT > 0 ? L(`재장전 ${m.reloadT.toFixed(1)}s`, `Reloading ${m.reloadT.toFixed(1)}s`) : this.out ? `${m.ammo}/${m.d.mag}` : L('엄폐 중', 'In cover');
     g.fillStyle = '#000'; g.fillText(txt, a.x + 1, a.y + rr + 31); g.fillStyle = m.reloadT > 0 ? '#FFD34D' : '#E8EDE2'; g.fillText(txt, a.x, a.y + rr + 30);
     for (const t of this.taps) {
       t.t += 1 / 60; const al = 1 - t.t / 0.35; if (al <= 0) continue;
@@ -1355,7 +1355,7 @@ const Game = {
     g.fillStyle = c.broken ? '#FF4D5E' : c.hp / c.max < 0.35 ? '#FF8A3D' : '#cfd6c8';
     g.fillRect(x, y, w * c.hp / c.max, 6);
     g.font = 'bold 10px ui-monospace,Menlo,monospace'; g.textAlign = 'left'; g.fillStyle = '#aab2a3';
-    g.fillText(c.broken ? '엄폐물 파괴됨!' : `엄폐물 ${Math.ceil(c.hp)}`, x, y - 4);
-    g.textAlign = 'right'; g.fillText(this.S.def.boss ? '보스전' : `지점 ${this.S.ci + 1}/3 · 웨이브 ${this.S.wi + 1}/2`, x + w, y - 4);
+    g.fillText(c.broken ? L('엄폐물 파괴됨!', 'Cover destroyed!') : L(`엄폐물 ${Math.ceil(c.hp)}`, `Cover ${Math.ceil(c.hp)}`), x, y - 4);
+    g.textAlign = 'right'; g.fillText(this.S.def.boss ? L('보스전', 'Boss fight') : L(`지점 ${this.S.ci + 1}/3 · 웨이브 ${this.S.wi + 1}/2`, `Point ${this.S.ci + 1}/3 · Wave ${this.S.wi + 1}/2`), x + w, y - 4);
   },
 };

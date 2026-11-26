@@ -34,6 +34,16 @@ const Store = {
   set(k, v) { try { localStorage.setItem('patchsquad_' + k, JSON.stringify(v)); } catch (e) { /* 저장 없이 진행 */ } },
 };
 
+// 언어: 한국어(ko) / English(en). 처음엔 시스템 언어를 따르고, 언어/Language 버튼으로 바꾸면 저장 후 다시 불러옴
+const LANG = (() => { try { const v = JSON.parse(localStorage.getItem('patchsquad_lang')); if (v === 'ko' || v === 'en') return v; } catch (e) { /* 저장 막힘 */ } return /^ko/i.test(navigator.language || '') ? 'ko' : 'en'; })();
+const L = (ko, en) => (LANG === 'en' ? en : ko);
+document.documentElement.lang = LANG;
+// 화면 마크업의 글자: data-en 이 있는 요소는 영어일 때 그 내용으로 바꿈
+if (LANG === 'en') {
+  for (const el of document.querySelectorAll('[data-en]')) el.innerHTML = el.dataset.en;
+  for (const el of document.querySelectorAll('[data-en-aria]')) el.setAttribute('aria-label', el.dataset.enAria);
+}
+
 const NOW = new Date();
 const MMDD = String(NOW.getMonth() + 1).padStart(2, '0') + String(NOW.getDate()).padStart(2, '0');
 const TODAY_KEY = NOW.getFullYear() + '-' + MMDD;
@@ -59,4 +69,8 @@ if (VIEW.pc) document.body.classList.add('pc');
 const settings = Object.assign({ sound: true, sfx: 0.8, music: 0.6, reduceFlash: false, quality: 'auto' }, Store.get('settings', {}));
 function saveSettings() { Store.set('settings', settings); }
 
-const GRADES = ['정식 출시', '베타', '알파', '출시 연기'];
+const GRADES = [L('정식 출시', 'Released'), L('베타', 'Beta'), L('알파', 'Alpha'), L('출시 연기', 'Delayed')];
+// 저장된 등급은 저장할 때의 언어로 남아 있을 수 있음 → 두 언어 모두에서 순위를 찾음
+const GRADES_ALL = [['정식 출시', '베타', '알파', '출시 연기'], ['Released', 'Beta', 'Alpha', 'Delayed']];
+const gradeIdx = (g) => { for (const list of GRADES_ALL) { const i = list.indexOf(g); if (i >= 0) return i; } return -1; };
+const gradeName = (g) => { const i = gradeIdx(g); return i >= 0 ? GRADES[i] : g; };

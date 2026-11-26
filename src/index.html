@@ -15,7 +15,7 @@
   <!-- HUD -->
   <div id="hud" class="hidden">
     <div class="hud-l">
-      <div class="lbl">안정성</div>
+      <div class="lbl" data-en="Stability">안정성</div>
       <div class="bar stab"><i id="stabFill"></i></div>
       <div class="num" id="stabTxt">100%</div>
       <div id="glitchList"></div>
@@ -25,18 +25,18 @@
       <div class="lbl" id="stageLbl">STAGE 1</div>
       <div class="bar prog"><i id="progFill"></i></div>
       <div class="num" id="progTxt">0%</div>
-      <div id="helpBadge" class="hidden">도움 모드 · 버그 속도 -15%</div>
+      <div id="helpBadge" class="hidden" data-en="Assist mode · bugs -15% speed">도움 모드 · 버그 속도 -15%</div>
     </div>
     <div class="hud-r">
       <div class="num big" id="scoreTxt">0</div>
-      <div class="num" id="comboTxt">연속 ×1.0</div>
+      <div class="num" id="comboTxt" data-en="Streak ×1.0">연속 ×1.0</div>
     </div>
-    <button id="pauseBtn" aria-label="일시정지">❚❚</button>
+    <button id="pauseBtn" aria-label="일시정지" data-en-aria="Pause">❚❚</button>
     <div id="weapons">
-      <button class="mem sel" data-m="0"><b class="k">1</b><canvas class="pt" width="64" height="64"></canvas><span class="mn">도트</span><span class="mr">연사</span><i class="am"><i></i></i><em class="lock">🔒</em></button>
-      <button class="mem" data-m="1"><b class="k">2</b><canvas class="pt" width="64" height="64"></canvas><span class="mn">렉스</span><span class="mr">산탄</span><i class="am"><i></i></i><em class="lock">🔒</em></button>
-      <button class="mem" data-m="2"><b class="k">3</b><canvas class="pt" width="64" height="64"></canvas><span class="mn">핀</span><span class="mr">저격</span><i class="am"><i></i></i><em class="lock">🔒</em></button>
-      <button class="wpn rb" data-w="2"><b class="k">␣</b><span class="ic">◀◀</span><span class="nm">롤백 <span id="rbCount">2</span></span><span class="sub">3초 슬로우</span><em class="lock">🔒</em></button>
+      <button class="mem sel" data-m="0"><b class="k">1</b><canvas class="pt" width="64" height="64"></canvas><span class="mn" data-en="Dot">도트</span><span class="mr" data-en="Rapid">연사</span><i class="am"><i></i></i><em class="lock">🔒</em></button>
+      <button class="mem" data-m="1"><b class="k">2</b><canvas class="pt" width="64" height="64"></canvas><span class="mn" data-en="Rex">렉스</span><span class="mr" data-en="Spread">산탄</span><i class="am"><i></i></i><em class="lock">🔒</em></button>
+      <button class="mem" data-m="2"><b class="k">3</b><canvas class="pt" width="64" height="64"></canvas><span class="mn" data-en="Pin">핀</span><span class="mr" data-en="Sniper">저격</span><i class="am"><i></i></i><em class="lock">🔒</em></button>
+      <button class="wpn rb" data-w="2"><b class="k">␣</b><span class="ic">◀◀</span><span class="nm" data-en="Rollback <span id=&quot;rbCount&quot;>2</span>">롤백 <span id="rbCount">2</span></span><span class="sub" data-en="3s slow-mo">3초 슬로우</span><em class="lock">🔒</em></button>
     </div>
   </div>
 
@@ -46,83 +46,106 @@
   <!-- 타이틀 -->
   <section id="scrTitle" class="scr">
     <div class="logo" id="logo"><span>P</span><span class="g">A</span><span>T</span><span>C</span><span class="g">H</span>&nbsp;<span>S</span><span class="g">Q</span><span>U</span><span>A</span><span class="g">D</span></div>
-    <div class="sub">깨진 게임 속으로</div>
-    <div class="badge">오늘의 빌드 <b id="verBadge">v1.0000</b></div>
+    <div class="sub" data-en="Into a Broken Game">깨진 게임 속으로</div>
+    <div class="badge" data-en="Daily Build <b id=&quot;verBadge&quot;>v1.0000</b>">오늘의 빌드 <b id="verBadge">v1.0000</b></div>
     <div class="menu">
-      <button class="btn pri" id="btnStart">게임 시작</button>
-      <button class="btn" id="btnDaily">오늘의 빌드</button>
+      <button class="btn pri" id="btnStart" data-en="Start Game">게임 시작</button>
+      <button class="btn" id="btnLang">언어/Language</button>
+      <button class="btn" id="btnDaily" data-en="Daily Build">오늘의 빌드</button>
       <div class="row2">
-        <button class="btn sm" id="btnDex">도감</button>
-        <button class="btn sm" id="btnRecords">기록</button>
-        <button class="btn sm" id="btnSettings">설정</button>
+        <button class="btn sm" id="btnDex" data-en="Bug Dex">도감</button>
+        <button class="btn sm" id="btnRecords" data-en="Records">기록</button>
+        <button class="btn sm" id="btnSettings" data-en="Settings">설정</button>
       </div>
-      <button class="btn ghost hidden" id="btnQuit">게임 종료</button>
+      <button class="btn hidden" id="btnQuit" data-en="Quit Game">게임 종료</button>
+      <button class="btn sm" id="btnDev" data-en="Developer">개발자</button>
     </div>
-    <div class="sndhint" id="sndHint">🔊 화면을 한 번 클릭하면 소리가 나와요</div>
-    <div class="foot">Soodal Games · 효과음 Kenney.nl (CC0)</div>
+    <div class="sndhint" id="sndHint" data-en="🔊 Click the screen once to turn on sound">🔊 화면을 한 번 클릭하면 소리가 나와요</div>
+    <div class="foot" data-en="Soodal Games · Sound effects Kenney.nl (CC0)">Soodal Games · 효과음 Kenney.nl (CC0)</div>
+  </section>
+
+  <!-- 언어 선택 -->
+  <section id="scrLang" class="scr dim hidden">
+    <div class="panel">
+      <div class="tag">LANGUAGE</div>
+      <h2>언어/Language</h2>
+      <button class="btn" data-lang="ko">한국어</button>
+      <button class="btn" data-lang="en">English</button>
+      <button class="btn ghost" id="btnLangBack">닫기 / Close</button>
+    </div>
+  </section>
+
+  <!-- 개발자 -->
+  <section id="scrDev" class="scr dim hidden">
+    <div class="panel">
+      <div class="tag">DEVELOPER</div>
+      <h2 data-en="Developer">개발자</h2>
+      <p class="devmsg" data-en="Hi, I'm Choi Hanmin from HUFS CES.<br>After struggling through bug after bug, I decided to make this game.">HUFS CES, 최한민입니다.<br>버그를 잡으며 고생하다가 이 게임을 만들기로 결정했습니다.</p>
+      <button class="btn pri" id="btnDevBack" data-en="Close">닫기</button>
+    </div>
   </section>
 
   <!-- 처음 한 번: 튜토리얼 권유 -->
   <section id="scrAskTut" class="scr dim hidden">
     <div class="panel">
-      <div class="tag">처음이신가요?</div>
-      <h2>튜토리얼을 먼저 해 볼래요?</h2>
-      <p style="margin:0;color:#cfd6c8;font-size:14px;line-height:1.55">크래시 없는 훈련장에서 조작, 분대와 무기, 버그 7종을 하나씩 직접 해 보며 배워요. 3~4분이면 끝나요.<br>끝까지 하면 도전 과제 <b style="color:var(--lime)">"훈련 수료"</b>를 받아요.</p>
-      <button class="btn pri" id="btnAskTutYes">튜토리얼 하기</button>
-      <button class="btn" id="btnAskTutNo">바로 시작</button>
+      <div class="tag" data-en="First time?">처음이신가요?</div>
+      <h2 data-en="Try the tutorial first?">튜토리얼을 먼저 해 볼래요?</h2>
+      <p data-en="Learn the controls, the squad and weapons, and all 7 bugs one by one in a crash-free training ground. It takes 3–4 minutes.<br>Finish it to earn the <b style=&quot;color:var(--lime)&quot;>&quot;Training Complete&quot;</b> challenge." style="margin:0;color:#cfd6c8;font-size:14px;line-height:1.55">크래시 없는 훈련장에서 조작, 분대와 무기, 버그 7종을 하나씩 직접 해 보며 배워요. 3~4분이면 끝나요.<br>끝까지 하면 도전 과제 <b style="color:var(--lime)">"훈련 수료"</b>를 받아요.</p>
+      <button class="btn pri" id="btnAskTutYes" data-en="Play the tutorial">튜토리얼 하기</button>
+      <button class="btn" id="btnAskTutNo" data-en="Skip and start">바로 시작</button>
     </div>
   </section>
 
   <!-- 난이도 -->
   <section id="scrDiff" class="scr dim hidden">
     <div class="panel wide">
-      <div class="tag" id="diffMode">정식 빌드</div>
-      <h2>난이도</h2>
+      <div class="tag" id="diffMode" data-en="Release Build">정식 빌드</div>
+      <h2 data-en="Difficulty">난이도</h2>
       <div class="diffs">
-        <button class="dcard tut" data-d="tutorial"><b>?</b><span class="dn">튜토리얼</span><span class="dd">화면 구성, 조작, 분대·무기, 버그 7종을 하나씩 직접 해 보며 배워요. 크래시 없음.</span></button>
-        <button class="dcard" data-d="easy"><b>하</b><span class="dn">쉬움</span><span class="dd">버그가 느리고 덜 아파요. 처음 해 보는 사람에게.</span></button>
-        <button class="dcard" data-d="normal"><b>중</b><span class="dn">보통</span><span class="dd">기획서 그대로의 기본 난이도.</span></button>
-        <button class="dcard hard" data-d="hard"><b>상</b><span class="dn">어려움</span><span class="dd">버그가 끝없이 몰려오고 갑자기 돌진해요. 복제 버그는 엉뚱한 곳으로 튀고, 패치 건이 과열돼요. 가짜 핫픽스도 섞여 있어요.</span></button>
+        <button class="dcard tut" data-d="tutorial"><b>?</b><span class="dn" data-en="Tutorial">튜토리얼</span><span class="dd" data-en="Learn the screen, controls, squad and weapons, and all 7 bugs hands-on. No crashes.">화면 구성, 조작, 분대·무기, 버그 7종을 하나씩 직접 해 보며 배워요. 크래시 없음.</span></button>
+        <button class="dcard" data-d="easy"><b data-en="E">하</b><span class="dn" data-en="Easy">쉬움</span><span class="dd" data-en="Bugs are slower and hurt less. For first-timers.">버그가 느리고 덜 아파요. 처음 해 보는 사람에게.</span></button>
+        <button class="dcard" data-d="normal"><b data-en="N">중</b><span class="dn" data-en="Normal">보통</span><span class="dd" data-en="The standard difficulty, as designed.">기획서 그대로의 기본 난이도.</span></button>
+        <button class="dcard hard" data-d="hard"><b data-en="H">상</b><span class="dn" data-en="Hard">어려움</span><span class="dd" data-en="Bugs pour in endlessly and suddenly charge. Clones split to odd places, your patch gun overheats, and some hotfixes are fakes.">버그가 끝없이 몰려오고 갑자기 돌진해요. 복제 버그는 엉뚱한 곳으로 튀고, 패치 건이 과열돼요. 가짜 핫픽스도 섞여 있어요.</span></button>
       </div>
-      <button class="btn ghost" id="btnDiffBack">뒤로</button>
+      <button class="btn ghost" id="btnDiffBack" data-en="Back">뒤로</button>
     </div>
   </section>
 
   <!-- 일시정지 -->
   <section id="scrPause" class="scr dim hidden">
     <div class="panel">
-      <h2>일시정지</h2>
-      <button class="btn pri" id="btnResume">계속하기</button>
-      <button class="btn" id="btnPauseDex">도감</button>
-      <button class="btn" id="btnPauseSet">설정</button>
-      <button class="btn" id="btnRestartStage">이 스테이지 다시</button>
-      <button class="btn ghost" id="btnToTitle">타이틀로</button>
+      <h2 data-en="Paused">일시정지</h2>
+      <button class="btn pri" id="btnResume" data-en="Resume">계속하기</button>
+      <button class="btn" id="btnPauseDex" data-en="Bug Dex">도감</button>
+      <button class="btn" id="btnPauseSet" data-en="Settings">설정</button>
+      <button class="btn" id="btnRestartStage" data-en="Restart stage">이 스테이지 다시</button>
+      <button class="btn ghost" id="btnToTitle" data-en="Back to title">타이틀로</button>
     </div>
   </section>
 
   <!-- 설정 -->
   <section id="scrSettings" class="scr dim hidden">
     <div class="panel">
-      <h2>설정</h2>
-      <label class="opt"><span>소리</span><input type="checkbox" id="setSound"></label>
-      <label class="opt"><span>효과음</span><input type="range" id="setSfx" min="0" max="100"></label>
-      <label class="opt"><span>음악</span><input type="range" id="setMusic" min="0" max="100"></label>
-      <label class="opt hidden" id="optFull"><span>전체 화면 <small style="color:#7d8478">(F11)</small></span><input type="checkbox" id="setFull"></label>
-      <label class="opt"><span>깜빡임 효과 줄이기</span><input type="checkbox" id="setFlash"></label>
-      <label class="opt"><span>화질</span>
-        <select id="setQuality"><option value="auto">자동</option><option value="high">높음</option><option value="low">낮음</option></select>
+      <h2 data-en="Settings">설정</h2>
+      <label class="opt"><span data-en="Sound">소리</span><input type="checkbox" id="setSound"></label>
+      <label class="opt"><span data-en="Sound effects">효과음</span><input type="range" id="setSfx" min="0" max="100"></label>
+      <label class="opt"><span data-en="Music">음악</span><input type="range" id="setMusic" min="0" max="100"></label>
+      <label class="opt hidden" id="optFull"><span data-en="Fullscreen <small style=&quot;color:#7d8478&quot;>(F11)</small>">전체 화면 <small style="color:#7d8478">(F11)</small></span><input type="checkbox" id="setFull"></label>
+      <label class="opt"><span data-en="Reduce flashing &amp; shake">깜빡임 효과 줄이기</span><input type="checkbox" id="setFlash"></label>
+      <label class="opt"><span data-en="Quality">화질</span>
+        <select id="setQuality"><option value="auto" data-en="Auto">자동</option><option value="high" data-en="High">높음</option><option value="low" data-en="Low">낮음</option></select>
       </label>
-      <button class="btn sm" id="btnTutReset">안내 카드 다시 보기</button>
-      <button class="btn pri" id="btnSetBack">닫기</button>
+      <button class="btn sm" id="btnTutReset" data-en="Show tip cards again">안내 카드 다시 보기</button>
+      <button class="btn pri" id="btnSetBack" data-en="Close">닫기</button>
     </div>
   </section>
 
   <!-- 기록 -->
   <section id="scrRecords" class="scr dim hidden">
     <div class="panel">
-      <h2>기록</h2>
+      <h2 data-en="Records">기록</h2>
       <div id="recBody"></div>
-      <button class="btn pri" id="btnRecBack">닫기</button>
+      <button class="btn pri" id="btnRecBack" data-en="Close">닫기</button>
     </div>
   </section>
 
@@ -130,9 +153,9 @@
   <section id="scrClear" class="scr dim hidden">
     <div class="panel">
       <div class="tag">PATCH APPLIED</div>
-      <h2 id="clrTitle">패치 완료 1/5</h2>
+      <h2 id="clrTitle" data-en="Patch applied 1/5">패치 완료 1/5</h2>
       <div class="stats" id="clrStats"></div>
-      <button class="btn pri" id="btnNext">다음 스테이지 ▶</button>
+      <button class="btn pri" id="btnNext" data-en="Next stage ▶">다음 스테이지 ▶</button>
     </div>
   </section>
 
@@ -141,27 +164,27 @@
     <div class="crash">
       <div class="cbug" id="crashBug"></div>
       <div class="ctitle">CRASH!</div>
-      <div class="cline" id="crashMsg">패치 스쿼드가 버그에게 졌습니다.</div>
+      <div class="cline" id="crashMsg" data-en="The Patch Squad lost to the bugs.">패치 스쿼드가 버그에게 졌습니다.</div>
       <pre class="ccode" id="crashCode"></pre>
-      <button class="btn pri" id="btnRebuild">다시 빌드하기</button>
-      <button class="btn ghost" id="btnCrashTitle">타이틀로</button>
+      <button class="btn pri" id="btnRebuild" data-en="Rebuild">다시 빌드하기</button>
+      <button class="btn ghost" id="btnCrashTitle" data-en="Back to title">타이틀로</button>
     </div>
   </section>
 
   <!-- 결과 -->
   <section id="scrResult" class="scr dim hidden">
     <div class="panel wide res">
-      <div class="tag" id="resMode">정식 빌드</div>
-      <div class="grade" id="resGrade">정식 출시</div>
+      <div class="tag" id="resMode" data-en="Release Build">정식 빌드</div>
+      <div class="grade" id="resGrade" data-en="Released">정식 출시</div>
       <div class="stats" id="resStats"></div>
       <div class="note">
         <pre id="resNote"></pre>
         <textarea id="resNoteTa" class="hidden" readonly></textarea>
       </div>
       <div class="rowb">
-        <button class="btn pri" id="btnCopy">패치 노트 복사</button>
-        <button class="btn" id="btnAgain">다시하기</button>
-        <button class="btn ghost" id="btnResTitle">타이틀</button>
+        <button class="btn pri" id="btnCopy" data-en="Copy patch notes">패치 노트 복사</button>
+        <button class="btn" id="btnAgain" data-en="Play again">다시하기</button>
+        <button class="btn ghost" id="btnResTitle" data-en="Title">타이틀</button>
       </div>
       <div class="newch" id="resChal"></div>
     </div>
@@ -170,9 +193,9 @@
   <!-- 도감 -->
   <section id="scrDex" class="scr dim hidden">
     <div class="panel wide">
-      <h2>도감</h2>
+      <h2 data-en="Bug Dex">도감</h2>
       <div id="dexBody"></div>
-      <button class="btn pri" id="btnDexBack">닫기</button>
+      <button class="btn pri" id="btnDexBack" data-en="Close">닫기</button>
     </div>
   </section>
 
@@ -184,7 +207,7 @@
       <div class="tt"></div>
       <div class="tb"></div>
       <div class="tw"></div>
-      <div class="tgo">클릭해서 계속 ▶</div>
+      <div class="tgo" data-en="Click to continue ▶">클릭해서 계속 ▶</div>
     </div>
   </div>
 

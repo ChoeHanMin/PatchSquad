@@ -61,7 +61,8 @@ function createWindow() {
 
   // 게임 밖으로 이동·새 창 막기 (링크는 기본 브라우저로)
   win.webContents.setWindowOpenHandler(({ url }) => { if (/^https?:/.test(url)) shell.openExternal(url); return { action: 'deny' }; });
-  win.webContents.on('will-navigate', (e) => e.preventDefault());
+  // 게임 밖으로 나가는 이동만 막음 (언어를 바꾸면 게임 파일을 다시 불러오는 건 허용)
+  win.webContents.on('will-navigate', (e, url) => { if (url.split('#')[0] !== win.webContents.getURL().split('#')[0]) e.preventDefault(); });
 }
 
 ipcMain.handle('bh-is-fullscreen', () => (win ? win.isFullScreen() : false));
