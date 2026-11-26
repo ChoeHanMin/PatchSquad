@@ -1,5 +1,5 @@
 // 스팀 캡슐·라이브러리 이미지 만들기: node steam/make_capsules.js
-// 원본: steam/art_src/keyart_wide.webp (16:9, ChatGPT), keyart_tall.webp (2:3, ChatGPT), assets/logo.png
+// 원본: steam/art_src/keyart_wide.webp (16:9), keyart_tall.webp (2:3), keyart_hero.webp (3:1) — 모두 ChatGPT, 로고는 assets/logo.png
 const sharp = require('sharp');
 const path = require('path');
 const R = (...p) => path.join(__dirname, ...p);
@@ -30,7 +30,7 @@ const OUT = R('capsules');
   await make('vertical_capsule_748x896.png', 'keyart_tall.webp', 748, 896, [0, 230, 1024, 1226], 0.86, 0.05);
   await make('library_capsule_600x900.png', 'keyart_tall.webp', 600, 900, [0, 0, 1024, 1536], 0.86, 0.07);
   await make('library_header_920x430.png', 'keyart_wide.webp', 920, 430, [0, 160, 1672, 781], 0.62, 0.07);
-  await make('library_hero_3840x1240.png', 'keyart_wide.webp', 3840, 1240, [0, 340, 1672, 540], 0, 0); // 로고·글자 없음
+  await make('library_hero_3840x1240.png', 'keyart_hero.webp', 3840, 1240, [0, 10, 2000, 646], 0, 0); // 로고·글자 없음, 원본 keyart_hero.webp (3:1, 분대가 가운데)
   await sharp(logo).resize({ width: 1280 }).png().toFile(path.join(OUT, 'library_logo_1280.png'));
   console.log('library_logo_1280.png');
 })();
