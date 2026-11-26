@@ -100,6 +100,15 @@ const UI = {
     $('#setMusic').addEventListener('input', (e) => { s.music = e.target.value / 100; SND.apply(); saveSettings(); });
     $('#setFlash').addEventListener('change', (e) => { s.reduceFlash = e.target.checked; saveSettings(); });
     $('#setQuality').addEventListener('change', (e) => { s.quality = e.target.value; FX.setQuality(); saveSettings(); });
+    // 스팀판(데스크톱 앱): 게임 종료 버튼, 전체 화면 설정. 브라우저에서 열면 숨김
+    const D = window.bhDesktop;
+    if (D) {
+      $('#btnQuit').classList.remove('hidden'); $('#optFull').classList.remove('hidden');
+      click('#btnQuit', () => D.quit());
+      const sync = () => D.isFullscreen().then((v) => { $('#setFull').checked = !!v; });
+      sync(); D.onFullscreen((v) => { $('#setFull').checked = !!v; });
+      $('#setFull').addEventListener('change', (e) => D.setFullscreen(e.target.checked));
+    }
   },
   only(id) { for (const s of SCREENS) $(s).classList.toggle('hidden', s !== id); },
   showTitle() { this.only('#scrTitle'); $('#hud').classList.add('hidden'); this.hint(''); $('#banner').classList.add('hidden'); },

@@ -279,6 +279,7 @@ body.pc .tcard{width:480px}body.pc .tt{font-size:24px}body.pc .tb{font-size:17px
         <button class="btn sm" id="btnRecords">기록</button>
         <button class="btn sm" id="btnSettings">설정</button>
       </div>
+      <button class="btn ghost hidden" id="btnQuit">게임 종료</button>
     </div>
     <div class="sndhint" id="sndHint">🔊 화면을 한 번 클릭하면 소리가 나와요</div>
     <div class="foot">겜타즈 2027 · 효과음 Kenney.nl (CC0)</div>
@@ -329,6 +330,7 @@ body.pc .tcard{width:480px}body.pc .tt{font-size:24px}body.pc .tb{font-size:17px
       <label class="opt"><span>소리</span><input type="checkbox" id="setSound"></label>
       <label class="opt"><span>효과음</span><input type="range" id="setSfx" min="0" max="100"></label>
       <label class="opt"><span>음악</span><input type="range" id="setMusic" min="0" max="100"></label>
+      <label class="opt hidden" id="optFull"><span>전체 화면 <small style="color:#7d8478">(F11)</small></span><input type="checkbox" id="setFull"></label>
       <label class="opt"><span>깜빡임 효과 줄이기</span><input type="checkbox" id="setFlash"></label>
       <label class="opt"><span>화질</span>
         <select id="setQuality"><option value="auto">자동</option><option value="high">높음</option><option value="low">낮음</option></select>
@@ -3210,6 +3212,15 @@ const UI = {
     $('#setMusic').addEventListener('input', (e) => { s.music = e.target.value / 100; SND.apply(); saveSettings(); });
     $('#setFlash').addEventListener('change', (e) => { s.reduceFlash = e.target.checked; saveSettings(); });
     $('#setQuality').addEventListener('change', (e) => { s.quality = e.target.value; FX.setQuality(); saveSettings(); });
+    // 스팀판(데스크톱 앱): 게임 종료 버튼, 전체 화면 설정. 브라우저에서 열면 숨김
+    const D = window.bhDesktop;
+    if (D) {
+      $('#btnQuit').classList.remove('hidden'); $('#optFull').classList.remove('hidden');
+      click('#btnQuit', () => D.quit());
+      const sync = () => D.isFullscreen().then((v) => { $('#setFull').checked = !!v; });
+      sync(); D.onFullscreen((v) => { $('#setFull').checked = !!v; });
+      $('#setFull').addEventListener('change', (e) => D.setFullscreen(e.target.checked));
+    }
   },
   only(id) { for (const s of SCREENS) $(s).classList.toggle('hidden', s !== id); },
   showTitle() { this.only('#scrTitle'); $('#hud').classList.add('hidden'); this.hint(''); $('#banner').classList.add('hidden'); },

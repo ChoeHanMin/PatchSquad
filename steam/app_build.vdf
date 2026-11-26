@@ -1,0 +1,19 @@
+"AppBuild"
+{
+	"AppID" "APP_ID"	// Steamworks에서 받은 버그 헌터 앱 ID로 바꾸기
+	"Desc" "Bug Hunter v1.0.0.0"
+	"ContentRoot" "..\content\"	// BugHunter-win32-x64 폴더 안의 파일들을 여기에 풀기
+	"BuildOutput" "..\output\"
+	"Depots"
+	{
+		"DEPOT_ID"	// 보통 앱 ID + 1. Steamworks의 데포 ID로 바꾸기
+		{
+			"FileMapping"
+			{
+				"LocalPath" "*"
+				"DepotPath" "."
+				"recursive" "1"
+			}
+		}
+	}
+}
