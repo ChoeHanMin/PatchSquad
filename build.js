@@ -73,7 +73,7 @@ async function loadAssets() {
     .replace(/console\.warn\('Scripts "build\/three\.js"[^)]*\)/, 'void 0'); // r150+ 안내 경고 제거
   const jsDir = path.join(__dirname, 'src', 'js');
   const parts = fs.readdirSync(jsDir).filter((f) => f.endsWith('.js')).sort().map((f) => `// ==== ${f} ====\n` + fs.readFileSync(path.join(jsDir, f), 'utf8'));
-  const game = `(function(){'use strict';\nconst ASSETS=${JSON.stringify(assets)};\n${parts.join('\n')}\n${dev ? 'window.__BH={Game,Boss,World,UI,FX,SND,MUS,Tut,Story,Store};' : ''}\n})();`;
+  const game = `(function(){'use strict';\nconst ASSETS=${JSON.stringify(assets)};\n${parts.join('\n')}\n${dev ? 'window.__BH={Game,Boss,World,UI,FX,SND,MUS,Tut,Story,Store,Free};' : ''}\n})();`;
   const css = src('style.css').replace(/\s*\n\s*/g, '\n');
 
   // </script> 가 문자열 안에 있으면 HTML이 깨지므로 방지

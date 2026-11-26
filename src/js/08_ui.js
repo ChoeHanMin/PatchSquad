@@ -52,6 +52,8 @@ const UI = {
     $('#crashBug').append(bugImgCanvas('basic'));
     const click = (id, fn) => $(id).addEventListener('click', (e) => { SND.init(); SND.play('click'); fn(e); });
     click('#btnStart', () => this.start(false));
+    click('#btnFree', () => this.startFree());
+    Free.bind();
     click('#btnDaily', () => this.start(true));
     click('#btnRecords', () => this.showRecords());
     click('#btnDex', () => this.showDex('#scrTitle'));
@@ -88,19 +90,21 @@ const UI = {
       SND.init();
       if (b.dataset.d === 'tutorial') { SND.play('click'); this.only(); Game.newRun(false, 'tutorial'); return; }
       if (b.dataset.d === 'hard' && !this.hardOpen()) { SND.play('jam'); this.toast(L('난이도 중을 한 번 깨면 열려요', 'Clear Normal once to unlock', 'ノーマルを一度クリアすると解放', '通关一次普通难度后解锁')); return; }
-      SND.play('click'); Store.set('diff', b.dataset.d); this.only(); Game.newRun(this.pendingDaily, b.dataset.d);
+      SND.play('click'); Store.set('diff', b.dataset.d); this.only();
+      if (this.pendingMode === 'free') return Free.start(b.dataset.d, false);
+      Game.newRun(this.pendingDaily, b.dataset.d);
     }));
     click('#btnResume', () => this.resume());
     click('#btnPauseSet', () => this.showSettings('#scrPause'));
-    click('#btnRestartStage', () => { this.only(); Game.state = 'play'; if (SND.ctx) SND.ctx.resume(); Game.restoreSnapshot(); Game.startStage(Game.run.stage); });
+    click('#btnRestartStage', () => { if (Free.active) { this.only(); if (SND.ctx) SND.ctx.resume(); return Free.rebuild(); } this.only(); Game.state = 'play'; if (SND.ctx) SND.ctx.resume(); Game.restoreSnapshot(); Game.startStage(Game.run.stage); });
     click('#btnToTitle', () => { if (SND.ctx) SND.ctx.resume(); Game.toTitle(); });
     click('#btnSetBack', () => { this.only(this.setReturn || '#scrTitle'); });
     click('#btnRecBack', () => this.only('#scrTitle'));
-    click('#btnNext', () => { this.only(); Game.nextStage(); });
-    click('#btnRebuild', () => { this.only(); Game.rebuild(); });
+    click('#btnNext', () => { this.only(); if (Free.active) return Free.nextStage(); Game.nextStage(); });
+    click('#btnRebuild', () => { this.only(); if (Free.active) return Free.rebuild(); Game.rebuild(); });
     click('#btnCrashTitle', () => Game.toTitle());
     click('#btnCopy', () => this.copyNote());
-    click('#btnAgain', () => { this.pendingDaily = !!(Game.run && Game.run.daily); this.only(); Game.newRun(this.pendingDaily, Game.run ? Game.run.diff : 'normal'); });
+    click('#btnAgain', () => { if (Free.active) { this.only(); return Free.start(Free.run.diff, Free.run.daily); } this.pendingDaily = !!(Game.run && Game.run.daily); this.only(); Game.newRun(this.pendingDaily, Game.run ? Game.run.diff : 'normal'); });
     click('#btnResTitle', () => Game.toTitle());
     $('#pauseBtn').addEventListener('pointerdown', (e) => { e.stopPropagation(); e.preventDefault(); SND.init(); this.pause(); });
     // 설정
@@ -140,7 +144,13 @@ const UI = {
     $('#helpBadge').classList.toggle('hidden', !Game.run.help[Game.run.stage]);
     this._hud = {};
   },
+  startFree() {
+    this.pendingDaily = false; this.pendingMode = 'free';
+    if (!Store.get('introSeen', false) && !this.introMem) { this.introMem = true; this.only(); return Story.intro(() => this.startFree()); }
+    this.showDiff();
+  },
   start(daily) {
+    this.pendingMode = 'rail';
     this.pendingDaily = daily;
     // 처음 한 번만: 스토리 인트로
     if (!Store.get('introSeen', false) && !this.introMem) { this.introMem = true; this.only(); return Story.intro(() => this.start(daily)); }
@@ -232,6 +242,8 @@ const UI = {
     if (this.tutQ.length) setTimeout(() => { if (Game.state === 'play') this.tutorShow(); }, 120);
   },
   showDiff() {
+    const fm = this.pendingMode === 'free';
+    $('.dcard.tut').classList.toggle('hidden', fm);
     const open = this.hardOpen(), hc = $('.dcard.hard');
     hc.classList.toggle('locked', !open);
     hc.setAttribute('aria-disabled', String(!open));
@@ -239,18 +251,20 @@ const UI = {
       ? L('버그가 끝없이 몰려오고 갑자기 돌진해요. 복제 버그는 엉뚱한 곳으로 튀고, 패치 건이 과열돼요. 가짜 핫픽스도 섞여 있어요.', 'Bugs pour in endlessly and suddenly charge. Clones split to odd places, your patch gun overheats, and some hotfixes are fakes.', 'バグが絶え間なく押し寄せ、突然突進してくる。クローンは思わぬ場所に飛び散り、パッチガンはオーバーヒートし、偽のホットフィックスも混ざっている。', 'Bug源源不断地涌来，还会突然冲锋。克隆会分裂到意想不到的地方，补丁枪会过热，还混有假的热修复。')
       : L('🔒 난이도 중을 한 번 깨면 열려요.', '🔒 Clear Normal once to unlock.', '🔒 ノーマルを一度クリアすると解放。', '🔒 通关一次普通难度后解锁。');
     if (!open && Store.get('diff', 'normal') === 'hard') Store.set('diff', 'normal');
-    $('#diffMode').textContent = this.pendingDaily ? L('오늘의 빌드 ', 'Daily Build ', '今日のビルド ', '今日构建') + DAILY_VER : L('정식 빌드', 'Release Build', '正式ビルド', '正式构建');
+    $('#diffMode').textContent = fm ? L('자유 작전 (NEW)', 'Free Ops (NEW)', 'フリー作戦 (NEW)', '自由作战 (NEW)') : this.pendingDaily ? L('오늘의 빌드 ', 'Daily Build ', '今日のビルド ', '今日构建') + DAILY_VER : L('정식 빌드', 'Release Build', '正式ビルド', '正式构建');
     const last = Store.get('diff', 'normal');
     $$('.dcard').forEach((b) => b.classList.toggle('last', b.dataset.d === last));
     this.only('#scrDiff');
   },
   pause() {
+    if (Free.active) return Free.pause();
     if (Game.state !== 'play') return;
     Game.state = 'paused'; Game.ptr.down = false;
     if (SND.ctx) SND.ctx.suspend();
     this.only('#scrPause');
   },
   resume() {
+    if (Free.active) return Free.resume();
     this.only(); Game.state = 'play'; Game.last = performance.now();
     if (SND.ctx) SND.ctx.resume();
   },
@@ -263,6 +277,7 @@ const UI = {
     h += '</table>';
     const daily = rec.daily && rec.daily.date === TODAY_KEY ? gradeName(rec.daily.grade) : '-';
     h += L(`<p style="font-size:13px">오늘의 빌드 <b style="color:var(--lime)">${DAILY_VER}</b> 최고 등급: <b>${daily}</b>`, `<p style="font-size:13px">Daily Build <b style="color:var(--lime)">${DAILY_VER}</b> best grade: <b>${daily}</b>`, `<p style="font-size:13px">今日のビルド <b style="color:var(--lime)">${DAILY_VER}</b> 最高評価: <b>${daily}</b>`, `<p style="font-size:13px">今日构建 <b style="color:var(--lime)">${DAILY_VER}</b> 最高评价：<b>${daily}</b>`) + (rec.best ? L(` · 전체 최고 점수 <b>${rec.best.toLocaleString()}</b>`, ` · All-time best score <b>${rec.best.toLocaleString()}</b>`, ` · 通算最高スコア <b>${rec.best.toLocaleString()}</b>`, ` · 历史最高分 <b>${rec.best.toLocaleString()}</b>`) : '') + '</p>';
+    if (rec.freeBest) h += `<p style="font-size:13px">${L('자유 작전 최고 점수', 'Free Ops best score', 'フリー作戦 最高スコア', '自由作战 最高分')} <b style="color:var(--lime)">${rec.freeBest.toLocaleString()}</b></p>`;
     const ch = rec.ch || {};
     h += L('<div class="ch"><b>도전 과제</b>', '<div class="ch"><b>Challenges</b>', '<div class="ch"><b>チャレンジ</b>', '<div class="ch"><b>挑战</b>') + CHALLENGES.map(([k, n]) => `<span class="${ch[k] ? 'ok' : 'no'}">${ch[k] ? '✔' : '□'} ${n}</span>`).join('') + '</div>';
     $('#recBody').innerHTML = h;

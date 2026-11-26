@@ -1,7 +1,7 @@
 "AppBuild"
 {
 	"AppID" "5732530"	// Patch Squad
-	"Desc" "Patch Squad v1.1.0.0 (story, 4 languages, achievements, cloud)"
+	"Desc" "Patch Squad v1.2.0.0 (Free Ops mode)"
 	"ContentRoot" "..\content\"	// PatchSquad-win32-x64 폴더 "안의" 파일들을 여기에 풀기 (PatchSquad.exe가 바로 있어야 함)
 	"BuildOutput" "..\output\"
 	"Depots"

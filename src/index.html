@@ -50,6 +50,7 @@
     <div class="badge" data-en="Daily Build <b id=&quot;verBadge&quot;>v1.0000</b>" data-ja="今日のビルド <b id=&quot;verBadge&quot;>v1.0000</b>" data-zh="今日构建 <b id=&quot;verBadge&quot;>v1.0000</b>">오늘의 빌드 <b id="verBadge">v1.0000</b></div>
     <div class="menu">
       <button class="btn pri" id="btnStart" data-en="Start Game" data-ja="ゲームスタート" data-zh="开始游戏">게임 시작</button>
+      <button class="btn pri2" id="btnFree" data-en="Free Ops <b class=&quot;new&quot;>NEW</b>" data-ja="フリー作戦 <b class=&quot;new&quot;>NEW</b>" data-zh="自由作战 <b class=&quot;new&quot;>NEW</b>">자유 작전 <b class="new">NEW</b></button>
       <button class="btn" id="btnLang">언어/Language</button>
       <button class="btn" id="btnDaily" data-en="Daily Build" data-ja="今日のビルド" data-zh="今日构建">오늘의 빌드</button>
       <div class="row2">
@@ -229,6 +230,20 @@
     <div class="stpic"></div>
     <div class="sttxt"><div class="stt"></div><div class="stb"></div></div>
     <div class="stfoot"><span class="stn"></span><span class="stgo" data-en="Click to continue ▶" data-ja="クリックで次へ ▶" data-zh="点击继续 ▶">클릭해서 계속 ▶</span><button class="stskip" data-en="Skip (Esc)" data-ja="スキップ (Esc)" data-zh="跳过 (Esc)">건너뛰기 (Esc)</button></div>
+  </div>
+  <!-- 자유 작전: 조작 안내 (클릭하면 시작) -->
+  <div id="freeIntro" class="hidden">
+    <div class="fi-box">
+      <div class="tag">FREE OPS</div>
+      <h2 data-en="Free Ops — Controls" data-ja="フリー作戦 — 操作" data-zh="自由作战 — 操作">자유 작전 — 조작</h2>
+      <div class="fi-keys">
+        <span><b>W A S D</b><i data-en="Move" data-ja="移動" data-zh="移动">이동</i></span><span><b>MOUSE</b><i data-en="Look / aim" data-ja="視点・照準" data-zh="视角/瞄准">시점·조준</i></span><span><b>LMB</b><i data-en="Shoot (Pin: hold to charge)" data-ja="射撃 (ピン: 長押しでチャージ)" data-zh="射击（平：按住蓄力）">사격 (핀: 누르고 있으면 충전)</i></span>
+        <span><b>R</b><i data-en="Reload" data-ja="リロード" data-zh="换弹">재장전</i></span><span><b>Z</b><i data-en="Cover (crouch behind low walls)" data-ja="遮蔽 (低い壁の後ろでしゃがむ)" data-zh="隐蔽（蹲在矮墙后）">엄폐 (낮은 벽 뒤에서 웅크리기)</i></span><span><b>1 2 3</b><i data-en="Switch squad member" data-ja="メンバー切り替え" data-zh="切换队员">분대원 교체</i></span>
+        <span><b>SHIFT</b><i data-en="Movement skill" data-ja="移動スキル" data-zh="位移技能">이동 스킬</i></span><span><b>E</b><i data-en="Utility skill" data-ja="サポートスキル" data-zh="辅助技能">보조 스킬</i></span><span><b>Q</b><i data-en="Ultimate" data-ja="アルティメット" data-zh="终极技能">궁극기</i></span><span><b>F</b><i data-en="Rollback (squad)" data-ja="ロールバック (分隊)" data-zh="回滚（小队）">롤백 (분대)</i></span><span><b>ESC</b><i data-en="Pause" data-ja="ポーズ" data-zh="暂停">일시정지</i></span>
+      </div>
+      <div class="fi-sk"></div>
+      <div class="fi-go" data-en="Click to start ▶" data-ja="クリックでスタート ▶" data-zh="点击开始 ▶">클릭해서 시작 ▶</div>
+    </div>
   </div>
   <!-- 스테이지 시작 한마디 -->
   <div id="say" class="hidden"><canvas width="64" height="64"></canvas><div><b class="sayn"></b><span class="sayt"></span></div></div>

@@ -787,6 +787,7 @@ const Game = {
   // ----- 타이틀 배경 (회색 세상 + 기어 다니는 버그) -----
   toTitle() {
     if (Tut.active) Tut.stop();
+    Free.stop();
     this.state = 'title';
     MUS.startTitle();
     this.clearEntities();
@@ -831,7 +832,8 @@ const Game = {
     if (dt > 0.05) dt = 0.05;
     if (dt < 0) dt = 0;
     if (this.state !== 'paused') this.time += dt;
-    const pl = this.state === 'play'; if (pl !== this._pl) { this._pl = pl; document.body.classList.toggle('playing', pl); } // 플레이 중엔 시스템 커서 숨김
+    const pl = this.state === 'play' || this.state === 'free'; if (pl !== this._pl) { this._pl = pl; document.body.classList.toggle('playing', pl); } // 플레이 중엔 시스템 커서 숨김
+    if (Free.active) { Free.frame(dt); return; } // 자유 작전 모드
     if (this.state === 'play') {
       this.fpsAcc += dt; this.fpsN++;
       if (this.fpsAcc > 2.5) { if (this.fpsAcc / this.fpsN > 1 / 40) FX.stepDown(); this.fpsAcc = 0; this.fpsN = 0; }

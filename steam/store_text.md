@@ -1,4 +1,4 @@
-# Patch Squad — 스팀 스토어 문구 (v1.1: 한국어 · English · 日本語 · 简体中文)
+# Patch Squad — 스팀 스토어 문구 (v1.2 · 자유 작전 추가 · 한국어 · English · 日本語 · 简体中文)
 
 Steamworks 스토어 설명 칸은 BBCode를 써요 (`[h2]`, `[b]`, `[list][*]`). 아래 코드 블록 **안쪽만** 복사해서 붙여넣으면 돼요.
 언어는 Description 탭 오른쪽 위 언어 선택에서 바꿔요 (Korean / English / Japanese / Simplified Chinese).
@@ -62,6 +62,7 @@ In a world called a game, something broke — and bugs are pouring out of the cr
 
 [h2]담긴 것[/h2]
 [list]
+[*][b]자유 작전 (NEW)[/b] — WASD로 3D 세상을 자유롭게 누비며, 분대원마다 다른 스킬 3개(Shift · E · Q 궁극기)로 싸우는 1인칭 모드
 [*]스토리 인트로와 엔딩, 스테이지마다 분대원의 한마디
 [*]스테이지 4개 + 3단계 보스 "메인 루프": 텍스처 없는 숲, 복붙 도시, 렌더링 지하철, 물리 고장 구역
 [*]각기 다른 버그 7종과 관통 미사일, 핫픽스 아이템 — 도감에서 공략과 약점 확인
@@ -103,6 +104,7 @@ Patch bugs in a row to repair glitches, and shoot a floating [b]Hotfix[/b] to re
 
 [h2]Features[/h2]
 [list]
+[*][b]Free Ops (NEW)[/b] — a first-person mode: roam the 3D world with WASD and fight with three unique skills per squad member (Shift, E and a Q ultimate)
 [*]A story intro and ending, plus a line from the squad at every stage
 [*]4 stages plus a 3-phase boss, "Main Loop": the Textureless Forest, Copy-Paste City, Render Subway and the Broken Physics Zone
 [*]7 distinct bug types, piercing missiles and hotfix items, with tips and weaknesses in the Bug Dex
@@ -144,6 +146,7 @@ Patch bugs in a row to repair glitches, and shoot a floating [b]Hotfix[/b] to re
 
 [h2]収録内容[/h2]
 [list]
+[*][b]フリー作戦 (NEW)[/b] — WASDで3D世界を自由に動き回り、メンバーごとに異なる3つのスキル(Shift・E・Qアルティメット)で戦う1人称モード
 [*]ストーリーのイントロとエンディング、ステージごとの分隊のひとこと
 [*]4つのステージ + 3段階のボス「メインループ」: テクスチャのない森、コピペシティ、レンダリング地下鉄、物理崩壊エリア
 [*]7種類のバグと貫通ミサイル、ホットフィックス — 攻略と弱点はバグ図鑑で確認
@@ -185,6 +188,7 @@ Patch bugs in a row to repair glitches, and shoot a floating [b]Hotfix[/b] to re
 
 [h2]游戏内容[/h2]
 [list]
+[*][b]自由作战 (NEW)[/b] — 第一人称模式：用WASD在3D世界中自由移动，每名队员拥有3个独特技能（Shift、E、Q终极技能）
 [*]剧情开场与结局，每关都有队员的一句台词
 [*]4个关卡 + 3阶段Boss“主循环”：无贴图森林、复制粘贴之城、渲染地铁、物理故障区
 [*]7种不同的Bug、穿透导弹和热修复道具 — 在Bug图鉴中查看攻略与弱点
