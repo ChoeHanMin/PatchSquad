@@ -1,12 +1,12 @@
 "AppBuild"
 {
-	"AppID" "APP_ID"	// Steamworks에서 받은 Patch Squad 앱 ID로 바꾸기
+	"AppID" "5732530"	// Patch Squad
 	"Desc" "Patch Squad v1.0.0.0"
-	"ContentRoot" "..\content\"	// PatchSquad-win32-x64 폴더 안의 파일들을 여기에 풀기
+	"ContentRoot" "..\content\"	// PatchSquad-win32-x64 폴더 "안의" 파일들을 여기에 풀기 (PatchSquad.exe가 바로 있어야 함)
 	"BuildOutput" "..\output\"
 	"Depots"
 	{
-		"DEPOT_ID"	// 보통 앱 ID + 1. Steamworks의 데포 ID로 바꾸기
+		"5732531"	// 데포 ID (Steamworks → SteamPipe → 데포에서 확인)
 		{
 			"FileMapping"
 			{

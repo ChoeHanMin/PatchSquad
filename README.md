@@ -38,7 +38,7 @@ node build-desktop.js   # → desktop-out/PatchSquad-win32-x64/ + desktop-out/Pa
 
 ## 스팀 업로드 (SteamCMD)
 
-`steam/app_build.vdf`의 `APP_ID`, `DEPOT_ID`를 Steamworks 값으로 바꾸고, `PatchSquad-win32-x64` 폴더 **안의 파일들**을 `content/`에 넣은 뒤:
+스팀 앱 ID **5732530**, 데포 ID **5732531** (`steam/app_build.vdf`에 이미 들어 있음). `PatchSquad-win32-x64` 폴더 **안의 파일들**을 `content/`에 넣은 뒤:
 
 ```
 steamcmd.exe +login <계정> +run_app_build <경로>\steam\app_build.vdf +quit
