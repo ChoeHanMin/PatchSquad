@@ -12,7 +12,7 @@
 - **그림 화질:** 4MB 제한이 없으니 크게 넣음 (캐릭터 230→460px, 엄폐물 800→2172px, 옆 벽 860→1500px, 버그 96→256px, 총 640→1448px), PNG 팔레트 → webp(q92). 결과 `dist/index.html` 약 3.8MB
 - 확인한 화면 크기: 1920×1080, 1366×768, 1280×800(터치), 1280×1024, 2560×1440
 
-- **이름:** 스팀판은 **Patch Squad**(패치 스쿼드). 창 제목, exe(`PatchSquad.exe`), 크래시 대사, 패치 노트, 타이틀 로고(코드로 그린 글자) 모두 바꿈. 예전 "BUG HUNTER" 로고 그림은 `assets/old/`로 옮겨서 게임에 안 들어감 → 새 로고는 `assets/logo.png`로 넣으면 됨 (프롬프트는 `PROMPTS.md` [7])
+- **이름:** 스팀판은 **Patch Squad**(패치 스쿼드). 창 제목, exe(`PatchSquad.exe`), 크래시 대사, 패치 노트, 타이틀 로고(코드로 그린 글자) 모두 바꿈. 예전 "BUG HUNTER" 로고 그림은 `assets/old/`로 옮겨서 게임에 안 들어감 → 새 "PATCH SQUAD" 로고(ChatGPT)는 `assets/logo.png` (프롬프트는 `PROMPTS.md` [7])
 
 ## Windows 앱 만들기 (Electron, Wine 필요 없음)
 
