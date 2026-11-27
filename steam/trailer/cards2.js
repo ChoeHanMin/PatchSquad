@@ -23,7 +23,7 @@ const glitchText = (lines, size, accent) => {
     <text x="960" y="${560 + lm.height / 2 + 40}" font-family="JetBrains Mono" font-weight="800" font-size="64" fill="#C6F432" text-anchor="middle" letter-spacing="14">COMING SOON</text></svg>`;
   await sharp(Buffer.from(under)).composite([{ input: logo, left: Math.round((1920 - lm.width) / 2), top: Math.round(470 - lm.height / 2) }]).png().toFile(D + 'slam.png');
   // 새 자막 (더 세게)
-  const caps = { s1: 'HOLD TO SHOOT. LET GO TO HIDE.', s2: '3 SQUADMATES. 3 WEAPONS.', s3: 'THE WORLD IS GLITCHING', s4: "DON'T LET IT CRASH", boss: 'FIX THE MAIN LOOP' };
+  const caps = { s1: 'HOLD TO SHOOT. LET GO TO HIDE.', s2: '4 SQUADMATES. 4 WEAPONS.', s3: 'NEW: ADA JOINS THE SQUAD', s4: "DON'T LET IT CRASH", boss: 'FIX THE MAIN LOOP' };
   for (const [k, txt] of Object.entries(caps)) {
     const fsz = 62, w = Math.round(txt.length * fsz * 0.62 + 90), h = 108;
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w + 12}" height="${h + 12}">
@@ -40,7 +40,7 @@ const glitchText = (lines, size, accent) => {
     <rect x="${960 - 470}" y="640" width="940" height="116" fill="#C6F432"/>
     <text x="960" y="718" font-family="JetBrains Mono" font-weight="800" font-size="60" fill="#11140c" text-anchor="middle">WISHLIST NOW ON STEAM</text>
     <text x="960" y="850" font-family="JetBrains Mono" font-weight="700" font-size="34" fill="#E8EDE2" text-anchor="middle">Soodal Games (Choi Hanmin)</text>
-    <text x="960" y="900" font-family="JetBrains Mono" font-size="26" fill="#9aa096" text-anchor="middle">English · 한국어 · Windows</text></svg>`;
+    <text x="960" y="900" font-family="JetBrains Mono" font-size="26" fill="#9aa096" text-anchor="middle">English · 한국어 · 日本語 · 简体中文 · Windows</text></svg>`;
   await sharp(bg).composite([{ input: logo2, left: Math.round((1920 - l2.width) / 2), top: 360 - Math.round(l2.height / 2) }, { input: Buffer.from(txt), left: 0, top: 0 }]).png().toFile(D + 'endcard.png');
   console.log('ok');
 })();

@@ -7,3 +7,6 @@ desktop/icon.png
 desktop/icon.ico
 dl*/
 tests/*.png
+steam/trailer/frames/
+steam/trailer/clips2/
+steam/trailer/*.wav

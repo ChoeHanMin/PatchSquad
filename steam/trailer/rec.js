@@ -2,7 +2,8 @@
 // 사용: node rec.js <장면이름> <스테이지 0~4 또는 title> <초> [시작 전 건너뛸 초]
 const { chromium } = require('playwright');
 const fs = require('fs');
-const [name, stageArg, secArg, skipArg] = process.argv.slice(2);
+const [name, stageArg, secArg, skipArg, memArg] = process.argv.slice(2);
+const FORCE = memArg == null ? -1 : +memArg; // 분대원 고정 (예: 3 = 에이다)
 const FPS = 30, SEC = +secArg, SKIP = +(skipArg || 0);
 const OUT = __dirname + '/frames/' + name + '/';
 (async () => {
@@ -18,7 +19,7 @@ const OUT = __dirname + '/frames/' + name + '/';
     try {
       localStorage.setItem('patchsquad_lang', JSON.stringify('en'));
       localStorage.setItem('patchsquad_settings', JSON.stringify({ sound: false, sfx: .8, music: .6, reduceFlash: false, quality: 'high' }));
-      localStorage.setItem('patchsquad_tutAsked', 'true');
+      localStorage.setItem('patchsquad_tutAsked', 'true'); localStorage.setItem('patchsquad_introSeen', 'true'); localStorage.setItem('patchsquad_adaSeen', 'true');
     } catch (e) {}
   });
   await p.goto('file:///home/user/bughunter-steam/dist/index.dev.html');
@@ -26,7 +27,7 @@ const OUT = __dirname + '/frames/' + name + '/';
   const step = (n = 1) => p.evaluate((n) => { for (let i = 0; i < n; i++) window.__step(1000 / 30); }, n);
   await step(10);
   if (stageArg !== 'title') {
-    await p.evaluate((s) => { const G = window.__BH.Game; G.newRun(false, 'normal'); if (s > 0) G.startStage(s); }, +stageArg);
+    await p.evaluate((s) => { const G = window.__BH.Game; G.newRun(false, 'normal'); if (s > 0) { G.run.stage = s; G.startStage(s); } }, +stageArg);
   }
   const log = []; let lastSt = null;
   let mx = 960, my = 520, down = false, f = 0, total = Math.round(SEC * FPS), skip = Math.round(SKIP * FPS), t = 0;
@@ -43,7 +44,7 @@ const OUT = __dirname + '/frames/' + name + '/';
         let best = null, bd = 1e9;
         for (const x of G.bugs) if (x.alive && x.hostile && x.onScreen && isFinite(x.sx) && isFinite(x.sy)) { const d = x.dist; if (d < bd) { bd = d; best = x; } }
         if (G.S.def.boss && window.__BH.Boss.snakes) for (const sn of window.__BH.Boss.snakes) for (const s of sn.segs) if (s.onScreen && s.glow && isFinite(s.sx) && (!best || Math.random() < 0.3)) best = s;
-        return { n: G.bugs.filter((x) => x.alive && x.hostile && x.onScreen).length, out: G.out, x: best ? best.sx : 960, y: best ? best.sy : 500, has: !!best, phase: G.S.phase, ws: [G.memberUnlocked(0), G.memberUnlocked(1), G.memberUnlocked(2)] };
+        return { n: G.bugs.filter((x) => x.alive && x.hostile && x.onScreen).length, out: G.out, x: best ? best.sx : 960, y: best ? best.sy : 500, has: !!best, phase: G.S.phase, ws: [0, 1, 2, 3].map((i) => G.memberUnlocked(i)), nU: [0, 1, 2, 3].filter((i) => G.memberUnlocked(i)).length };
       });
       lastSt = st;
       if (st) {
@@ -53,7 +54,8 @@ const OUT = __dirname + '/frames/' + name + '/';
         const want = st.phase === 'fight' && cyc < 64;
         if (want && !down) { await p.mouse.down(); down = true; }
         if (!want && down) { await p.mouse.up(); down = false; }
-        if (t % 150 === 75 && st.ws[1]) await p.keyboard.press(String(1 + (Math.floor(t / 150) % (st.ws[2] ? 3 : 2))));
+        if (FORCE >= 0) { if (t % 30 === 0) await p.keyboard.press(String(FORCE + 1)); }
+        else if (t % 150 === 75 && st.ws[1]) await p.keyboard.press(String(1 + (Math.floor(t / 150) % st.nU)));
       }
     }
     await step(1); t++;
