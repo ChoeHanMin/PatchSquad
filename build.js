@@ -38,6 +38,13 @@ const ASSET_SPEC = {
   portrait_ada: { size: 192 }, char_ada: { width: C, keep: true }, char_ada_flinch: { width: C, keep: true }, char_ada_hurt: { width: C, keep: true },
   char_ada_run: { width: C, keep: true }, char_ada_run2: { width: C, keep: true }, gun_ada: { width: 1448 }, proj_capsule: { size: 192 }, drone_ada: { size: 256 },
   cover_server: { width: 2172 }, cover_side_server: { height: 1500 }, story_ada_join: { width: 1600 },
+  // 2장 「레거시 코드」: 코볼, 새 버그 3종, 데드라인, 스테이지 엄폐물, 스토리
+  portrait_cobol: { size: 192 }, char_cobol: { width: C, keep: true }, char_cobol_flinch: { width: C, keep: true }, char_cobol_hurt: { width: C, keep: true },
+  char_cobol_run: { width: C, keep: true }, char_cobol_run2: { width: C, keep: true },
+  char_cobol_crouch: { width: C, keep: true }, char_cobol_crouch_flinch: { width: C, keep: true }, char_cobol_crouch_hurt: { width: C, keep: true }, gun_cobol: { width: 1448 },
+  bug_merge: { size: B }, bug_leak: { size: B }, bug_deprecated: { size: B }, boss_deadline: { size: 1024 },
+  cover_archive: { width: 2172 }, cover_side_archive: { height: 1500 }, cover_fork: { width: 2172 }, cover_side_fork: { height: 1500 }, cover_prod: { width: 2172 }, cover_side_prod: { height: 1500 },
+  story_ch2_intro: { width: 1600 }, story_cobol_join: { width: 1600 }, story_ch2_end: { width: 1600 },
   story_end1: { width: 1600 }, story_end2: { width: 1600 }, story_end3: { width: 1600 }, story_end4: { width: 1600 },
 };
 

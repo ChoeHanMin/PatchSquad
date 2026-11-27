@@ -252,6 +252,78 @@ const World = {
       });
     });
   },
+  // ---- 2장 ----
+  // 7. 지원 종료 보관소: 쌓인 브라운관·베이지 본체·플로피 탑
+  archive(r) {
+    const pts = []; for (let i = 0; i <= 12; i++) pts.push(new THREE.Vector3(Math.sin(i * 0.55) * 10 + (r() - 0.5) * 4, 0, -i * 27));
+    this.makeCurve(pts);
+    const mid = this.curve.getPointAt(0.5); this.groundGrid(520, mid.x, mid.z, 0, 70);
+    const beige = [0xD8CBB0, 0xC9B990, 0xBFAF8A], amber = 0xFFB347;
+    this.along(r, 90, 4, 14, (pos) => {
+      const g = new THREE.Group(), pieces = [];
+      const tall = r() < 0.3, n = tall ? 4 + Math.floor(r() * 4) : 1 + Math.floor(r() * 3);
+      for (let k = 0; k < n; k++) {
+        const s = tall ? 0.9 : 1.2 + r() * 0.5;
+        const b = this.piece(GEO.box, pick(beige, r)); b.mesh.scale.set(s * 1.3, s, s); b.mesh.position.y = s / 2 + k * s; g.add(b.mesh); pieces.push(b);
+        if (!tall) { const sc = this.piece(GEO.box, r() < 0.6 ? amber : 0x3a3a34, { basic: true, noLine: true }); sc.mesh.scale.set(s * 0.9, s * 0.6, 0.05); sc.mesh.position.set(0, s / 2 + k * s, s / 2 + 0.03); g.add(sc.mesh); pieces.push(sc); }
+      }
+      g.rotation.y = r() * 6;
+      this.addDecor(g, pieces, pos);
+    });
+  },
+  // 8. 브랜치 분기점: 보라/청록 두 갈래 기둥과 갈라진 아치
+  fork(r) {
+    const pts = []; for (let i = 0; i <= 12; i++) pts.push(new THREE.Vector3(Math.sin(i * 0.4) * 13 + (r() - 0.5) * 3, 0, -i * 28));
+    this.makeCurve(pts);
+    const mid = this.curve.getPointAt(0.5); this.groundGrid(520, mid.x, mid.z, 0, 70);
+    const n = Math.floor(this.curve.getLength() / 8), T = new THREE.Vector3();
+    for (let i = 1; i < n; i++) {
+      const s = i / n, P = this.curve.getPointAt(s); this.curve.getTangentAt(s, T);
+      const g = new THREE.Group(), pieces = [];
+      for (const side of [-1, 1]) {
+        const h = 4 + r() * 3, p = this.piece(GEO.box, side < 0 ? 0xB07CFF : 0x3DE0D0); p.mesh.scale.set(1, h, 1); p.mesh.position.set(side * 6, h / 2, 0); g.add(p.mesh); pieces.push(p);
+        const tip = this.piece(GEO.ico, side < 0 ? 0xd9b8ff : 0x9ff5ea, { basic: true }); tip.mesh.scale.setScalar(0.7); tip.mesh.position.set(side * 6, h + 0.6, 0); g.add(tip.mesh); pieces.push(tip);
+      }
+      if (i % 3 === 0) { // 갈라진 아치: 가운데서 두 갈래
+        for (const side of [-1, 1]) { const a = this.piece(GEO.box, side < 0 ? 0x8a5cff : 0x2aa8a0); a.mesh.scale.set(6.4, 0.4, 0.6); a.mesh.position.set(side * 3, 7.2 + side * 0.4, 0); a.mesh.rotation.z = side * 0.18; g.add(a.mesh); pieces.push(a); }
+      }
+      g.position.copy(P); g.rotation.y = Math.atan2(T.x, T.z);
+      this.addDecor(g, pieces, P);
+    }
+  },
+  // 9. 운영 서버 — 금요일 18:00: 검은 서버 랙 + 빨간 경보등
+  prod(r) {
+    const pts = []; for (let i = 0; i <= 12; i++) pts.push(new THREE.Vector3(Math.sin(i * 0.5) * 9 + (r() - 0.5) * 4, 0, -i * 27));
+    this.makeCurve(pts);
+    const mid = this.curve.getPointAt(0.5); this.groundGrid(520, mid.x, mid.z, 0, 80);
+    const n = Math.floor(this.curve.getLength() / 7), T = new THREE.Vector3();
+    for (let i = 1; i < n; i++) {
+      const s = i / n, P = this.curve.getPointAt(s); this.curve.getTangentAt(s, T);
+      const g = new THREE.Group(), pieces = [], alarms = [];
+      for (const side of [-1, 1]) {
+        const off = side * (5.4 + r()), h = 3.4 + r() * 2;
+        const rack = this.piece(GEO.box, 0x1a1c22); rack.mesh.scale.set(1.4, h, 2.6); rack.mesh.position.set(off, h / 2, 0); g.add(rack.mesh); pieces.push(rack);
+        const al = this.piece(GEO.box, 0xFF4D5E, { basic: true, noLine: true, grayFill: 0x2a1416 }); al.mesh.scale.set(0.5, 0.35, 0.5); al.mesh.position.set(off, h + 0.2, 0); g.add(al.mesh); pieces.push(al); alarms.push(al.mesh);
+      }
+      if (i % 4 === 0) { const note = this.piece(GEO.box, 0xFFD34D, { basic: true }); note.mesh.scale.set(0.5, 0.5, 0.05); note.mesh.position.set(r() < 0.5 ? -4.6 : 4.6, 2 + r() * 2, 1.4); g.add(note.mesh); pieces.push(note); }
+      g.position.copy(P); g.rotation.y = Math.atan2(T.x, T.z);
+      const ph = r() * 6;
+      this.addDecor(g, pieces, P, (d, f) => { alarms.forEach((m) => { m.visible = Math.sin(Game.time * 6 + ph) > -0.2; }); });
+    }
+  },
+  // 10. 최종 보스 아레나: 거대한 달력 종이와 시계 기둥
+  deadline(r) {
+    this.curve = null;
+    this.groundGrid(200, 0, 0, 0, 50);
+    for (let i = 0; i < 16; i++) {
+      const a = (i / 16) * Math.PI * 2, R = 36 + r() * 6;
+      const g = new THREE.Group(), h = 7 + r() * 10;
+      const p = this.piece(GEO.box, i % 2 ? 0xE8DCC0 : 0xFF4D5E); p.mesh.scale.set(4, h, 0.4); p.mesh.position.y = h / 2;
+      const c = this.piece(GEO.cyl, 0xffffff); c.mesh.scale.set(1.4, 0.3, 1.4); c.mesh.rotation.x = Math.PI / 2; c.mesh.position.set(0, h + 1.6, 0);
+      g.add(p.mesh, c.mesh); g.rotation.y = -a + Math.PI / 2;
+      this.addDecor(g, [p, c], new THREE.Vector3(Math.cos(a) * R, 0, Math.sin(a) * R), (d, f) => { c.mesh.rotation.z = Game.time * (i % 2 ? 1 : -1); });
+    }
+  },
   // 6. 중간 보스 아레나
   boss(r) {
     this.curve = null;

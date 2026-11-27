@@ -28,6 +28,9 @@ const stage = +(process.argv[2] || 0), maxSec = +(process.argv[3] || 240), lang 
         const P = F.p.pos;
         if (F.S.phase === 'travel' && F.zones[F.S.zi] && !F.S.def.boss) { // 다음 구역 쪽으로 걸어감
           const z = F.zones[F.S.zi], dx = z.c.x - P.x, dz = z.c.z - P.z; F.p.yaw = Math.atan2(-dx, -dz); F.p.pitch = 0; F.keys.KeyW = true; F.mouse = false;
+          // 엄폐물에 막혀 제자리면 옆으로 비켜 걷기
+          window.__lp = window.__lp || { pos: P.clone(), t: 0, side: 0 }; if (f % 15 === 0) { if (window.__lp.pos.distanceTo(P) < 0.4) window.__lp.side = 20; window.__lp.pos.copy(P); }
+          if (window.__lp.side > 0) { window.__lp.side--; F.keys.KeyA = true; } else F.keys.KeyA = false;
         } else {
           F.keys.KeyW = false;
           const danger = F.bugs.some((bb) => bb.aimT > 0) || F.shots.some((sh) => sh.alive && sh.kind === 'packet');

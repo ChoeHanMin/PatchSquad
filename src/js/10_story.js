@@ -16,6 +16,20 @@ const STORY = {
     { pic: 'end3', t: L('패치 스쿼드', 'The Patch Squad', 'パッチ・スクワッド', '补丁小队'), b: L('도트: "수고했어, 다들."<br>렉스: "다음 버그는 어디야? 다 갈아엎어 주지!"<br>핀: "…방금 메인 루프가 웃은 것 같은데."<br>에이다: "회귀 테스트까지 통과! 완벽해."', 'Dot: "Good work, everyone."<br>Rex: "Where\'s the next bug? I\'ll refactor it all!"<br>Pin: "...Did the Main Loop just smile?"<br>Ada: "Regression tests passed! Perfect."', 'ドット:「おつかれ、みんな。」<br>レックス:「次のバグはどこだ? 全部リファクタしてやる!」<br>ピン:「…今、メインループが笑った気がする。」<br>エイダ:「回帰テストもパス! 完璧!」', '多特：“辛苦了，大家。”<br>雷克斯：“下一个Bug在哪？我全给它重构了！”<br>平：“……刚才主循环好像笑了。”<br>艾达：“回归测试也通过了！完美。”'), art: 'squad' },
     { pic: 'end4', t: L('그런데…', 'But...', 'でも…', '可是……'), b: L('이 세계를 처음 망가뜨린 건<br>누구였을까?<br><br><b>— 1장 끝 · 다음 임무 준비 중 —</b>', 'who broke this world<br>in the first place?<br><br><b>— END OF CHAPTER 1 · NEXT MISSION IN PREPARATION —</b>', 'この世界を最初に壊したのは<br>誰だったのだろう?<br><br><b>— 第1章 完 · 次の任務 準備中 —</b>', '最初把这个世界弄坏的<br>到底是谁？<br><br><b>— 第1章 完 · 下一个任务准备中 —</b>'), art: 'mystery' },
   ],
+  // ---- 2장 ----
+  ch2intro: [
+    { pic: 'ch2_intro', t: L('2장: 레거시 코드', 'CHAPTER 2: LEGACY CODE', '第2章: レガシーコード', '第2章：遗留代码'), b: L('메인 루프를 고친 다음 날 밤.<br>분대는 세계를 처음 망가뜨린 기록을 찾아냈습니다.', 'The night after the Main Loop was fixed,<br>the squad found the record of what first broke the world.', 'メインループを直した翌日の夜。<br>分隊は世界を最初に壊した記録を見つけた。', '修好主循环的第二天夜里，<br>小队找到了最初弄坏世界的记录。') },
+    { pic: 'ch2_intro', art: 'gitlog', t: 'git log --reverse', b: L('금요일 오후 6시. <b>git push --force</b>.<br>작성자 칸은… 비어 있었습니다.', 'Friday, 6:00 PM. <b>git push --force</b>.<br>The author field was... empty.', '金曜日 午後6時。<b>git push --force</b>。<br>作成者の欄は…空だった。', '星期五 下午6点。<b>git push --force</b>。<br>作者一栏……是空的。') },
+    { pic: 'ch2_intro', t: L('기록은 더 깊은 곳을 가리켰습니다', 'The log pointed deeper', '記録はもっと深い場所を指していた', '记录指向了更深处'), b: L('아무도 읽지 못하는 오래된 코드.<br><b>레거시</b>의 세계로.', 'Into old code that no one can read anymore.<br>Into the world of <b>legacy</b>.', '誰にも読めない古いコードへ。<br><b>レガシー</b>の世界へ。', '进入谁也看不懂的旧代码，<br>进入<b>遗留</b>的世界。') },
+  ],
+  cobolJoin: [
+    { pic: 'cobol_join', t: L('새 분대원 합류', 'A new squad member', '新メンバー合流', '新队员加入'), b: L('코볼: "…젊은 친구들이 메인 루프를 고쳤다고?<br>이 코드, 내가 30년 전에 짰던 거야. 따라와."', 'Cobol: "...You kids fixed the Main Loop?<br>I wrote this code thirty years ago. Follow me."', 'コボル:「…若いのがメインループを直したって?<br>このコードは30年前に俺が書いたんだ。ついて来い。」', '科博：“……你们这些年轻人修好了主循环？<br>这段代码是我三十年前写的。跟我来。”') },
+  ],
+  ending2: [
+    { pic: 'ch2_end', t: L('마감 연장', 'DEADLINE EXTENDED', '締め切り延長', '截止日期延长'), b: L('데드라인이 사라진 자리에 작은 메모 한 장이 남았습니다.<br><b>"다음 버전은 천천히, 테스트하면서 만들자."</b>', 'Where the Deadline stood, a small note remained:<br><b>"Next version: slow down, and test as we go."</b>', 'デッドラインが消えた場所に、小さなメモが一枚残っていた。<br><b>「次のバージョンはゆっくり、テストしながら作ろう。」</b>', '截止日期消失的地方，留下了一张小纸条：<br><b>“下个版本慢慢来，边做边测试。”</b>') },
+    { pic: 'ch2_end', art: 'squad', t: L('패치 스쿼드', 'The Patch Squad', 'パッチ・スクワッド', '补丁小队'), b: L('코볼: "서두르면… 결국 우리가 다시 고치게 되지."<br>에이다: "그럼 3장은요?"<br>도트: "…일단 오늘은 퇴근하자."', 'Cobol: "Rush it... and we end up fixing it again."<br>Ada: "So what about Chapter 3?"<br>Dot: "...Let\'s just go home for today."', 'コボル:「急げば…結局また俺たちが直すことになる。」<br>エイダ:「じゃあ第3章は?」<br>ドット:「…今日はもう帰ろう。」', '科博：“赶工……最后还是得我们来修。”<br>艾达：“那第3章呢？”<br>多特：“……今天先下班吧。”') },
+    { pic: 'end4', art: 'mystery', t: L('— 2장 끝 —', '— END OF CHAPTER 2 —', '— 第2章 完 —', '— 第2章 完 —'), b: L('<b>다음 버전 준비 중</b><br>플레이해 주셔서 고맙습니다!', '<b>Next version in preparation</b><br>Thank you for playing!', '<b>次のバージョン 準備中</b><br>遊んでくれてありがとう!', '<b>下个版本准备中</b><br>感谢游玩！') },
+  ],
   adaJoin: [
     { pic: 'ada_join', t: L('새 분대원 합류', 'A new squad member', '新メンバー合流', '新队员加入'), b: L('에이다: "안녕! 오늘부터 QA 담당 에이다야.<br>테스트 안 한 코드는 고장 난 코드라고~ 서버실은 내가 맡을게!"', 'Ada: "Hi! I\'m Ada, your new QA tester.<br>Untested code is broken code~ Leave the server room to me!"', 'エイダ:「やっほー! 今日からQA担当のエイダだよ。<br>テストしてないコードは壊れたコード~ サーバールームは任せて!」', '艾达：“嗨！我是今天起负责QA的艾达。<br>没测过的代码就是坏代码~ 服务器机房交给我吧！”') },
   ],
@@ -27,6 +41,10 @@ const STORY = {
     [3, L('안녕, 신입 테스터 에이다야! 테스트 안 한 코드는 고장 난 코드라고~', 'Hi, I\'m Ada, your new tester! Untested code is broken code~', 'やっほー、新人テスターのエイダだよ! テストしてないコードは壊れたコードだからね~', '嗨，我是新来的测试员艾达！没测过的代码就是坏代码哦~')],
     [0, L('중력이 제멋대로야. 미사일은 숨어도 맞으니까 쏴서 떨어뜨려!', 'Gravity\'s gone haywire. Missiles hit you even in cover — shoot them down!', '重力がめちゃくちゃだ。ミサイルは隠れても当たるから撃ち落とせ!', '重力乱套了。导弹隐蔽也会被击中，把它们打下来！')],
     [1, L('저게 메인 루프야? 세상의 심장이 폭주하고 있어!', 'That\'s the Main Loop? The heart of the world is running wild!', 'あれがメインループ? 世界の心臓が暴走してる!', '那就是主循环？世界的心脏正在失控！')],
+    [4, L('먼지 냄새… 이 보관소, 내가 마지막으로 불 끈 곳이야.', 'Smells like dust... I was the last one to turn off the lights here.', 'ホコリの匂い…この保管庫、最後に電気を消したのは俺だ。', '一股灰尘味……这个档案馆，最后关灯的人是我。')],
+    [3, L('쌍둥이 버그예요! 한 마리만 고치면 다시 살아나요, 둘 다 동시에!', 'Twin bugs! Fix only one and it comes back — get both at once!', '双子バグだよ! 片方だけ直すと復活する、両方同時に!', '双胞胎Bug！只修一只会复活，两只一起修！')],
+    [1, L('금요일 18시 운영 서버라니… 제일 무서운 곳이잖아!', 'Production at 6PM on a Friday... the scariest place there is!', '金曜18時の本番サーバー…一番怖い場所じゃないか!', '周五18点的生产服务器……这可是最可怕的地方！')],
+    [0, L('저게 데드라인이야. 이 세계를 서두르게 만든 장본인.', 'That\'s the Deadline. The one that made this world rush.', 'あれがデッドラインだ。この世界を急がせた張本人。', '那就是截止日期。逼着这个世界赶工的罪魁祸首。')],
   ],
 };
 
@@ -34,7 +52,7 @@ const Story = {
   active: false, list: null, i: 0, done: null, readyT: 0,
   // 장면 그림: ChatGPT 그림이 있으면 그것, 없으면 게임 그림으로 꾸밈
   art(p) {
-    const big = ASSETS['story_' + p.pic];
+    const big = p.art === 'gitlog' ? null : ASSETS['story_' + p.pic];
     if (big) return `<img class="stbig" src="${big}" alt="">`;
     const im = (k, cls = '') => (ASSETS[k] ? `<img class="${cls}" src="${ASSETS[k]}" alt="">` : '');
     const S = ['dot', 'rex', 'pin'];
@@ -46,6 +64,7 @@ const Story = {
       case 'dot': return `<div class="stc">${im('char_dot', 'stchar big')}</div>`;
       case 'world': return `<div class="stc strow">${['cover_forest', 'cover_city', 'cover_subway'].map((k) => im(k, 'stcov')).join('')}</div>`;
       case 'mystery': return `<div class="stc"><div class="stq">?</div></div>`;
+      case 'gitlog': { const ln = [['commit 0000000 (HEAD -> main)', 'ok'], ['Author: <unknown>', ''], ['Date:   Fri 18:00', ''], ['', ''], ['    hotfix (urgent!!!) — tests skipped', 'err'], ['    git push --force origin main', 'err']]; return `<div class="stc"><div class="stterm">${ln.map(([t, c], i) => `<div class="stl ${c}" style="animation-delay:${0.2 + i * 0.4}s">${t || '&nbsp;'}</div>`).join('')}</div></div>`; }
       case 'commit': { // 타자 치듯 한 줄씩 나오는 터미널
         const ln = [['$ git commit -m "' + L('고침 (아마도)', 'fix (probably)', '修正(たぶん)', '修复（大概）') + '"', ''], ['$ git push --force origin main', ''], ['$ deploy world.exe --skip-tests', ''], ['  ▶ deploying... ██████████ 100%', 'ok'], ['  ✖ FATAL: MainLoop panicked at frame 60', 'err'], ['  ✖ Segmentation fault (core dumped)', 'err']];
         return `<div class="stc"><div class="stterm">${ln.map(([t, c], i) => `<div class="stl ${c}" style="animation-delay:${0.2 + i * 0.5}s">${t}</div>`).join('')}<div class="stl cur" style="animation-delay:${0.2 + ln.length * 0.5}s">_</div></div></div>`;
@@ -97,9 +116,16 @@ const Story = {
     const d = this.done; this.done = null; if (d) d();
   },
   intro(done) { this.play(STORY.intro, () => { Store.set('introSeen', true); if (done) done(); }); },
-  ending(done) { this.play(STORY.ending, done); },
+  ending(done) { // 장에 따라 엔딩이 다름. 1장을 깨면 2장이 열림
+    const ch = CUR_CH; const rec = Store.get('records', {}); rec['ch' + ch + 'Clear'] = true; Store.set('records', rec);
+    this.play(ch === 2 ? STORY.ending2 : STORY.ending, done);
+  },
   // 에이다가 합류하는 스테이지 직전 (처음 한 번)
-  beforeStage(idx, go) { if (STAGES[idx] && STAGES[idx].join === 3 && !Store.get('adaSeen', false)) { Store.set('adaSeen', true); return this.play(STORY.adaJoin, go); } go(); },
+  beforeStage(idx, go) {
+    if (STAGES[idx] && STAGES[idx].join === 3 && !Store.get('adaSeen', false)) { Store.set('adaSeen', true); return this.play(STORY.adaJoin, go); }
+    if (STAGES[idx] && STAGES[idx].join === 4 && !Store.get('cobolSeen', false)) { Store.set('cobolSeen', true); return this.play(STORY.cobolJoin, go); }
+    go();
+  },
   // 스테이지 시작 한마디 (화면 왼쪽 아래, 얼굴 + 이름 + 대사)
   say(stageIdx) {
     const ln = STORY.lines[stageIdx]; if (!ln) return;

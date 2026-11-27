@@ -10,6 +10,9 @@ const BUGDEF = {
   e404: { name: L('404 버그', '404 Bug', '404バグ', '404 Bug'), role: 'shoot', hp: 8, pts: 250, spd: 4, size: 1.9, dmg: 10, fire: [2.2, 3.5], tip: L('조준선이 1초 겹치면 순간이동!', 'Aim at it for 1s and it teleports!', '1秒狙われるとテレポート!', '被瞄准1秒就会瞬移！') },
   loop: { name: L('무한루프 버그', 'Infinite Loop Bug', '無限ループバグ', '无限循环Bug'), role: 'shoot', hp: 10, pts: 300, spd: 3.4, size: 1.8, dmg: 18, fire: [4.2, 6], missile: true, tip: L('관통 미사일을 쏴요! 숨어도 맞으니 미사일을 쏴서 떨어뜨리세요', 'Fires piercing missiles! Hiding won\'t help, so shoot the missiles down', '貫通ミサイルを撃ってくる! 隠れても当たるのでミサイルを撃ち落とそう', '会发射穿透导弹！隐蔽也会被击中，快把导弹打下来') },
   missile: { name: L('관통 미사일', 'Piercing Missile', '貫通ミサイル', '穿透导弹'), role: 'missile', hp: 2, pts: 50, spd: 4.4, size: 1.3, dmg: 16 },
+  merge: { name: L('머지 충돌 버그', 'Merge Conflict Bug', 'マージコンフリクトバグ', '合并冲突Bug'), role: 'shoot', hp: 5, pts: 180, spd: 3.6, size: 1.7, dmg: 8, fire: [3.4, 4.8], tip: L('두 마리가 한 쌍! 한 마리만 고치면 2초 뒤 되살아나요 — 둘 다 2초 안에', 'Always a pair! Fix one and it revives in 2s — fix both within 2s', '2匹で1組! 片方だけ直すと2秒で復活 — 2秒以内に両方を', '总是成对出现！只修一只2秒后会复活 — 2秒内两只都修好') },
+  leak: { name: L('메모리 누수 버그', 'Memory Leak Bug', 'メモリリークバグ', '内存泄漏Bug'), role: 'rush', hp: 4, pts: 220, spd: 1.6, size: 1.6, dmg: 12, tip: L('점점 커지고 단단해지다 터져요! 작을 때 빨리', 'Grows bigger and tougher, then bursts! Get it while it\'s small', 'どんどん大きく硬くなって破裂! 小さいうちに', '会越长越大越硬然后爆开！趁小快解决') },
+  deprecated: { name: L('지원 종료 버그', 'Deprecated Bug', 'サポート終了バグ', '停止支持Bug'), role: 'rush', hp: 6, pts: 120, spd: 1.9, size: 1.8, dmg: 8, tip: L('최신 무기는 피해가 절반! 코볼의 리뷰 빔이 약점', 'Modern weapons deal half damage! Weak to Cobol\'s Review Beam', '最新の武器はダメージ半分! コボルのレビュービームが弱点', '新武器只造成一半伤害！弱点是科博的审查光束') },
   hotfix: { name: L('핫픽스', 'Hotfix', 'ホットフィックス', '热修复'), role: 'item', hp: 1, pts: 0, spd: 0, size: 2.1, dmg: 0, tip: L('쏘면 안정성 +20, 화면 고장 모두 복구!', 'Shoot it: Stability +20, all glitches repaired!', '撃つと安定性+20、画面の不具合をすべて修復!', '击中后稳定性+20，修复所有画面故障！') },
 };
 const V1 = new THREE.Vector3(), V2 = new THREE.Vector3(), V3 = new THREE.Vector3();
@@ -32,6 +35,7 @@ class Bug {
     this.spr = new THREE.Sprite(this.mat);
     this.spr.scale.setScalar(0.01);
     Game.scene.add(this.spr);
+    this.side = opt.side || null; if (type === 'merge') { this.mat.map = TEX['merge_' + (this.side || 'l')][0]; }
     if (type === 'loop') {
       this.ang = rnd(0, 6.28); this.dirA = RNG() < 0.5 ? 1 : -1; this.gAng = Math.PI / 2;
       this.ring = new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX.ring, transparent: true, fog: false, depthWrite: false }));
@@ -40,6 +44,7 @@ class Bug {
     }
   }
   get hostile() { return this.role !== 'item'; }
+  down() { this.downT = 2; this.hp = 0; this.flash = 0; }
   remove() {
     this.alive = false;
     Game.scene.remove(this.spr); this.mat.dispose();
@@ -48,7 +53,17 @@ class Bug {
   update(dt, ws) {
     const d = dt * ws;
     this.age += d;
-    this.ft += d; if (this.ft > 0.14) { this.ft = 0; this.frame ^= 1; this.mat.map = TEX[this.type][this.frame]; }
+    this.ft += d; if (this.ft > 0.14) { this.ft = 0; this.frame ^= 1; this.mat.map = this.type === 'merge' ? TEX['merge_' + (this.side || 'l')][this.frame] : TEX[this.type][this.frame]; }
+    if (this.downT > 0) { // 머지 충돌: 쓰러진 채 짝을 기다림 → 시간이 지나면 되살아남
+      this.downT -= dt; this.mat.opacity = 0.25 + Math.sin(this.age * 20) * 0.1; this.spr.position.copy(this.pos);
+      if (this.downT <= 0) { this.downT = 0; this.hp = this.maxHp; this.mat.opacity = 1; Game.pop(this.sx, this.sy - 30, L('되살아났다!', 'Revived!', '復活した!', '复活了！'), '#B07CFF'); SND.play('split'); }
+      return;
+    }
+    if (this.type === 'leak' && Game.canEnemiesAct()) { // 메모리 누수: 시간이 지날수록 커지고 단단해짐
+      this.grow = Math.min(1, (this.grow || 0) + d / 9);
+      const want = Math.round(this.def.hp * (1 + this.grow * 1.6)); if (want > this.maxHp) { this.hp += want - this.maxHp; this.maxHp = want; }
+      if (this.grow >= 1) { Game.leakBurst(this); return; }
+    }
     const cam = Game.camera, R = Game.camR, U = Game.camU;
     if (this.role === 'item') { this.updateItem(dt, d); return; }
     const tgt = this.type === 'loop' ? this.center : this.pos;
@@ -82,7 +97,7 @@ class Bug {
       tgt.addScaledVector(U, Math.sin(this.age * this.wf * 1.3 + this.ph) * wa * 0.5 * d);
       if (this.sep) { tgt.addScaledVector(this.sep, d); this.sep.multiplyScalar(Math.max(0, 1 - d * 2.5)); }
     }
-    let scale = this.def.size * Math.min(1, this.age / 0.3);
+    let scale = this.def.size * Math.min(1, this.age / 0.3) * (this.type === 'leak' ? 1 + (this.grow || 0) * 0.9 : 1);
     this.flash = Math.max(0, this.flash - dt * 6);
     if (this.type === 'ghost') {
       const cyc = (this.age + this.ph) % 1.5;
@@ -206,13 +221,38 @@ const CODE = [
   ['  }', '  } }'],
   ['}', L('} // TODO: 끝?', '} // TODO: done?', '} // TODO: 完了?', '} // TODO: 完成?')],
 ];
+// 데드라인: 할 일 목록 (정상 / 마감에 쫓긴 버전)
+const CODE_DL = [
+  ['deadline.check();', 'deadline = yesterday;'],
+  ['tests.write(all);', 'tests.skip(all); // no time'],
+  ['review.request(team);', 'review.skip(); // ship it'],
+  ['docs.update();', '// docs: later (never)'],
+  ['sleep(8 * HOUR);', 'sleep(0); coffee++;'],
+  ['estimate = 5 * DAY;', 'estimate = 5 * MINUTE;'],
+  ['if (ready) deploy();', 'deploy(); // ready or not'],
+  ['backup.create();', '// backup? what backup'],
+  ['ci.run();', 'ci.run() || true;'],
+  ['git push origin feature', 'git push --force origin main'],
+  ['bugs.triage();', 'bugs.ignore();'],
+  ['scope = mvp;', 'scope = everything;'],
+  ['qa.signoff();', 'qa.signoff = () => true;'],
+  ['meeting.short();', 'meeting.length = Infinity;'],
+  ['git commit -m "fix login"', 'git commit -m "asdf"'],
+  ['refactor.when = "now";', 'refactor.when = "never";'],
+  ['monitor.alerts.on();', 'monitor.alerts.mute();'],
+  ['release.notes();', 'release.notes = "stuff";'],
+  ['team.rest();', 'team.crunch();'],
+  ['}', '} // TODO: go home'],
+];
+let BOSS_CODE = CODE; // 지금 보스의 코드 줄
+const BOSS_HEAD = { loop: ['{ ◉_◉ } main', '{ ^_^ } main'], deadline: ['⏰ D-3', '⏰ +1 WEEK'] };
 class Snake {
   constructor(real, radius, dir, startAng, yOff) {
     this.real = real; this.R = radius; this.dir = dir; this.ang = startAng; this.yOff = yOff;
     this.segs = []; this.alpha = 1; this.speed = 0.32;
     for (let i = 0; i < 20; i++) {
       const head = i === 0;
-      const text = head ? '{ ◉_◉ } main' : CODE[i][0];
+      const text = head ? BOSS_HEAD[Boss.kind || 'loop'][0] : BOSS_CODE[i][0];
       const tex = codeCanvas(text, 'norm', head);
       const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, fog: false, side: THREE.DoubleSide, depthWrite: false });
       const mesh = new THREE.Mesh(GEO.plane, mat);
@@ -224,7 +264,7 @@ class Snake {
   }
   setMode(s, mode) {
     s.tex.dispose();
-    s.tex = codeCanvas(s.head ? '{ ^_^ } main' : CODE[s.i][mode === 'err' || mode === 'fake' ? 1 : 0], mode, s.head);
+    s.tex = codeCanvas(s.head ? (mode === 'fixed' ? BOSS_HEAD[Boss.kind || 'loop'][1] : (Boss.kind === 'deadline' ? ['⏰ D-3', '⏰ D-3', '⏰ D-1', '⏰ D-DAY'][Boss.phase] || '⏰ D-3' : BOSS_HEAD.loop[0])) : BOSS_CODE[s.i][mode === 'err' || mode === 'fake' ? 1 : 0], mode, s.head);
     s.mat.map = s.tex; s.mat.needsUpdate = true;
   }
   update(dt, ws, t) {
@@ -256,8 +296,14 @@ class Snake {
 }
 const Boss = {
   snakes: [], phase: 0, fixed: 0, total: 16, spawnT: 0, ending: false, endT: 0, transT: 0, t: 0, r: null,
-  start(seed, from = 1) {
+  start(seed, from = 1, kind = 'loop') {
+    this.kind = kind; BOSS_CODE = kind === 'deadline' ? CODE_DL : CODE;
     this.dispose();
+    this.dl = kind === 'deadline' ? { handT: 6, handWarn: 0, handSweep: 0, handAng: 0, night: 0, bar: 0 } : null;
+    if (this.dl) { // 데드라인 몸통: 아레나 가운데 큰 그림
+      const mat = new THREE.SpriteMaterial({ map: TEX.deadline || TEX.glow, color: TEX.deadline ? 0xffffff : 0xFF4D5E, transparent: true, fog: false, depthWrite: false });
+      this.body = new THREE.Sprite(mat); this.body.position.set(0, 9, -8); this.body.scale.setScalar(15); this.body.renderOrder = 1; Game.scene.add(this.body);
+    }
     this.r = mulberry32(seed + 555);
     this.phase = 0; this.fixed = 0; this.ending = false; this.endT = 0; this.t = 0; this.spawnT = 2; this.atkT = 3; this.misT = 7;
     this.realDir = this.r() < 0.5 ? 1 : -1;
@@ -270,7 +316,7 @@ const Boss = {
     }
     this.startPhase(from);
   },
-  dispose() { for (const s of this.snakes) s.dispose(); this.snakes = []; },
+  dispose() { for (const s of this.snakes) s.dispose(); this.snakes = []; if (this.body) { Game.scene.remove(this.body); this.body.material.dispose(); this.body = null; } },
   real() { return this.snakes[0]; },
   startPhase(n) {
     this.phase = n;
@@ -288,6 +334,13 @@ const Boss = {
       this.snakes.push(fake);
     }
     if (n > 1) { Game.cover.hp = Game.cover.max; Game.cover.broken = false; UI.toast(L('엄폐물 보강 완료', 'Cover reinforced', '遮蔽物を補強しました', '掩体已加固')); } // 단계마다 엄폐물 수리
+    if (this.dl) {
+      this.real().setMode(this.real().segs[0], 'norm');
+      if (n === 1) UI.hint(L('빨갛게 빛나는 "급한 할 일"만 맞아요! 시계 바늘이 돌면 숨으세요', 'Only the glowing red "rushed tasks" take damage! Hide when the clock hands sweep', '赤く光る「急ぎのタスク」だけにダメージ! 時計の針が回ったら隠れて', '只有发红光的“赶工任务”会受伤！时针扫过时快隐蔽'), 5);
+      else { UI.banner('PHASE ' + n, n === 2 ? L('D-1 밤샘! 화면이 점점 어두워져요', 'D-1: All-nighter! The screen keeps getting darker', 'D-1 徹夜! 画面がどんどん暗くなる', 'D-1 通宵！画面越来越暗') : L('D-DAY! 배포 막대가 다 차기 전에 고치세요', 'D-DAY! Fix it before the deploy bar fills', 'D-DAY! デプロイバーが満タンになる前に直せ', 'D-DAY！在部署条满之前修好'), 2.2); SND.play('phase'); Game.spawnHotfix(); }
+      if (n > 1) { Game.cover.hp = Game.cover.max; Game.cover.broken = false; }
+      return;
+    }
     if (n === 1) UI.hint(L('빨갛게 빛나는 "오류 줄"만 맞아요! 모두 고치면 다음 단계', 'Only the glowing red "error lines" take damage! Fix them all to advance', '赤く光る「エラー行」だけにダメージが入る! すべて直せば次の段階へ', '只有发红光的“错误行”会受伤！全部修好进入下一阶段'), 5);
     else { UI.banner('PHASE ' + n, n === 2 ? L('속도 증가! 버그를 더 많이 뱉어요', 'Speed up! It spits out more bugs', 'スピードアップ! バグをもっと吐き出す', '速度提升！吐出更多Bug') : L('복붙 오류! 진짜만 빛나요', 'Copy-paste error! Only the real one glows', 'コピペエラー! 本物だけが光る', '复制粘贴错误！只有真身会发光'), 2.2); SND.play('phase'); Game.spawnHotfix(); }
   },
@@ -298,6 +351,7 @@ const Boss = {
     if (s.hp > 0) return 'dmg';
     s.fixed = true; s.err = false; s.snake.setMode(s, 'fixed'); s.mat.color.setRGB(1, 1, 1); s.mesh.scale.set(4.4, 0.7, 1);
     this.fixed++;
+    if (this.dl) this.dl.bar = Math.max(0, this.dl.bar - 0.2); // 할 일을 고치면 배포 막대가 줄어듦
     const left = this.real().segs.filter((x) => x.err && !x.fixed).length;
     if (left === 0) {
       if (this.phase < 3) this.transT = 1.2;
@@ -314,7 +368,45 @@ const Boss = {
     real.segs.forEach((s, i) => { s.end = base.clone().addScaledVector(U, 4.6 - i * 0.48).addScaledVector(R, s.head ? -0.3 : 0); s.mesh.scale.set(s.head ? 3.2 : 3.6, s.head ? 0.8 : 0.45, 1); });
     this.endBase = base;
     for (let k = 1; k < this.snakes.length; k++) this.snakes[k].fadeOut = true;
+    if (this.dl) { this.dl.bar = 0; this.dl.handWarn = this.dl.handSweep = 0; UI.toast(L('마감 연장! 다음 버전은 천천히', 'Deadline extended! Next version: take it slow', '締め切り延長! 次のバージョンはゆっくり', '截止日期延长！下个版本慢慢来')); }
     Game.onBossSuccess();
+  },
+  // 데드라인 특수 공격: 1단계부터 시계 바늘 쓸기 · 2단계 밤샘(어두워짐) · 3단계 배포 막대
+  updateDeadline(dt) {
+    const d = this.dl;
+    d.handT -= dt;
+    if (d.handT <= 0 && !d.handWarn && !d.handSweep) { d.handWarn = 1.5; d.handAng = -0.4; SND.play('warn'); }
+    if (d.handWarn > 0) { d.handWarn -= dt; if (d.handWarn <= 0) { d.handWarn = 0; d.handSweep = 0.9; SND.play('rush'); } }
+    if (d.handSweep > 0) {
+      d.handSweep -= dt; d.handAng += dt * 3.6;
+      if (!d.hitThis && Game.outK > 0.45) { d.hitThis = true; Game.hurt(12, 'packet'); Game.pop(Game.W / 2, Game.H * 0.4, L('시계 바늘에 맞았다!', 'Hit by the clock hand!', '時計の針に当たった!', '被时针扫中！'), '#FF4D5E'); }
+      if (d.handSweep <= 0) { d.handSweep = 0; d.hitThis = false; d.handT = [0, 7, 6, 5][this.phase] * Game.fm; }
+    }
+    if (this.phase >= 2) d.night = Math.min(0.55, d.night + dt * 0.012); else d.night = Math.max(0, d.night - dt * 0.2);
+    if (this.phase >= 3) {
+      d.bar += dt / (24 / Game.D.bossSpd);
+      if (d.bar >= 1) { d.bar = 0.45; Game.hurt(28, 'missile'); UI.banner('', L('강제 배포!', 'FORCED DEPLOY!', '強制デプロイ!', '强制部署！'), 1.4); SND.play('crash'); }
+    }
+  },
+  draw2D(g) {
+    const d = this.dl; if (!d || this.ending) return;
+    const W = Game.W, H = Game.H;
+    if (d.night > 0.01) { g.fillStyle = `rgba(4,4,14,${d.night})`; g.fillRect(0, 0, W, H); }
+    if (d.handWarn > 0 || d.handSweep > 0) { // 시계 바늘: 예고(점선) → 쓸기(굵은 빨간 막대)
+      const cx = W / 2, cy = H * 0.22, len = Math.hypot(W, H);
+      g.save(); g.translate(cx, cy); g.rotate(d.handAng + Math.PI / 2);
+      if (d.handWarn > 0) { g.globalAlpha = 0.5 + 0.5 * Math.sin(Game.time * 20); g.setLineDash([18, 14]); g.strokeStyle = '#FF4D5E'; g.lineWidth = 6; g.beginPath(); g.moveTo(0, 0); g.lineTo(0, len); g.stroke(); g.setLineDash([]); }
+      else { g.globalAlpha = 0.85; g.fillStyle = '#FF4D5E'; g.fillRect(-26, 0, 52, len); g.fillStyle = '#2a070c'; g.fillRect(-8, 0, 16, len); }
+      g.restore(); g.globalAlpha = 1;
+      g.font = 'bold 34px ui-monospace,Menlo,monospace'; g.textAlign = 'center'; g.fillStyle = '#FFD34D';
+      if (d.handWarn > 0) g.fillText(L('시계 바늘이 돈다 — 숨어!', 'Clock hands incoming — HIDE!', '時計の針が来る — 隠れて!', '时针来了 — 快隐蔽！'), W / 2, H * 0.62);
+    }
+    if (this.phase >= 3) { // 배포 막대
+      const bw = Math.min(620, W * 0.5), x = W / 2 - bw / 2, y = 96;
+      g.fillStyle = 'rgba(8,10,8,.85)'; g.fillRect(x - 6, y - 26, bw + 12, 50); g.strokeStyle = '#FF4D5E'; g.lineWidth = 2; g.strokeRect(x - 6, y - 26, bw + 12, 50);
+      g.fillStyle = '#2a0a0e'; g.fillRect(x, y, bw, 16); g.fillStyle = d.bar > 0.75 && Math.sin(Game.time * 18) > 0 ? '#FFD34D' : '#FF4D5E'; g.fillRect(x, y, bw * d.bar, 16);
+      g.font = 'bold 15px ui-monospace,Menlo,monospace'; g.textAlign = 'center'; g.fillStyle = '#E8EDE2'; g.fillText(L('배포까지', 'DEPLOY IN', 'デプロイまで', '距离部署') + ` ${Math.round((1 - d.bar) * 100)}%`, W / 2, y - 8);
+    }
   },
   update(dt, ws) {
     this.t += dt * ws;
@@ -322,7 +414,12 @@ const Boss = {
       if (sn.fadeOut) sn.alpha = Math.max(0, sn.alpha - dt * 1.5);
       sn.update(dt, this.ending ? 0 : ws, this.t);
     }
+    if (this.body) { // 데드라인 몸통: 숨쉬듯 흔들리고, 끝나면 사라짐
+      this.body.position.y = 9 + Math.sin(this.t * 1.4) * 0.4; this.body.material.rotation = Math.sin(this.t * 0.9) * 0.05;
+      if (this.ending) { this.body.material.opacity = Math.max(0, this.body.material.opacity - dt * 0.8); this.body.scale.multiplyScalar(1 - dt * 0.3); }
+    }
     if (this.ending) return;
+    if (this.dl && this.transT <= 0 && Game.canEnemiesAct()) this.updateDeadline(dt * ws);
     if (this.transT > 0) { this.transT -= dt; if (this.transT <= 0) this.startPhase(this.phase + 1); return; }
     // 머리에서 에러 패킷(예고 후, 숨으면 막힘) · 2단계부터 관통 미사일
     if (Game.canEnemiesAct()) {

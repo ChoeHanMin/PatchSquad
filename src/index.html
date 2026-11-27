@@ -37,6 +37,7 @@
       <button class="mem" data-m="1"><b class="k">2</b><canvas class="pt" width="64" height="64"></canvas><span class="mn" data-en="Rex" data-ja="レックス" data-zh="雷克斯">렉스</span><span class="mr" data-en="Spread" data-ja="散弾" data-zh="散弹">산탄</span><i class="am"><i></i></i><em class="lock">🔒</em></button>
       <button class="mem" data-m="2"><b class="k">3</b><canvas class="pt" width="64" height="64"></canvas><span class="mn" data-en="Pin" data-ja="ピン" data-zh="平">핀</span><span class="mr" data-en="Sniper" data-ja="狙撃" data-zh="狙击">저격</span><i class="am"><i></i></i><em class="lock">🔒</em></button>
       <button class="mem" data-m="3"><b class="k">4</b><canvas class="pt" width="64" height="64"></canvas><span class="mn" data-en="Ada" data-ja="エイダ" data-zh="艾达">에이다</span><span class="mr" data-en="Launcher" data-ja="ランチャー" data-zh="发射器">런처</span><i class="am"><i></i></i><em class="lock">🔒</em></button>
+      <button class="mem" data-m="4"><b class="k">5</b><canvas class="pt" width="64" height="64"></canvas><span class="mn" data-en="Cobol" data-ja="コボル" data-zh="科博">코볼</span><span class="mr" data-en="Beam" data-ja="ビーム" data-zh="光束">빔</span><i class="am"><i></i></i><em class="lock">🔒</em></button>
       <button class="wpn rb" data-w="2"><b class="k">␣</b><span class="ic">◀◀</span><span class="nm" data-en="Rollback <span id=&quot;rbCount&quot;>2</span>" data-ja="ロールバック <span id=&quot;rbCount&quot;>2</span>" data-zh="回滚 <span id=&quot;rbCount&quot;>2</span>">롤백 <span id="rbCount">2</span></span><span class="sub" data-en="3s slow-mo" data-ja="3秒スロー" data-zh="3秒慢动作">3초 슬로우</span><em class="lock">🔒</em></button>
     </div>
   </div>
@@ -104,6 +105,10 @@
   <section id="scrDiff" class="scr dim hidden">
     <div class="panel wide">
       <div class="tag" id="diffMode" data-en="Release Build" data-ja="正式ビルド" data-zh="正式构建">정식 빌드</div>
+      <div class="chs">
+        <button class="chcard" data-ch="1"><b>1</b><span data-en="Chapter 1: Main Loop" data-ja="第1章: メインループ" data-zh="第1章：主循环">1장: 메인 루프</span></button>
+        <button class="chcard" data-ch="2"><b>2</b><span data-en="Chapter 2: Legacy Code" data-ja="第2章: レガシーコード" data-zh="第2章：遗留代码">2장: 레거시 코드</span><em class="lock">🔒</em></button>
+      </div>
       <h2 data-en="Difficulty" data-ja="難易度" data-zh="难度">난이도</h2>
       <div class="diffs">
         <button class="dcard tut" data-d="tutorial"><b>?</b><span class="dn" data-en="Tutorial" data-ja="チュートリアル" data-zh="教程">튜토리얼</span><span class="dd" data-en="Learn the screen, controls, squad and weapons, and all 7 bugs hands-on. No crashes." data-ja="画面の見方・操作・分隊と武器・バグ7種を実際に試しながら学ぶ。クラッシュなし。" data-zh="亲手学习画面、操作、小队与武器以及7种Bug。不会崩溃。">화면 구성, 조작, 분대·무기, 버그 7종을 하나씩 직접 해 보며 배워요. 크래시 없음.</span></button>
@@ -255,7 +260,7 @@
       <h2 data-en="Free Ops — Controls" data-ja="フリー作戦 — 操作" data-zh="自由作战 — 操作">자유 작전 — 조작</h2>
       <div class="fi-keys">
         <span><b data-kb="fwd left back right">W A S D</b><i data-en="Move" data-ja="移動" data-zh="移动">이동</i></span><span><b>MOUSE</b><i data-en="Look / aim" data-ja="視点・照準" data-zh="视角/瞄准">시점·조준</i></span><span><b>LMB</b><i data-en="Shoot (Pin: hold to charge)" data-ja="射撃 (ピン: 長押しでチャージ)" data-zh="射击（平：按住蓄力）">사격 (핀: 누르고 있으면 충전)</i></span>
-        <span><b data-kb="reload">R</b><i data-en="Reload" data-ja="リロード" data-zh="换弹">재장전</i></span><span><b data-kb="cover">Z</b><i data-en="Cover (crouch behind low walls)" data-ja="遮蔽 (低い壁の後ろでしゃがむ)" data-zh="隐蔽（蹲在矮墙后）">엄폐 (낮은 벽 뒤에서 웅크리기)</i></span><span><b>1 2 3 4</b><i data-en="Switch squad member" data-ja="メンバー切り替え" data-zh="切换队员">분대원 교체</i></span>
+        <span><b data-kb="reload">R</b><i data-en="Reload" data-ja="リロード" data-zh="换弹">재장전</i></span><span><b data-kb="cover">Z</b><i data-en="Cover (crouch behind low walls)" data-ja="遮蔽 (低い壁の後ろでしゃがむ)" data-zh="隐蔽（蹲在矮墙后）">엄폐 (낮은 벽 뒤에서 웅크리기)</i></span><span><b>1 2 3 4 5</b><i data-en="Switch squad member" data-ja="メンバー切り替え" data-zh="切换队员">분대원 교체</i></span>
         <span><b data-kb="skill1">SHIFT</b><i data-en="Movement skill" data-ja="移動スキル" data-zh="位移技能">이동 스킬</i></span><span><b data-kb="skill2">E</b><i data-en="Utility skill" data-ja="サポートスキル" data-zh="辅助技能">보조 스킬</i></span><span><b data-kb="ult">Q</b><i data-en="Ultimate" data-ja="アルティメット" data-zh="终极技能">궁극기</i></span><span><b data-kb="rbFree">F</b><i data-en="Rollback (squad)" data-ja="ロールバック (分隊)" data-zh="回滚（小队）">롤백 (분대)</i></span><span><b>ESC</b><i data-en="Pause" data-ja="ポーズ" data-zh="暂停">일시정지</i></span>
       </div>
       <div class="fi-sk"></div>

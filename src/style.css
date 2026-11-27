@@ -311,3 +311,10 @@ body.freeops #gl{cursor:none}
 #keyList .keyrow:hover{border-color:var(--lime)}
 #keyList .keyrow b{font-family:var(--mono);color:var(--lime);min-width:64px;text-align:center;background:#1b1f19;border:2px solid #3a3f37;padding:2px 8px}
 #keyList .keyrow.wait{border-color:#FFD34D}#keyList .keyrow.wait b{color:#FFD34D;animation:blink .8s infinite steps(2)}
+
+#scrDiff .chs{display:flex;gap:12px;justify-content:center;margin:4px 0 10px}
+#scrDiff .chcard{position:relative;display:flex;align-items:center;gap:10px;background:#0f130e;border:2px solid #2f342c;color:#cfd6c8;padding:10px 18px;font-size:17px;cursor:pointer}
+#scrDiff .chcard b{font-family:var(--mono);font-size:22px;color:#7d8478}
+#scrDiff .chcard.sel{border-color:var(--lime);color:#F2F5EE}#scrDiff .chcard.sel b{color:var(--lime)}
+#scrDiff .chcard[data-ch="2"].sel{border-color:#FFB347}#scrDiff .chcard[data-ch="2"].sel b{color:#FFB347}
+#scrDiff .chcard .lock{display:none;font-style:normal}#scrDiff .chcard.locked{opacity:.55}#scrDiff .chcard.locked .lock{display:inline}

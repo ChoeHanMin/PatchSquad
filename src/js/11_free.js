@@ -25,9 +25,14 @@ const FREE_SKILLS = [
     e: { name: L('테스트 드론', 'Test Drone', 'テストドローン', '测试无人机'), cd: 14, desc: L('8초 동안 버그를 자동으로 쏘는 드론', 'A drone that auto-fires at bugs for 8s', '8秒間バグを自動で撃つドローン', '8秒内自动射击Bug的无人机') },
     q: { name: L('회귀 테스트', 'Regression Test', '回帰テスト', '回归测试'), desc: L('조준한 구역에 테스트 캡슐 비가 쏟아짐', 'A rain of test capsules on the aimed area', '狙ったエリアにテストカプセルの雨', '测试胶囊如雨般落向瞄准区域') },
   },
+  { // 코볼 · 레거시 장인
+    shift: { name: L('롤백 스텝', 'Rollback Step', 'ロールバックステップ', '回滚步'), cd: 8, desc: L('2초 전 위치로 되돌아가고, 그동안 받은 피해의 절반을 회복', 'Snap back to where you were 2s ago and recover half the damage taken since', '2秒前の位置に戻り、その間に受けたダメージの半分を回復', '回到2秒前的位置，并恢复期间所受伤害的一半') },
+    e: { name: L('코드 리뷰', 'Code Review', 'コードレビュー', '代码审查'), cd: 11, desc: L('앞쪽 부채꼴의 버그에 리뷰 표시: 4초 동안 느려지고 받는 피해 +30%', 'Mark bugs in a cone ahead: slowed and +30% damage taken for 4s', '前方の扇形のバグにレビュー印: 4秒間遅くなり被ダメージ+30%', '标记前方扇形区域的Bug：4秒内减速，受到伤害+30%') },
+    q: { name: L('레거시 마이그레이션', 'Legacy Migration', 'レガシー移行', '遗留迁移'), desc: L('주변 버그를 모두 5초 동안 "지원 종료" 상태로 — 움직이지도 공격하지도 못함', 'Every nearby bug becomes "deprecated" for 5s — no moving, no attacking', '周りのバグを5秒間「サポート終了」に — 動けず攻撃もできない', '周围所有Bug进入“停止支持”状态5秒 — 无法移动也无法攻击') },
+  },
 ];
 const FREE_ZONES = [0.2, 0.52, 0.84];
-const FREE_HALFW = { forest: 6, city: 7.2, subway: 3.3, server: 4.2, physics: 6.5 };
+const FREE_HALFW = { forest: 6, city: 7.2, subway: 3.3, server: 4.2, physics: 6.5, archive: 6, fork: 6.5, prod: 4.2 };
 
 const Free = {
   active: false, S: null, run: null, D: null, keys: {}, locked: false,
@@ -78,15 +83,17 @@ const Free = {
   unlock() { this.busy = true; try { if (document.pointerLockElement) document.exitPointerLock(); } catch (e) { /* 없음 */ } setTimeout(() => { this.busy = false; }, 50); },
 
   // ----- 시작 / 스테이지 -----
-  start(diff, daily) {
+  start(diff, daily, ch) {
+    ch = ch === 2 ? 2 : 1; CUR_CH = ch;
     if (Tut.active) Tut.stop();
     Game.clearEntities(); Game.coverMesh.visible = false; if (Game.sideWall) Game.sideWall.visible = false;
     this.active = true; this.D = DIFF[diff] || DIFF.normal;
     this.run = { diff, daily: !!daily, seed: daily ? DAILY_SEED : 12345, stage: 0, score: 0, crashes: 0, shots: 0, hits: 0, fixed: 0, blocked: 0, dmgBy: {}, t0: Game.time, best: 0, streak: 0, maxStreak: 0 };
     this.mem = SQUAD.map((d) => ({ d, ammo: d.mag, reloadT: 0, cd: { shift: 0, e: 0 }, ult: 0 }));
-    this.member = 0;
+    this.member = 0; this.run.ch = ch;
     $('#hud').classList.add('hidden'); UI.only(); UI.hint('');
     document.body.classList.add('freeops');
+    if (ch === 2) { const go = () => Story.beforeStage(chFirst(2), () => this.startStage(chFirst(2))); if (!Store.get('ch2IntroSeen', false)) { Store.set('ch2IntroSeen', true); Game.state = 'paused'; return Story.play(STORY.ch2intro, go); } return go(); }
     this.startStage(0);
   },
   stop() {
@@ -144,10 +151,10 @@ const Free = {
     // 처음엔 조작 안내 (클릭하면 시작 — 마우스 잠금에 클릭이 필요해서)
     this.intro = true; this.showIntro();
   },
-  waveSize(idx, zi, w) { return Math.round((4 + idx * 1.1 + zi * 0.8 + w * 1.5) * this.D.count); },
+  waveSize(idx, zi, w) { return Math.round((4 + diffIdx(idx) * 1.1 + zi * 0.8 + w * 1.5) * this.D.count); },
   showIntro() {
     const el = $('#freeIntro'); el.classList.remove('hidden');
-    const sk = FREE_SKILLS.map((s, i) => `<div class="fi-m" style="--c:${SQUAD[i].color}"><b>${SQUAD[i].name}</b> <span>${SQUAD[i].label}</span><div>⇧ ${s.shift.name} · E ${s.e.name} · Q ${s.q.name}</div></div>`).join('');
+    const sk = FREE_SKILLS.slice(0, this.squadN()).map((s, i) => `<div class="fi-m" style="--c:${SQUAD[i].color}"><b>${SQUAD[i].name}</b> <span>${SQUAD[i].label}</span><div>⇧ ${s.shift.name} · E ${s.e.name} · Q ${s.q.name}</div></div>`).join('');
     el.querySelector('.fi-sk').innerHTML = sk;
     el.querySelectorAll('[data-kb]').forEach((b) => { b.textContent = b.dataset.kb.split(' ').map((a) => keyName(KB(a))).join(' '); });
     this.unlock();
@@ -213,7 +220,11 @@ const Free = {
     }
     return z.c.clone().add(new THREE.Vector3(rnd(-3, 3), 0, rnd(-3, 3)));
   },
-  spawnBug(type, pos, opt) { const b = new FreeBug(this, type, pos || this.spawnPos(), opt); this.bugs.push(b); return b; },
+  spawnBug(type, pos, opt) {
+    const b = new FreeBug(this, type, pos || this.spawnPos(), Object.assign({ side: type === 'merge' ? 'l' : null }, opt)); this.bugs.push(b);
+    if (type === 'merge' && !(opt && opt.side)) { const q = b.pos.clone().add(FV.e.set(rnd(-2.5, 2.5), 0, rnd(-2.5, 2.5))); const c = new FreeBug(this, type, q, { side: 'r' }); this.bugs.push(c); b.partner = c; c.partner = b; if (this.S) this.S.expected += 1; }
+    return b;
+  },
   spawnHotfix() { if (!this.active || !this.S || this.S.phase !== 'fight') return; const p = this.spawnPos(5, 9); p.y = 1.6; this.spawnBug('hotfix', p, { trojan: this.D.trojan && RNG() < this.D.trojan }); },
 
   // ----- 이동 범위 -----
@@ -264,12 +275,13 @@ const Free = {
   // ----- 분대원 · 무기 -----
   cur() { return this.mem[this.member]; },
   select(i) {
-    if (i === this.member || i < 0 || i >= SQUAD.length) return;
+    if (i === this.member || i < 0 || i >= this.squadN()) return;
     if (this.charge > 0) this.charge = 0;
     this.member = i; SND.play('click');
     UI.toast(`${SQUAD[i].name} · ${SQUAD[i].label}`);
   },
-  cycle(dir) { const N = SQUAD.length; this.select((this.member + dir + N) % N); },
+  squadN() { return this.run && this.run.ch === 2 ? SQUAD.length : 4; }, // 코볼은 2장에서만
+  cycle(dir) { const N = this.squadN(); this.select((this.member + dir + N) % N); },
   reload() { const m = this.cur(); if (m.reloadT > 0 || m.ammo >= m.d.mag || this.debugT > 0) return; m.reloadT = m.d.reload * (this.p.crouch ? 0.6 : 1); SND.play('reload'); },
   toggleCrouch() { this.p.crouch = !this.p.crouch; SND.play(this.p.crouch ? 'block' : 'move'); },
   eye() { return lerp(1.62, 0.92, this.p.crouchK) + this.p.pos.y; },
@@ -292,6 +304,7 @@ const Free = {
     if (this.fireCd > 0) return;
     if (m.d.kind === 'rifle') { this.fireCd = 1 / m.d.rate; this.fireRay(m, m.d.dmg, 0.012, 'rifle'); SND.play('rifle'); }
     else if (m.d.kind === 'launcher') { this.fireCd = 1 / m.d.rate; this.fireLauncher(m); }
+    else if (m.d.kind === 'beam') { this.fireCd = 1 / m.d.rate; this.fireBeam(m); }
     else { this.fireCd = 1 / m.d.rate; for (let i = 0; i < m.d.pellets; i++) this.fireRay(m, m.d.dmg, 0.065, 'shotgun', i > 0); SND.play('spread'); }
     if (this.debugT <= 0) m.ammo--;
     this.recoil = 1; this.run.shots += m.d.kind === 'shotgun' ? m.d.pellets : 1;
@@ -302,6 +315,27 @@ const Free = {
     if (this.debugT <= 0) m.ammo--;
     SND.play('snipe'); this.recoil = 1.6; this.run.shots++;
     if (k >= 1) this.pop(Game.W / 2, Game.H / 2 - 60, L('풀차지!', 'Full charge!', 'フルチャージ!', '满蓄力！'), '#6fe7ff');
+  },
+  // 코볼: 리뷰 빔 — 조준한 버그에 꾸준히 + 가까운 버그 2마리로 연쇄
+  fireBeam(m) {
+    const o = FV.a.copy(Game.camera.position), dir = this.ray().clone();
+    const hits = this.rayTargets(o, dir, 45);
+    let block = 45; for (const c of this.allCovers()) { const t = this.segHitsCover(o, FV.b.copy(o).addScaledVector(dir, 45), c); if (t >= 0) block = Math.min(block, t * 45); }
+    const h = hits.find((x) => x.t <= block);
+    const a = o.clone().addScaledVector(dir, 1.2).add(FV.d.set(0, -0.25, 0));
+    if (!h) { this.tracers.push({ a, b: o.clone().addScaledVector(dir, block), t: 0, c: m.d.color, w: 3 }); return; }
+    const p0 = h.o.pos || h.o.hitPos(); this.tracers.push({ a, b: p0.clone(), t: 0, c: m.d.color, w: 4 });
+    let any = this.hitTarget(h.o, m.d.dmg * (h.crit ? 1.5 : 1), h.crit, 'beam', dir);
+    let from = h.o; const done = new Set([h.o]);
+    for (let k = 0; k < (m.d.chain || 2); k++) {
+      let best = null, bd = 7;
+      for (const b of this.bugs) if (b.alive && b.role !== 'item' && !done.has(b) && !b.downT && b.hittable()) { const d = b.pos.distanceTo(from.pos); if (d < bd) { bd = d; best = b; } }
+      if (!best) break;
+      done.add(best); this.tracers.push({ a: from.pos.clone(), b: best.pos.clone(), t: 0, c: '#FFE0A8', w: 2 });
+      if (this.hitTarget(best, m.d.dmg * 0.7, false, 'beam', null)) any = true; from = best;
+    }
+    if (any) { this.run.hits++; this.hitMark = 0.12; }
+    if (Math.random() < 0.3) SND.play('tick');
   },
   // 에이다: 조준한 첫 지점(버그·엄폐물·바닥)에서 캡슐이 터짐
   aimPoint(maxT = 40) {
@@ -426,11 +460,12 @@ const Free = {
       if (!this.active) return;
       if (S.def.boss) { this.unlock(); Game.state = 'paused'; Story.ending(() => this.showResult()); return; }
       this.unlock(); Game.state = 'paused';
-      $('#clrTitle').textContent = L(`패치 완료 ${S.idx + 1}/${STAGES.length}`, `Patch applied ${S.idx + 1}/${STAGES.length}`, `パッチ完了 ${S.idx + 1}/${STAGES.length}`, `补丁完成 ${S.idx + 1}/${STAGES.length}`);
+      const cp = chPos(S.idx);
+      $('#clrTitle').textContent = L(`패치 완료 ${cp.n}/${cp.total}`, `Patch applied ${cp.n}/${cp.total}`, `パッチ完了 ${cp.n}/${cp.total}`, `补丁完成 ${cp.n}/${cp.total}`);
       const acc = this.run.shots ? this.run.hits / this.run.shots : 0;
       $('#clrStats').innerHTML = [[L('스테이지', 'Stage', 'ステージ', '关卡'), S.def.name], [L('고친 버그', 'Bugs fixed', '修復したバグ', '修复的Bug'), S.fixed], [L('남은 안정성', 'Stability left', '残り安定性', '剩余稳定性'), Math.round(this.p.hp) + '% (+' + bonus.toLocaleString() + ')'], [L('명중률', 'Accuracy', '命中率', '命中率'), Math.round(acc * 100) + '%']]
         .map(([k, v]) => `<span class="k">${k}</span><span class="v">${v}</span>`).join('') + `<span class="k full">${L('총점', 'Total', '合計', '总分')}</span><span class="v full">${this.run.score.toLocaleString()}</span>`;
-      $('#btnNext').textContent = STAGES[S.idx + 1] && STAGES[S.idx + 1].boss ? L('중간 보스 "메인 루프" ▶', 'Mid-boss "Main Loop" ▶', '中ボス「メインループ」 ▶', '中Boss“主循环” ▶') : L('다음 스테이지 ▶', 'Next stage ▶', '次のステージ ▶', '下一关 ▶');
+      $('#btnNext').textContent = STAGES[S.idx + 1] && STAGES[S.idx + 1].boss ? STAGES[S.idx + 1].name + ' ▶' : L('다음 스테이지 ▶', 'Next stage ▶', '次のステージ ▶', '下一关 ▶');
       UI.only('#scrClear');
     }, 2700);
   },
@@ -496,6 +531,22 @@ const Free = {
         for (const b of this.bugs.slice()) if (b.alive && b.role !== 'item' && (b.markT > 0 || b.onScreen)) { this.tracers.push({ a: Game.camera.position.clone().add(FV.d.set(0, -0.3, 0)), b: b.hitPos().clone(), t: 0, c: '#6fe7ff', w: 5 }); b.damage(b.markT > 0 ? 40 : 18, true, 'sniper', null); n++; }
         if (this.bossObj) for (const nd of this.bossObj.nodes) if (nd.alive) { this.bossObj.hit(nd, 12); }
         UI.banner('', 'GARBAGE COLLECTED ×' + n, 1.4);
+      }
+    } else if (i === 4) {
+      if (slot === 'shift') { // 2초 전 위치로
+        const h = this.hist && this.hist.find((x) => this.S.t - x.t >= 2) || (this.hist && this.hist[0]);
+        if (h) { PFX.spark(p.pos, [1, 0.7, 0.3], 12, 5); p.pos.copy(h.pos); p.hp = Math.min(100, p.hp + Math.max(0, (h.hp - p.hp) * 0.5)); p.iT = 0.4; }
+        SND.play('rollback'); this.marks.push({ pos: p.pos.clone(), t: 0, dur: 0.6, kind: 'bp' });
+      }
+      if (slot === 'e') { // 앞쪽 부채꼴 리뷰 표시
+        let n = 0; for (const b of this.bugs) if (b.alive && b.role !== 'item') { FV.d.subVectors(b.pos, p.pos); FV.d.y = 0; const d = FV.d.length(); if (d < 30 && FV.d.normalize().dot(fw) > 0.8) { b.reviewT = 4; b.markT = Math.max(b.markT, 0.01); n++; } }
+        this.marks.push({ pos: p.pos.clone().addScaledVector(fw, 8), t: 0, dur: 0.8, kind: 'scan', R: 14 }); SND.play('aim');
+        this.pop(Game.W / 2, Game.H * 0.36, L(`${n}마리 리뷰`, `${n} reviewed`, `${n}匹レビュー`, `已审查${n}只`), '#FFB347');
+      }
+      if (slot === 'q') {
+        let n = 0; for (const b of this.bugs) if (b.alive && b.role !== 'item' && b.pos.distanceTo(p.pos) < 16) { b.freezeT = 5; b.migT = 5; n++; }
+        for (const s of this.shots) if (s.alive && s.kind === 'packet' && s.pos.distanceTo(p.pos) < 16) s.kill(true);
+        this.marks.push({ pos: p.pos.clone(), t: 0, dur: 0.9, kind: 'wave', R: 16 }); SND.play('phase'); UI.banner('', 'LEGACY MIGRATION ×' + n, 1.4);
       }
     } else {
       if (slot === 'shift') { p.dashV.copy(fw).multiplyScalar(26); p.dashT = 0.3; p.iT = 0.25; this.heals.push({ pos: p.pos.clone(), t: 5 }); SND.play('rush'); }
@@ -585,6 +636,7 @@ const Free = {
     this.hitMark = Math.max(0, (this.hitMark || 0) - dt);
     this.updateWeapon(dt);
     this.updateAda(dt * ws);
+    this.hist = (this.hist || []).filter((h) => S.t - h.t < 2.6); if (!this.hist.length || S.t - this.hist[this.hist.length - 1].t > 0.1) this.hist.push({ t: S.t, pos: p.pos.clone(), hp: p.hp });
     this.updateCaps(dt * ws);
     // 구역 진행
     if (S.phase === 'travel' && !S.def.boss) {
@@ -730,7 +782,7 @@ const Free = {
     g.font = `bold 22px ${mono}`; g.fillStyle = '#E8EDE2'; g.fillText(obj, W / 2, 64);
     if (this.debugT > 0) { g.fillStyle = '#FFD34D'; g.font = `bold 18px ${mono}`; g.fillText(`DEBUG MODE ${this.debugT.toFixed(1)}s`, W / 2, 92); }
     // 분대원 (아래 가운데)
-    const NM = this.mem.length, bw = NM > 3 ? 128 : 150, bh = 74, bx = W / 2 - (bw * NM + 10 * (NM - 1)) / 2, by = H - bh - 26;
+    const NM = this.squadN(), bw = NM > 4 ? 112 : NM > 3 ? 128 : 150, bh = 74, bx = W / 2 - (bw * NM + 10 * (NM - 1)) / 2, by = H - bh - 26;
     for (let i = 0; i < NM; i++) {
       const x = bx + i * (bw + 10), m = this.mem[i], sel = i === this.member;
       box(x, by, bw, bh); if (sel) { g.strokeStyle = m.d.color; g.lineWidth = 3; g.strokeRect(x, by, bw, bh); }
@@ -768,7 +820,8 @@ class FreeBug {
     this.vel = new THREE.Vector3(); this.fireT = this.def.fire ? rnd(1.0, 2.2) : 0; this.biteT = 0; this.aimT = 0; this.aimDur = 0.9;
     this.freezeT = 0; this.markT = 0; this.vis = true; this.vuln = true; this.trojan = !!opt.trojan; this.lookT = 0;
     this.anchor = null;
-    this.mat = new THREE.SpriteMaterial({ map: (TEX[type] || TEX.basic)[0], transparent: true, fog: false });
+    this.side = opt.side || null; this.texK = type === 'merge' ? 'merge_' + (this.side || 'l') : type;
+    this.mat = new THREE.SpriteMaterial({ map: (TEX[this.texK] || TEX.basic)[0], transparent: true, fog: false });
     this.spr = new THREE.Sprite(this.mat); this.spr.scale.setScalar(0.01); Game.scene.add(this.spr);
     if (type === 'loop') { this.ang = rnd(0, 6.28); this.ring = new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX.ring, transparent: true, fog: false, depthWrite: false })); Game.scene.add(this.ring); }
     SND.play('spawn');
@@ -782,6 +835,9 @@ class FreeBug {
     if (!this.alive) return false;
     const F = this.F;
     if (this.role === 'item') { this.collect(); return true; }
+    if (this.downT > 0) return false;
+    if (this.type === 'deprecated' && kind !== 'beam') dmg *= 0.5;
+    if (this.reviewT > 0) dmg *= 1.3;
     if (this.type === 'loop' && !this.vuln && kind !== 'sniper' && F.debugT <= 0) { if (Math.random() < 0.3) SND.play('deflect'); PFX.spark(this.pos, [0.85, 0.7, 1], 3, 3); return false; }
     if (kind && WEAK[this.type] === kind) { dmg *= 2; if (!this.weakShown) { this.weakShown = true; F.pop2(this.pos, L('약점! ×2', 'Weak spot! ×2', '弱点! ×2', '弱点！×2'), KIND_INFO[kind].color); } }
     if (this.markT > 0) dmg *= 1.5;
@@ -796,6 +852,8 @@ class FreeBug {
   }
   die() {
     const F = this.F;
+    if (this.type === 'merge' && this.partner && this.partner.alive && !this.partner.downT) { this.downT = 2; this.hp = 0; F.pop2(this.pos, L('짝을 2초 안에!', 'Fix its pair in 2s!', '2秒以内に相方も!', '2秒内修好另一只！'), '#B07CFF'); return; }
+    if (this.type === 'merge' && this.partner && this.partner.alive && this.partner.downT) { const p = this.partner; p.downT = 0; F.onFix(p); p.remove(); F.pop2(this.pos, L('충돌 해결!', 'Conflict resolved!', 'コンフリクト解決!', '冲突已解决！'), '#3DE0D0'); SND.play('combo'); }
     if (this.type === 'clone' && !this.noSplit) {
       SND.play('split'); F.pop2(this.pos, L('분열!', 'Split!', '分裂!', '分裂！'), '#FFD34D');
       for (let i = 0; i < 2; i++) { const p = this.pos.clone().add(FV.d.set(rnd(-1.5, 1.5), 0, rnd(-1.5, 1.5))); const m = F.spawnBug('mini', p); m.vel.set(rnd(-4, 4), 0, rnd(-4, 4)); }
@@ -812,9 +870,20 @@ class FreeBug {
   update(dt, rdt) {
     const F = this.F, P = F.p.pos, d = this.freezeT > 0 ? 0 : dt;
     this.age += rdt; this.freezeT = Math.max(0, this.freezeT - rdt); this.markT = Math.max(0, this.markT - rdt);
-    this.ft += d; if (this.ft > 0.14) { this.ft = 0; this.frame ^= 1; this.mat.map = (TEX[this.type] || TEX.basic)[this.frame]; }
+    this.ft += d; if (this.ft > 0.14) { this.ft = 0; this.frame ^= 1; this.mat.map = (TEX[this.texK] || TEX.basic)[this.frame]; }
+    if (this.downT > 0) { // 머지 충돌: 짝을 기다림
+      this.downT -= rdt; this.mat.opacity = 0.25 + Math.sin(this.age * 20) * 0.1; this.spr.position.copy(this.pos);
+      if (this.downT <= 0) { this.downT = 0; this.hp = this.maxHp; this.mat.opacity = 1; F.pop2(this.pos, L('되살아났다!', 'Revived!', '復活した!', '复活了！'), '#B07CFF'); SND.play('split'); }
+      return;
+    }
+    this.reviewT = Math.max(0, (this.reviewT || 0) - rdt); this.migT = Math.max(0, (this.migT || 0) - rdt);
+    if (this.type === 'leak' && F.S.phase === 'fight' && this.freezeT <= 0) { // 메모리 누수: 커지다 터짐
+      this.grow = Math.min(1, (this.grow || 0) + rdt / 10);
+      const want = Math.round(this.def.hp * (1 + this.grow * 1.6)); if (want > this.maxHp) { this.hp += want - this.maxHp; this.maxHp = want; }
+      if (this.grow >= 1) { PFX.fix(this.pos, [0.43, 0.9, 1], 1.4); SND.play('split'); F.pop2(this.pos, L('메모리 폭발!', 'Memory overflow!', 'メモリ爆発!', '内存溢出！'), '#6FE7FF'); for (let k = 0; k < 3; k++) { const m = F.spawnBug('mini', this.pos.clone().add(FV.e.set(rnd(-1.5, 1.5), 0, rnd(-1.5, 1.5)))); m.vel.set(rnd(-4, 4), 0, rnd(-4, 4)); } F.S.expected += 2; this.remove(); return; }
+    }
     this.flash = Math.max(0, this.flash - rdt * 6);
-    const sp = this.def.spd * F.D.spd * (F.S.help ? 0.8 : 1);
+    const sp = this.def.spd * F.D.spd * (F.S.help ? 0.8 : 1) * (this.reviewT > 0 ? 0.5 : 1);
     FV.a.set(P.x - this.pos.x, 0, P.z - this.pos.z); const dist = FV.a.length(); FV.a.divideScalar(dist || 1);
     if (this.role === 'item') { this.pos.y = 1.6 + Math.sin(this.age * 2.5) * 0.3; if (dist < 1.3) this.collect(); else if (this.age > 9) this.remove(); }
     else if (this.role === 'rush') {
@@ -848,7 +917,7 @@ class FreeBug {
       if (F.zones[F.S.zi]) { const z = F.zones[F.S.zi], dx = this.pos.x - z.c.x, dz = this.pos.z - z.c.z, dd = Math.hypot(dx, dz); if (dd > z.R - 0.6) { this.pos.x = z.c.x + dx / dd * (z.R - 0.6); this.pos.z = z.c.z + dz / dd * (z.R - 0.6); } }
       for (const c of F.allCovers()) { const y = this.pos.y; F.pushOut(this.pos, c, this.radius() * 0.8); this.pos.y = y; }
     }
-    const scale = this.def.size * Math.min(1, this.age / 0.3), sq = Math.sin(this.age * 14) * 0.07;
+    const scale = this.def.size * Math.min(1, this.age / 0.3) * (this.type === 'leak' ? 1 + (this.grow || 0) * 0.9 : 1), sq = Math.sin(this.age * 14) * 0.07;
     this.spr.position.copy(this.pos); this.spr.scale.set(scale * (1 + sq), scale * (1 - sq), 1);
     this.mat.rotation = Math.sin(this.age * 5) * 0.12;
     if (this.type !== 'loop') { if (this.freezeT > 0) this.mat.color.setRGB(0.75, 1.2, 0.5); else if (this.flash > 0) this.mat.color.setScalar(1 + this.flash * 2); else if (this.trojan && Math.sin(this.age * 9) > 0.6) this.mat.color.setRGB(1, 0.55, 0.55); else this.mat.color.setScalar(1); }
@@ -906,7 +975,8 @@ class FreeWall {
 class FreeBoss {
   constructor(F) {
     this.F = F; this.phase = 1; this.fixed = 0; this.t = 0; this.atkT = 3; this.spawnT = 5; this.nodes = [];
-    this.mat = new THREE.SpriteMaterial({ map: TEX.loop[0], transparent: true, fog: false }); this.spr = new THREE.Sprite(this.mat); this.spr.scale.setScalar(9); this.spr.position.set(0, 7, 0); Game.scene.add(this.spr);
+    this.dl = F.S.def.key === 'deadline' ? { handT: 6, warn: 0, night: 0, bar: 0 } : null;
+    this.mat = new THREE.SpriteMaterial({ map: this.dl && TEX.deadline ? TEX.deadline : TEX.loop[0], transparent: true, fog: false }); this.spr = new THREE.Sprite(this.mat); this.spr.scale.setScalar(this.dl ? 12 : 9); this.spr.position.set(0, 7, 0); Game.scene.add(this.spr);
     this.ring = new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX.ring, transparent: true, fog: false, depthWrite: false })); this.ring.scale.setScalar(16); this.ring.position.copy(this.spr.position); Game.scene.add(this.ring);
     const c = document.createElement('canvas'); c.width = 128; c.height = 40; const g = c.getContext('2d');
     g.fillStyle = '#3a0a10'; g.fillRect(0, 0, 128, 40); g.strokeStyle = '#FF4D5E'; g.lineWidth = 4; g.strokeRect(2, 2, 124, 36); g.fillStyle = '#FF8A95'; g.font = 'bold 20px monospace'; g.textAlign = 'center'; g.fillText('ERR();', 64, 27);
@@ -926,7 +996,7 @@ class FreeBoss {
     if (!n.alive) return false;
     n.hp -= dmg; n.mat.color.setScalar(2); PFX.spark(n.pos, [1, 0.5, 0.5], 3, 3); if (Math.random() < 0.4) SND.play('tick');
     if (n.hp <= 0) {
-      n.alive = false; Game.scene.remove(n.spr); n.mat.dispose(); this.fixed++; this.F.S.fixed++; this.F.run.score += 400; this.F.run.fixed++;
+      n.alive = false; Game.scene.remove(n.spr); n.mat.dispose(); this.fixed++; this.F.S.fixed++; this.F.run.score += 400; this.F.run.fixed++; if (this.dl) this.dl.bar = Math.max(0, this.dl.bar - 0.2);
       this.F.cur().ult = Math.min(100, this.F.cur().ult + 10);
       PFX.fix(n.pos, [1, 0.3, 0.37], 1.6); SND.play('hit', this.fixed); World.colorizeNear(n.pos, 3);
       if (!this.nodes.some((x) => x.alive)) {
@@ -949,7 +1019,14 @@ class FreeBoss {
     if (this.dead) return;
     const F = this.F, sp = [1, 1.4, 1.8][this.phase - 1] * F.D.spd;
     this.t += dt; this.spr.position.y = 7 + Math.sin(this.t * 1.5) * 0.6; this.ring.position.copy(this.spr.position); this.ring.material.rotation += dt * sp;
-    const s = 9 * (1 + Math.sin(this.t * 6) * 0.04); this.spr.scale.setScalar(s);
+    const s = (this.dl ? 12 : 9) * (1 + Math.sin(this.t * 6) * 0.04); this.spr.scale.setScalar(s);
+    if (this.dl) { // 데드라인 특수 공격
+      const d = this.dl; d.handT -= dt;
+      if (d.handT <= 0 && !d.warn) { d.warn = 1.6; SND.play('warn'); UI.banner('', L('시계 바늘 충격파 — 엄폐!', 'Clock-hand shockwave — TAKE COVER!', '時計の針の衝撃波 — 遮蔽して!', '时针冲击波 — 快隐蔽！'), 1.4); }
+      if (d.warn > 0) { d.warn -= dt; if (d.warn <= 0) { d.warn = 0; d.handT = [7, 6, 5][this.phase - 1]; SND.play('boom'); Game.shake = 0.5; this.F.marks.push({ pos: this.spr.position.clone().setY(0), t: 0, dur: 0.8, kind: 'wave', R: 30 }); if (!(F.p.crouch && F.nearCover())) F.hurt(12, this.spr.position, 'missile'); else F.pop(Game.W / 2, Game.H * 0.4, L('엄폐 성공!', 'Covered!', '遮蔽成功!', '隐蔽成功！'), '#C6F432'); } }
+      d.night = this.phase >= 2 ? Math.min(0.5, d.night + dt * 0.012) : 0;
+      if (this.phase >= 3) { d.bar += dt / (26 / F.D.spd); if (d.bar >= 1) { d.bar = 0.45; F.hurt(26, this.spr.position, 'missile'); UI.banner('', L('강제 배포!', 'FORCED DEPLOY!', '強制デプロイ!', '强制部署！'), 1.4); } }
+    }
     for (const n of this.nodes) { if (!n.alive) continue; n.a += dt * 0.5 * sp; n.pos.set(Math.cos(n.a) * n.r, n.h + Math.sin(this.t + n.a) * 0.8, Math.sin(n.a) * n.r); n.spr.position.copy(n.pos); n.mat.color.lerp(FV.a.set(1, 1, 1), Math.min(1, dt * 6)); }
     this.atkT -= dt; this.spawnT -= dt;
     if (this.atkT <= 0) {
@@ -960,12 +1037,18 @@ class FreeBoss {
     }
     if (this.spawnT <= 0) {
       this.spawnT = [8, 6.5, 5.5][this.phase - 1];
-      const n = this.phase + 1, types = ['basic', 'clone', 'throw', 'ghost', 'e404'];
+      const n = this.phase + 1, types = this.dl ? ['deprecated', 'merge', 'leak', 'throw', 'ghost'] : ['basic', 'clone', 'throw', 'ghost', 'e404'];
       const on = F.bugs.filter((b) => b.alive && b.role !== 'item').length;
       for (let i = 0; i < n && on + i < F.D.maxOn; i++) F.spawnBug(types[Math.floor(RNG() * Math.min(types.length, 2 + this.phase))]);
     }
   }
   draw2D(g) {
+    const d = this.dl, W = Game.W, H = Game.H;
+    if (d) {
+      if (d.night > 0.01) { g.fillStyle = `rgba(4,4,14,${d.night})`; g.fillRect(0, 0, W, H); }
+      if (d.warn > 0) { g.fillStyle = `rgba(255,77,94,${0.12 + 0.12 * Math.sin(Game.time * 20)})`; g.fillRect(0, 0, W, H); }
+      if (this.phase >= 3) { const bw = Math.min(620, W * 0.5), x = W / 2 - bw / 2, y = 112; g.fillStyle = 'rgba(8,10,8,.85)'; g.fillRect(x - 6, y - 26, bw + 12, 50); g.fillStyle = '#2a0a0e'; g.fillRect(x, y, bw, 16); g.fillStyle = '#FF4D5E'; g.fillRect(x, y, bw * d.bar, 16); g.font = 'bold 15px ui-monospace,Menlo,monospace'; g.textAlign = 'center'; g.fillStyle = '#E8EDE2'; g.fillText(L('배포까지', 'DEPLOY IN', 'デプロイまで', '距离部署') + ` ${Math.round((1 - d.bar) * 100)}%`, W / 2, y - 8); }
+    }
     for (const n of this.nodes) { if (!n.alive) continue; const s = this.F.project(n.pos); if (!s) continue; const w = 54; g.fillStyle = '#000'; g.fillRect(s.x - w / 2 - 1, s.y - 30, w + 2, 6); g.fillStyle = '#FF4D5E'; g.fillRect(s.x - w / 2, s.y - 29, w * n.hp / n.max, 4); }
   }
 }

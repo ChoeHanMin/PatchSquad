@@ -8,6 +8,9 @@ const GLYPH = {
   '0': ['###', '#.#', '#.#', '#.#', '###'],
   '!': ['#', '#', '#', '.', '#'],
   '~': ['.....', '.#.#.', '#.#.#', '.#.#.', '.....'], // ∞
+  '<': ['..#', '.#.', '#..', '.#.', '..#'],
+  '%': ['#.#', '..#', '.#.', '#..', '#.#'],
+  '-': ['...', '...', '###', '...', '...'],
 };
 function drawGlyphs(g, str, cx, cy, color) {
   const rows = str.split('').map((c) => GLYPH[c]);
@@ -39,6 +42,9 @@ const BUGSTYLE = {
   e404: { body: '#FF8A3D', dark: '#7a3210', eye: '#FFD34D', sym: '404', symc: '#2a0a00', rx: 8, ry: 6, legs: 3 },
   loop: { body: '#E05BFF', dark: '#5a1a70', eye: '#FFD34D', sym: '~', symc: '#25062e', rx: 7, ry: 7, legs: 2 },
   throw: { body: '#FF6B3D', dark: '#7a2410', eye: '#FFD34D', sym: '!', symc: '#2a0700', rx: 7, ry: 6, legs: 3 },
+  merge: { body: '#B07CFF', dark: '#3a1a6a', eye: '#FFD34D', sym: '<<', symc: '#1a0a2e', rx: 7, ry: 6, legs: 3 },
+  leak: { body: '#6FE7FF', dark: '#1a6a7a', eye: '#2a070c', sym: '%', symc: '#0a2a30', rx: 7, ry: 7, legs: 2 },
+  deprecated: { body: '#9a968a', dark: '#4a4840', eye: '#d8d4c8', sym: '--', symc: '#2a2820', rx: 7, ry: 6, legs: 3 },
 };
 function bugCanvas(type, frame) {
   const st = BUGSTYLE[type];
@@ -101,6 +107,13 @@ function buildTextures() {
     }
   }
   // 핫픽스 아이템 (assets/item_hotfix.png 있으면 교체)
+  TEX.merge_l = TEX.merge; TEX.merge_r = [texFromCanvas(bugCanvas('merge', 0)), texFromCanvas(bugCanvas('merge', 1))];
+  if (ASSETS.bug_merge) {
+    const half = (side) => { const t = new THREE.Texture(); t.magFilter = THREE.NearestFilter; t.minFilter = THREE.LinearFilter; t.generateMipmaps = false; return t; };
+    const L2 = half('l'), R2 = half('r'), img = new Image();
+    img.onload = () => { const w = img.width, h = img.height; for (const [t, x0] of [[L2, 0], [R2, w / 2]]) { const c = document.createElement('canvas'); c.width = c.height = Math.round(w / 2); c.getContext('2d').drawImage(img, x0, h / 2 - w / 4, w / 2, w / 2, 0, 0, c.width, c.height); t.image = c; t.needsUpdate = true; } };
+    img.src = ASSETS.bug_merge; TEX.merge_l = [L2, L2]; TEX.merge_r = [R2, R2];
+  }
   TEX.hotfix = [texFromCanvas(hotfixCanvas(0)), texFromCanvas(hotfixCanvas(1))];
   if (ASSETS.item_hotfix) {
     const t = new THREE.Texture(); t.magFilter = THREE.NearestFilter; t.minFilter = THREE.LinearFilter; t.generateMipmaps = false;
@@ -115,6 +128,7 @@ function buildTextures() {
   IMG.capsule = ASSETS.proj_capsule ? imgOf(ASSETS.proj_capsule) : null;
   TEX.capsule = ASSETS.proj_capsule ? assetTex(ASSETS.proj_capsule) : null;
   TEX.drone = ASSETS.drone_ada ? assetTex(ASSETS.drone_ada) : null;
+  TEX.deadline = ASSETS.boss_deadline ? assetTex(ASSETS.boss_deadline) : null;
   // 분대 얼굴 (assets/portrait_*.png 있으면 교체)
   IMG.portrait = SQUAD_LOOK.map((s, i) => (ASSETS['portrait_' + s.key] ? imgOf(ASSETS['portrait_' + s.key]) : portraitCanvas(s)));
   IMG.char = SQUAD_LOOK.map((s, i) => (ASSETS['char_' + s.key] ? imgOf(ASSETS['char_' + s.key]) : charCanvas(s, i)));
@@ -220,7 +234,7 @@ function gunCanvas(stripe) {
   R(18, 4, 2, 2, '#FF4D5E');
   return c;
 }
-const ASSET_KEY = { basic: 'bug_basic', clone: 'bug_clone', mini: 'bug_mini', ghost: 'bug_ghost', e404: 'bug_404', loop: 'bug_loop', throw: 'bug_throw' };
+const ASSET_KEY = { basic: 'bug_basic', clone: 'bug_clone', mini: 'bug_mini', ghost: 'bug_ghost', e404: 'bug_404', loop: 'bug_loop', throw: 'bug_throw', merge: 'bug_merge', leak: 'bug_leak', deprecated: 'bug_deprecated' };
 function bugImgCanvas(type) { // DOM용 (크래시 화면)
   const url = ASSETS[ASSET_KEY[type]];
   if (url) { const img = new Image(); img.src = url; img.className = 'asset'; return img; }
@@ -290,6 +304,7 @@ const SQUAD_LOOK = [
   { key: 'rex', hair: '#7a3210', cap: '#FFD34D', skin: '#e8b48a', acc: '#FFD34D' },
   { key: 'pin', hair: '#1d2f6e', cap: '#6fe7ff', skin: '#f6d2b0', acc: '#6fe7ff' },
   { key: 'ada', hair: '#3a2418', cap: '#FF5FA2', skin: '#f4cba6', acc: '#FF5FA2' },
+  { key: 'cobol', hair: '#b8b8b0', cap: '#8a7a5a', skin: '#e8c09a', acc: '#FFB347' },
 ];
 function portraitCanvas(s) {
   const c = document.createElement('canvas'); c.width = c.height = 24; const g = c.getContext('2d');
@@ -319,7 +334,7 @@ function charCanvas(s, i) {
   P(10, 9, 12, 11, s.hair); P(10, 8, 12, 4, s.cap); P(9, 10, 2, 3, s.cap); P(9, 13, 2, 5, '#2a2f28'); P(21, 13, 2, 5, '#2a2f28');
   P(12, 18, 8, 2, s.skin);
   // 총 (오른쪽 위로 비스듬히)
-  const gc = ['#C6F432', '#FFD34D', '#6fe7ff', '#FF5FA2'][i] || '#C6F432';
+  const gc = ['#C6F432', '#FFD34D', '#6fe7ff', '#FF5FA2', '#FFB347'][i] || '#C6F432';
   for (let k = 0; k < (i === 2 ? 14 : 10); k++) P(25 + Math.floor(k * 0.4), 30 - k, 2, 2, k > (i === 2 ? 11 : 7) ? gc : '#3a4037');
   return c;
 }

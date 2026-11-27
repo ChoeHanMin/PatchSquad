@@ -21,6 +21,9 @@ const DEX = [
   { t: 'e404', role: L('사격', 'Shooter', '射撃', '射击'), hp: 8, desc: L('조준선이 1초 이상 겹치면 근처로 순간이동해요.', 'Teleports nearby if your crosshair stays on it for over 1 second.', '照準を1秒以上合わせると近くにテレポートする。', '准星停留超过1秒就会瞬移到附近。'), tip: L('오래 겨누지 말고 연사로 빠르게 끝내세요. 연사가 약점.', 'Don\'t aim too long — finish it fast with Rapid. Weak to Rapid.', '長く狙わず、連射で素早く倒そう。連射が弱点。', '别瞄太久，用连射快速解决。弱点是连射。') },
   { t: 'loop', role: L('사격 · 미사일', 'Shooter · Missile', '射撃 · ミサイル', '射击 · 导弹'), hp: 10, desc: L('빙글빙글 돌며 관통 미사일을 쏴요. 껍질 때문에 빛나는 지점에서만 맞아요.', 'Spins around firing piercing missiles. Its shell means only the glowing spot takes damage.', 'ぐるぐる回りながら貫通ミサイルを撃つ。殻のせいで光る部分にしか当たらない。', '一边转圈一边发射穿透导弹。因为外壳，只有发光的部位能被击中。'), tip: L('저격은 껍질을 뚫어서 언제든 맞아요. 미사일은 숨어도 맞으니 쏴서 떨어뜨리세요.', 'Sniper pierces the shell and always hits. Missiles hit you even in cover, so shoot them down.', '狙撃は殻を貫通していつでも当たる。ミサイルは隠れても当たるので撃ち落とそう。', '狙击能穿透外壳随时命中。导弹隐蔽也会被击中，要把它打下来。') },
   { t: 'missile', role: L('관통탄', 'Piercing round', '貫通弾', '穿透弹'), hp: 2, desc: L('무한루프 버그와 보스가 쏘는 미사일. 엄폐물을 뚫어요.', 'Missiles fired by Infinite Loop Bugs and the boss. They go through cover.', '無限ループバグとボスが撃つミサイル。遮蔽物を貫通する。', '无限循环Bug和Boss发射的导弹。会穿透掩体。'), tip: L('숨지 말고 연사로 격추하세요. 보라색 "관통!" 표시가 경고예요.', 'Don\'t hide — shoot it down with Rapid. The purple "PIERCE!" mark is your warning.', '隠れずに連射で撃ち落とそう。紫の「貫通!」表示が警告だ。', '别躲，用连射把它击落。紫色“穿透！”标记就是警告。') },
+  { t: 'merge', role: L('사격 · 한 쌍', 'Shooter · Pair', '射撃 · ペア', '射击 · 成对'), hp: 5, desc: L('항상 두 마리가 한 쌍으로 와요. 한 마리만 고치면 2초 뒤 되살아나요.', 'Always comes as a pair. Fix only one and it revives after 2 seconds.', 'いつも2匹1組で来る。片方だけ直すと2秒後に復活する。', '总是成对出现。只修好一只，2秒后会复活。'), tip: L('둘 다 2초 안에! 코볼의 연쇄 빔이면 한 번에', 'Both within 2s! Cobol\'s chain beam hits both', '2秒以内に両方! コボルの連鎖ビームなら一度に', '2秒内两只都修！科博的连锁光束能一次命中') },
+  { t: 'leak', role: L('돌격 · 성장', 'Rusher · Grows', '突撃 · 成長', '突击 · 成长'), hp: 4, desc: L('천천히 다가오면서 점점 커지고 단단해져요. 다 크면 터져서 작은 버그 3마리가 나와요.', 'Creeps closer while growing bigger and tougher. At full size it bursts into 3 mini bugs.', 'ゆっくり近づきながらどんどん大きく硬くなる。最大になると破裂して小さいバグが3匹出る。', '慢慢靠近，越长越大越硬。长到最大会爆开，变成3只小Bug。'), tip: L('작을 때 빨리. 에이다의 런처가 약점', 'Get it while small. Weak to Ada\'s launcher', '小さいうちに。エイダのランチャーが弱点', '趁小快打。弱点是艾达的发射器') },
+  { t: 'deprecated', role: L('돌격 · 떼', 'Rusher · Swarm', '突撃 · 群れ', '突击 · 成群'), hp: 6, desc: L('느릿느릿 떼로 오는 낡은 버그. 최신 무기에는 피해가 절반만 들어가요.', 'Old, slow bugs that come in swarms. Modern weapons deal only half damage.', 'のろのろと群れで来る古いバグ。最新の武器はダメージが半分しか入らない。', '慢吞吞成群而来的老旧Bug。新武器只能造成一半伤害。'), tip: L('코볼의 리뷰 빔은 정상 피해 + 연쇄', 'Cobol\'s Review Beam deals full damage and chains', 'コボルのレビュービームは通常ダメージ+連鎖', '科博的审查光束造成正常伤害并连锁') },
   { t: 'hotfix', role: L('아이템', 'Item', 'アイテム', '道具'), hp: 1, desc: L('가끔 둥실 떠다니는 긴급 패치 꾸러미.', 'An emergency patch pack that sometimes floats by.', 'ときどき漂ってくる緊急パッチパック。', '偶尔飘过来的紧急补丁包。'), tip: L('쏘면 안정성 +20, 화면 고장 복구, 엄폐물 보강. 상 난이도에선 가짜(붉게 깜빡임)도 있어요.', 'Shoot it: Stability +20, glitches repaired, cover reinforced. On Hard some are fakes (flashing red).', '撃つと安定性+20、画面の不具合を修復、遮蔽物を補強。ハードでは偽物(赤く点滅)もある。', '击中后稳定性+20、修复画面故障、加固掩体。困难难度下也有假货（红色闪烁）。') },
 ];
 const SQUAD_INFO = [
@@ -28,6 +31,7 @@ const SQUAD_INFO = [
   { name: L('렉스', 'Rex', 'レックス', '雷克斯'), role: L('리팩터 · 산탄', 'Refactor · Spread', 'リファクタ · 散弾', '重构 · 散弹'), desc: L('한 번에 7발을 넓게 퍼뜨리고, 달려오는 버그를 뒤로 밀어내요.', 'Fires 7 pellets in a wide spread and knocks charging bugs back.', '7発を広く撃ち、突っ込んでくるバグを押し返す。', '一次散射7发，把冲过来的Bug击退。'), weak: L('기본 · 복제 · 작은 복제 버그', 'Basic · Clone · Mini Clone', 'ベーシック · クローン · ミニクローン', '基础 · 克隆 · 迷你克隆') },
   { name: L('핀', 'Pin', 'ピン', '平'), role: L('프로파일러 · 저격', 'Profiler · Sniper', 'プロファイラ · 狙撃', '分析器 · 狙击'), desc: L('누르고 있으면 충전, 떼거나 다 차면 발사. 멀리 있는 적과 겹쳐 있는 적을 한 번에 꿰뚫어요.', 'Hold to charge, release (or wait for full) to fire. Pierces distant and lined-up enemies in one shot.', '押してチャージ、離すか満タンで発射。遠くの敵や重なった敵を一撃で貫く。', '按住蓄力，松开或蓄满时发射。一发贯穿远处和重叠的敌人。'), weak: L('throw · 투명 · 무한루프 버그 · 보스 오류 줄', 'Throw · Ghost · Infinite Loop · Boss error lines', 'スロー · ゴースト · 無限ループ · ボスのエラー行', '投掷 · 幽灵 · 无限循环 · Boss错误行') },
   { name: L('에이다', 'Ada', 'エイダ', '艾达'), role: L('테스터 · 런처', 'Tester · Launcher', 'テスター · ランチャー', '测试员 · 发射器'), desc: L('테스트 캡슐을 쏘면 조준한 자리에서 터져 주변 버그를 한꺼번에 고쳐요. 탄창은 작지만 한 방이 넓어요.', 'Fires test capsules that burst where you aim, fixing every bug around it. Small magazine, big blast.', 'テストカプセルを撃つと狙った場所で弾け、周りのバグをまとめて直す。弾倉は小さいが一発が広い。', '发射测试胶囊，在瞄准处爆开，一次修复周围所有Bug。弹匣小，但范围大。'), weak: L('작은 복제 버그 · 몰려 있는 버그', 'Mini Clones · clustered bugs', 'ミニクローン · 群れたバグ', '迷你克隆 · 聚集的Bug') },
+  { name: L('코볼', 'Cobol', 'コボル', '科博'), role: L('레거시 장인 · 리뷰 빔', 'Legacy Veteran · Review Beam', 'レガシー職人 · レビュービーム', '遗留代码匠人 · 审查光束'), desc: L('누르고 있는 동안 나가는 연속 광선. 맞은 버그에서 가까운 버그 2마리로 연쇄로 튀어요. 2장에서 합류.', 'A continuous beam while you hold. Chains from the target to 2 nearby bugs. Joins in Chapter 2.', '押している間出続ける光線。当たったバグから近くの2匹へ連鎖する。第2章で合流。', '按住时持续发射的光束，会从目标连锁到附近2只Bug。第2章加入。'), weak: L('머지 충돌 · 지원 종료 버그', 'Merge Conflict · Deprecated', 'マージコンフリクト · サポート終了', '合并冲突 · 停止支持') },
 ];
 function dexPic(t) {
   if (t === 'hotfix') return ASSETS.item_hotfix ? Object.assign(new Image(), { src: ASSETS.item_hotfix }) : hotfixCanvas(0);
@@ -42,6 +46,7 @@ const TUT = {
   join_rex: { tag: L('분대 합류', 'Squad joined', '分隊合流', '队员加入'), title: L('렉스 합류 — 산탄', 'Rex joins — Spread', 'レックス合流 — 散弾', '雷克斯加入 — 散弹'), body: L('한 번에 7발이 넓게 퍼지고, 달려오는 버그를 <b>뒤로 밀어내요</b>. 기본·복제 버그의 약점이에요.<br>아래 렉스 아이콘을 누르세요', 'Fires 7 pellets in a wide spread and <b>knocks charging bugs back</b>. Basic and Clone bugs are weak to it.<br>Click the Rex icon below', '7発が広がり、突っ込んでくるバグを<b>押し返す</b>。ベーシック・クローンバグの弱点だ。<br>下のレックスのアイコンをクリック', '一次散射7发，把冲过来的Bug<b>击退</b>。是基础和克隆Bug的弱点。<br>点击下方雷克斯图标') + (IS_TOUCH ? '.' : L(' (2번 키).', ' (key 2).', ' (2キー)。', '（按键2）。')) + L(' 조작하지 않는 동료는 옆에서 알아서 쏴요.', ' Squad members you don\'t control shoot on their own.', ' 操作していない仲間は自分で撃ってくれる。', ' 未操控的队友会自己开火。'), pics: [1] },
   join_pin: { tag: L('분대 합류', 'Squad joined', '分隊合流', '队员加入'), title: L('핀 합류 — 저격', 'Pin joins — Sniper', 'ピン合流 — 狙撃', '平加入 — 狙击'), body: L('<b>누르고 있으면 충전</b>되고, 떼거나 다 차면 발사돼요. 겹친 적을 꿰뚫고, 무한루프 버그의 껍질도 뚫어요.<br>멀리서 던지는 버그와 보스 오류 줄의 약점이에요', '<b>Hold to charge</b>, release or wait for full to fire. Pierces lined-up enemies and Infinite Loop shells.<br>Throwers and boss error lines are weak to it', '<b>押してチャージ</b>、離すか満タンで発射。重なった敵や無限ループの殻を貫く。<br>遠くから投げるバグとボスのエラー行の弱点だ', '<b>按住蓄力</b>，松开或蓄满时发射。可贯穿重叠的敌人和无限循环的外壳。<br>是远程投掷Bug和Boss错误行的弱点') + (IS_TOUCH ? '.' : L(' (3번 키).', ' (key 3).', ' (3キー)。', '（按键3）。')), pics: [2] },
   join_ada: { tag: L('분대 합류', 'Squad joined', '分隊合流', '队员加入'), title: L('에이다 합류 — 런처', 'Ada joins — Launcher', 'エイダ合流 — ランチャー', '艾达加入 — 发射器'), body: L('테스트 캡슐이 조준한 자리에서 <b>터져서</b> 주변 버그를 한꺼번에 고쳐요. 작은 복제 버그 떼의 약점이에요.<br>아래 에이다 아이콘을 누르세요', 'Test capsules <b>burst</b> where you aim and fix every bug nearby. Mini Clone swarms are weak to it.<br>Click the Ada icon below', 'テストカプセルが狙った場所で<b>弾けて</b>、周りのバグをまとめて直す。ミニクローンの群れの弱点だ。<br>下のエイダのアイコンをクリック', '测试胶囊会在瞄准处<b>爆开</b>，一次修复周围的Bug。是迷你克隆群的弱点。<br>点击下方艾达图标') + (IS_TOUCH ? '.' : L(' (4번 키).', ' (key 4).', ' (4キー)。', '（按键4）。')), pics: [3] },
+  join_cobol: { tag: L('분대 합류', 'Squad joined', '分隊合流', '队员加入'), title: L('코볼 합류 — 리뷰 빔', 'Cobol joins — Review Beam', 'コボル合流 — レビュービーム', '科博加入 — 审查光束'), body: L('누르고 있는 동안 광선이 나가고, 맞은 버그에서 가까운 버그로 <b>연쇄</b>로 튀어요. 머지 충돌·지원 종료 버그의 약점이에요.<br>아래 코볼 아이콘을 누르세요', 'Hold to fire a beam that <b>chains</b> from the target to nearby bugs. Strong against Merge Conflict and Deprecated bugs.<br>Click the Cobol icon below', '押している間ビームが出て、当たったバグから近くのバグへ<b>連鎖</b>する。マージコンフリクト・サポート終了バグの弱点だ。<br>下のコボルのアイコンをクリック', '按住发射光束，会从目标<b>连锁</b>到附近的Bug。是合并冲突和停止支持Bug的弱点。<br>点击下方科博图标') + (IS_TOUCH ? '.' : L(' (5번 키).', ' (key 5).', ' (5キー)。', '（按键5）。')), pics: [4] },
   rollback: { tag: L('분대 스킬', 'Squad skill', '分隊スキル', '小队技能'), title: L('롤백 — 3초 슬로우', 'Rollback — 3s slow-mo', 'ロールバック — 3秒スロー', '回滚 — 3秒慢动作'), body: L('누르면 3초 동안 세상이 30% 속도로 느려지고, 날아오던 공격은 되감기고, 화면 고장 하나가 바로 고쳐져요.<br>스테이지마다 정해진 횟수만 쓸 수 있어요. 위급할 때 버튼이 반짝여요', 'Slows the world to 30% for 3 seconds, rewinds incoming attacks and instantly repairs one glitch.<br>Limited uses per stage. The button flashes when you are in danger', '3秒間、世界の速度が30%になり、飛んでくる攻撃は巻き戻され、画面の不具合が1つすぐ直る。<br>ステージごとに使える回数が決まっている。ピンチになるとボタンが光る', '3秒内世界速度降至30%，飞来的攻击被倒带，并立即修复一个画面故障。<br>每关使用次数有限。危急时按钮会闪烁') + (IS_TOUCH ? '.' : L(' (스페이스).', ' (Space).', ' (スペース)。', '（空格）。')) },
   cover_broken: { tag: L('위험', 'Danger', '危険', '危险'), title: L('엄폐물이 부서졌어요', 'Your cover is destroyed', '遮蔽物が壊れた', '掩体被摧毁了'), body: L('이제 숨어도 에러 패킷에 맞아요. 던지는 버그부터 빨리 잡으세요.<br>다음 엄폐 지점에 가면 새 엄폐물이 생기고, 핫픽스를 쏘면 보강돼요.', 'Error packets now hit you even while hiding. Take out the throwers fast.<br>The next cover point gives you new cover, and a Hotfix reinforces it.', '隠れていてもエラーパケットが当たるようになった。投げるバグから素早く倒そう。<br>次の遮蔽ポイントで新しい遮蔽物が手に入り、ホットフィックスで補強できる。', '现在隐蔽也会被错误数据包击中。快先解决投掷的Bug。<br>到下一个掩体点会有新掩体，热修复可以加固掩体。') },
 };
@@ -88,13 +93,18 @@ const UI = {
     click('#btnAskTutYes', () => { Store.set('tutAsked', true); this.only(); Game.newRun(false, 'tutorial'); });
     click('#btnAskTutNo', () => { Store.set('tutAsked', true); this.showDiff(); });
     click('#btnDiffBack', () => this.only('#scrTitle'));
+    $$('.chcard').forEach((b) => b.addEventListener('click', () => {
+      SND.init(); const c = +b.dataset.ch;
+      if (c === 2 && !this.ch2Open()) { SND.play('jam'); this.toast(L('1장을 끝까지 깨면 열려요', 'Clear Chapter 1 to unlock', '第1章をクリアすると解放', '通关第1章后解锁')); return; }
+      SND.play('click'); this.pendingCh = c; Store.set('lastCh', c); this.syncCh();
+    }));
     $$('.dcard').forEach((b) => b.addEventListener('click', () => {
       SND.init();
       if (b.dataset.d === 'tutorial') { SND.play('click'); this.only(); Game.newRun(false, 'tutorial'); return; }
       if (b.dataset.d === 'hard' && !this.hardOpen()) { SND.play('jam'); this.toast(L('난이도 중을 한 번 깨면 열려요', 'Clear Normal once to unlock', 'ノーマルを一度クリアすると解放', '通关一次普通难度后解锁')); return; }
       SND.play('click'); Store.set('diff', b.dataset.d); this.only();
-      if (this.pendingMode === 'free') return Free.start(b.dataset.d, false);
-      Game.newRun(this.pendingDaily, b.dataset.d);
+      if (this.pendingMode === 'free') return Free.start(b.dataset.d, false, this.pendingCh);
+      Game.newRun(this.pendingDaily, b.dataset.d, this.pendingCh);
     }));
     click('#btnResume', () => this.resume());
     click('#btnPauseSet', () => this.showSettings('#scrPause'));
@@ -106,7 +116,7 @@ const UI = {
     click('#btnRebuild', () => { this.only(); if (Free.active) return Free.rebuild(); Game.rebuild(); });
     click('#btnCrashTitle', () => Game.toTitle());
     click('#btnCopy', () => this.copyNote());
-    click('#btnAgain', () => { if (Free.active) { this.only(); return Free.start(Free.run.diff, Free.run.daily); } this.pendingDaily = !!(Game.run && Game.run.daily); this.only(); Game.newRun(this.pendingDaily, Game.run ? Game.run.diff : 'normal'); });
+    click('#btnAgain', () => { if (Free.active) { this.only(); return Free.start(Free.run.diff, Free.run.daily, Free.run.ch); } this.pendingDaily = !!(Game.run && Game.run.daily); this.only(); Game.newRun(this.pendingDaily, Game.run ? Game.run.diff : 'normal', Game.run ? Game.run.ch : 1); });
     click('#btnResTitle', () => Game.toTitle());
     $('#pauseBtn').addEventListener('pointerdown', (e) => { e.stopPropagation(); e.preventDefault(); SND.init(); this.pause(); });
     // 설정
@@ -168,10 +178,16 @@ const UI = {
       box.appendChild(row);
     }
   },
+  syncCh() {
+    const open = this.ch2Open(); if (!open) this.pendingCh = 1;
+    $$('.chcard').forEach((b) => { b.classList.toggle('sel', +b.dataset.ch === this.pendingCh); b.classList.toggle('locked', +b.dataset.ch === 2 && !open); });
+    $('.dcard.tut').classList.toggle('hidden', this.pendingMode === 'free' || this.pendingCh === 2);
+  },
   only(id) { for (const s of SCREENS) $(s).classList.toggle('hidden', s !== id); },
   showTitle() { this.only('#scrTitle'); $('#hud').classList.add('hidden'); this.hint(''); $('#banner').classList.add('hidden'); },
   showHUD() {
     this.only(); $('#hud').classList.remove('hidden');
+    $$('.mem[data-m="4"]').forEach((b) => b.classList.toggle('hidden', !Game.run || Game.isTut() || chOf(Game.run.stage) !== 2)); // 코볼 버튼은 2장에서만
     // 분대 얼굴 그리기
     $$('.mem').forEach((b, i) => { const c = b.querySelector('.pt'), im = IMG.portrait && IMG.portrait[i]; if (!im) return;
       const draw = () => { const g = c.getContext('2d'); const big = im instanceof HTMLImageElement; g.imageSmoothingEnabled = big; g.imageSmoothingQuality = 'high'; g.clearRect(0, 0, 64, 64); g.drawImage(im, 0, 0, 64, 64); };
@@ -180,6 +196,8 @@ const UI = {
     $('#helpBadge').classList.toggle('hidden', !Game.run.help[Game.run.stage]);
     this._hud = {};
   },
+  pendingCh: 1,
+  ch2Open() { return this.ch2OpenMem || !!Store.get('records', {}).ch1Clear; },
   startFree() {
     this.pendingDaily = false; this.pendingMode = 'free';
     if (!Store.get('introSeen', false) && !this.introMem) { this.introMem = true; this.only(); return Story.intro(() => this.startFree()); }
@@ -280,6 +298,7 @@ const UI = {
   showDiff() {
     const fm = this.pendingMode === 'free';
     $('.dcard.tut').classList.toggle('hidden', fm);
+    this.pendingCh = this.ch2Open() ? (Store.get('lastCh', 1) || 1) : 1; this.syncCh();
     const open = this.hardOpen(), hc = $('.dcard.hard');
     hc.classList.toggle('locked', !open);
     hc.setAttribute('aria-disabled', String(!open));
@@ -309,7 +328,7 @@ const UI = {
     const rec = Store.get('records', {});
     const st = rec.stages || {};
     let h = L('<table><tr><th>스테이지</th><th>최고 점수</th><th>최고 정확도</th></tr>', '<table><tr><th>Stage</th><th>Best score</th><th>Best accuracy</th></tr>', '<table><tr><th>ステージ</th><th>最高スコア</th><th>最高命中率</th></tr>', '<table><tr><th>关卡</th><th>最高分</th><th>最高命中率</th></tr>');
-    STAGES.forEach((d, i) => { const s = st[i]; h += `<tr><td>${d.id}. ${d.name}</td><td>${s ? s.score.toLocaleString() : '-'}</td><td>${s ? Math.round(s.acc * 100) + '%' : '-'}</td></tr>`; });
+    STAGES.forEach((d, i) => { const s = st[i]; if (i === chFirst(2)) h += `<tr><td colspan="3" style="color:#FFB347;padding-top:10px">${L('2장: 레거시 코드', 'Chapter 2: Legacy Code', '第2章: レガシーコード', '第2章：遗留代码')}${rec.ch1Clear ? '' : ' 🔒'}</td></tr>`; h += `<tr><td>${d.id}. ${d.name}</td><td>${s ? s.score.toLocaleString() : '-'}</td><td>${s ? Math.round(s.acc * 100) + '%' : '-'}</td></tr>`; });
     h += '</table>';
     const daily = rec.daily && rec.daily.date === TODAY_KEY ? gradeName(rec.daily.grade) : '-';
     h += L(`<p style="font-size:13px">오늘의 빌드 <b style="color:var(--lime)">${DAILY_VER}</b> 최고 등급: <b>${daily}</b>`, `<p style="font-size:13px">Daily Build <b style="color:var(--lime)">${DAILY_VER}</b> best grade: <b>${daily}</b>`, `<p style="font-size:13px">今日のビルド <b style="color:var(--lime)">${DAILY_VER}</b> 最高評価: <b>${daily}</b>`, `<p style="font-size:13px">今日构建 <b style="color:var(--lime)">${DAILY_VER}</b> 最高评价：<b>${daily}</b>`) + (rec.best ? L(` · 전체 최고 점수 <b>${rec.best.toLocaleString()}</b>`, ` · All-time best score <b>${rec.best.toLocaleString()}</b>`, ` · 通算最高スコア <b>${rec.best.toLocaleString()}</b>`, ` · 历史最高分 <b>${rec.best.toLocaleString()}</b>`) : '') + '</p>';
@@ -366,7 +385,7 @@ const UI = {
   clQ: [], clT: 0,
   codeStart(def) {
     $('#codeLogBody').innerHTML = ''; this.clQ = [];
-    this.clPush([['cmd', `$ build stage${def.id}.${def.key} --watch`], ['trace', L(`  ${def.boss ? 'mainLoop()' : 'world'} 로딩 중…`, `  ${def.boss ? 'mainLoop()' : 'world'} loading…`, `  ${def.boss ? 'mainLoop()' : 'world'} 読み込み中…`, `  ${def.boss ? 'mainLoop()' : 'world'} 加载中…`)], ['ok', L('  ready. 버그 감시 시작', '  ready. Watching for bugs', '  ready. バグ監視開始', '  ready. 开始监视Bug')]]);
+    this.clPush([['cmd', `$ build stage${def.id}.${def.key} --watch`], ['trace', L(`  ${def.key === 'deadline' ? 'deadline()' : def.boss ? 'mainLoop()' : 'world'} 로딩 중…`, `  ${def.key === 'deadline' ? 'deadline()' : def.boss ? 'mainLoop()' : 'world'} loading…`, `  ${def.key === 'deadline' ? 'deadline()' : def.boss ? 'mainLoop()' : 'world'} 読み込み中…`, `  ${def.key === 'deadline' ? 'deadline()' : def.boss ? 'mainLoop()' : 'world'} 加载中…`)], ['ok', L('  ready. 버그 감시 시작', '  ready. Watching for bugs', '  ready. バグ監視開始', '  ready. 开始监视Bug')]]);
   },
   clPush(lines) {
     this.clQ.push(...lines);
@@ -385,9 +404,12 @@ const UI = {
       e404: [[`- fetch("/${v}.json")`, `+ fetch("/assets/${v}.json")`], [`- load("${v}_final_v2.png")`, `+ load("${v}.png")`]],
       loop: [[`- while (true) ${m}();`, `+ while (running) ${m}();`], [`- function ${m}() { ${m}(); }`, `+ function ${m}() { if (done) return; }`]],
       hotfix: [[`+ stability += 20;`, `+ glitches.clear();`]],
+      merge: [[`- <<<<<<< HEAD`, `+ ${v}.${m}(merged);`], [`- >>>>>>> feature/${v}`, `+ // conflict resolved`]],
+      leak: [[`- ${v}s.push(new Array(1e9));`, `+ ${v}s.length = 0;`], [`- setInterval(${m}, 1);`, `+ clearInterval(${m}Timer);`]],
+      deprecated: [[`- ${v}.${m}Legacy();  // @deprecated`, `+ ${v}.${m}();`], [`- import ${v} from 'old-${v}@0.1';`, `+ import ${v} from '${v}';`]],
     };
-    let pair = seg ? [`- ${CODE[seg.i][1].trim()}`, `+ ${CODE[seg.i][0].trim()}`] : P(T[type] || T.basic);
-    const file = seg ? 'mainLoop' : type === 'hotfix' ? 'hotfix' : v;
+    let pair = seg ? [`- ${BOSS_CODE[seg.i][1].trim()}`, `+ ${BOSS_CODE[seg.i][0].trim()}`] : P(T[type] || T.basic);
+    const file = seg ? (Boss.kind === 'deadline' ? 'deadline' : 'mainLoop') : type === 'hotfix' ? 'hotfix' : v;
     const lines = type === 'hotfix'
       ? [['cmd', '$ deploy hotfix --now'], ['add', '  ' + pair[0]], ['add', '  ' + pair[1]]]
       : [['cmd', `@@ ${file}.js:${n} @@`], ['del', pair[0]], ['add', pair[1]], ['cmd', `$ run ${file}.js`]];
@@ -401,6 +423,7 @@ const UI = {
       basic: `TypeError: ${v}.update is not a function`, clone: L(`RangeError: ${v} 복제가 너무 많음`, `RangeError: too many ${v} clones`, `RangeError: ${v} のクローンが多すぎる`, `RangeError: ${v} 克隆过多`), mini: L(`Warning: 중복된 ${v} 발견`, `Warning: duplicate ${v} found`, `Warning: 重複した ${v} を発見`, `Warning: 发现重复的 ${v}`),
       trojan: L(`SecurityError: hotfix.exe 는 핫픽스가 아닙니다`, `SecurityError: hotfix.exe is not a hotfix`, `SecurityError: hotfix.exe はホットフィックスではありません`, `SecurityError: hotfix.exe 不是热修复`),
       ghost: `ReferenceError: ${v} is not defined`, e404: `404 Not Found: /${v}.json`, loop: `RangeError: Maximum call stack size exceeded`,
+      merge: `CONFLICT (content): Merge conflict in ${v}.js`, leak: `FATAL ERROR: JavaScript heap out of memory`, deprecated: `DeprecationWarning: ${v}.update() is deprecated`,
       packet: `UncaughtException: throw new Error("${v}")`, missile: L(`FatalError: infiniteLoop() 관통 — 엄폐 무시`, `FatalError: infiniteLoop() pierced — cover ignored`, `FatalError: infiniteLoop() 貫通 — 遮蔽無視`, `FatalError: infiniteLoop() 穿透 — 无视掩体`),
     }[type] || L(`Error: ${v} 붕괴`, `Error: ${v} collapsed`, `Error: ${v} が崩壊`, `Error: ${v} 崩溃`);
     const code = String(Math.floor(r() * 1e6)).padStart(6, '0');
@@ -422,12 +445,13 @@ const UI = {
   },
   showClear() {
     const r = Game.run, i = Game.S.idx, res = r.stageRes[i];
-    $('#clrTitle').textContent = L(`패치 완료 ${i + 1}/${STAGES.length}`, `Patch applied ${i + 1}/${STAGES.length}`, `パッチ完了 ${i + 1}/${STAGES.length}`, `补丁完成 ${i + 1}/${STAGES.length}`);
+    const cp = chPos(i);
+    $('#clrTitle').textContent = L(`패치 완료 ${cp.n}/${cp.total}`, `Patch applied ${cp.n}/${cp.total}`, `パッチ完了 ${cp.n}/${cp.total}`, `补丁完成 ${cp.n}/${cp.total}`);
     $('#clrStats').innerHTML = [
       [L('스테이지', 'Stage', 'ステージ', '关卡'), STAGES[i].name], [L('고친 버그', 'Bugs fixed', '修復したバグ', '修复的Bug'), res.fixed + L('마리', '', '', '')], [L('정확도', 'Accuracy', '命中率', '命中率'), Math.round(res.acc * 100) + '%'],
       [L('걸린 시간', 'Time', 'かかった時間', '用时'), fmtTime(res.time)], [L('시간 보너스', 'Time bonus', 'タイムボーナス', '时间奖励'), '+' + res.timeBonus.toLocaleString()], [L('안정성 회복', 'Stability restored', '安定性回復', '稳定性恢复'), '+30% → ' + Math.round(r.stab) + '%'],
     ].map(([k, v]) => `<span class="k">${k}</span><span class="v">${v}</span>`).join('') + L(`<span class="k full">총점</span><span class="v full">${r.score.toLocaleString()}</span>`, `<span class="k full">Total</span><span class="v full">${r.score.toLocaleString()}</span>`, `<span class="k full">合計</span><span class="v full">${r.score.toLocaleString()}</span>`, `<span class="k full">总分</span><span class="v full">${r.score.toLocaleString()}</span>`);
-    $('#btnNext').textContent = STAGES[i + 1] && STAGES[i + 1].boss ? L('중간 보스 "메인 루프" ▶', 'Mid-boss "Main Loop" ▶', '中ボス「メインループ」 ▶', '中Boss“主循环” ▶') : L('다음 스테이지 ▶', 'Next stage ▶', '次のステージ ▶', '下一关 ▶');
+    $('#btnNext').textContent = STAGES[i + 1] && STAGES[i + 1].boss ? STAGES[i + 1].name + ' ▶' : L('다음 스테이지 ▶', 'Next stage ▶', '次のステージ ▶', '下一关 ▶');
     this.only('#scrClear');
   },
   showCrash() {
@@ -572,6 +596,7 @@ function fmtTime(s) { s = Math.max(0, s || 0); return Math.floor(s / 60) + ':' +
 window.addEventListener('load', () => {
   try { UI.init(); Game.init(); }
   catch (e) {
+    console.error('init failed', e && e.stack || e);
     document.body.innerHTML = L('<div style="padding:24px;color:#eee;font-family:sans-serif">이 기기에서 3D(WebGL)를 시작할 수 없어요.<br>다른 브라우저로 열어 주세요.<br><small style="color:#888">', '<div style="padding:24px;color:#eee;font-family:sans-serif">3D (WebGL) could not start on this device.<br>Please update your graphics driver.<br><small style="color:#888">', '<div style="padding:24px;color:#eee;font-family:sans-serif">このデバイスでは3D(WebGL)を開始できませんでした。<br>グラフィックドライバーを更新してください。<br><small style="color:#888">', '<div style="padding:24px;color:#eee;font-family:sans-serif">此设备无法启动3D（WebGL）。<br>请更新显卡驱动。<br><small style="color:#888">') + String(e && e.message || e) + '</small></div>';
   }
 });
