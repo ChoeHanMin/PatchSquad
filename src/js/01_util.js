@@ -91,7 +91,35 @@ const VIEW = { pc: true, w: 1920, h: 1080, s: 1, ox: 0, oy: 0,
   pr() { return Math.min((window.devicePixelRatio || 1) * this.s, 2); }, // 실제로 보이는 크기에 맞춘 해상도
 };
 if (VIEW.pc) document.body.classList.add('pc');
-const settings = Object.assign({ sound: true, sfx: 0.8, music: 0.6, reduceFlash: false, quality: 'auto', sens: 1, cb: false, story: true }, Store.get('settings', {}));
+const settings = Object.assign({ sound: true, sfx: 0.8, music: 0.6, reduceFlash: false, quality: 'auto', sens: 1, cb: false, story: true, shake: 1, keys: {} }, Store.get('settings', {}));
+// 키 설정: 동작 → 키(KeyboardEvent.code). 설정에서 바꿀 수 있음 (분대원 1~4, Esc는 고정)
+const KEY_DEFS = [
+  ['rbRail', 'Space', L('롤백 (레일 모드)', 'Rollback (Rail)', 'ロールバック (レール)', '回滚（轨道模式）')],
+  ['fwd', 'KeyW', L('앞으로 (자유 작전)', 'Forward (Free Ops)', '前進 (フリー作戦)', '前进（自由作战）')],
+  ['back', 'KeyS', L('뒤로', 'Back', '後退', '后退')],
+  ['left', 'KeyA', L('왼쪽', 'Left', '左', '向左')],
+  ['right', 'KeyD', L('오른쪽', 'Right', '右', '向右')],
+  ['reload', 'KeyR', L('재장전', 'Reload', 'リロード', '换弹')],
+  ['cover', 'KeyZ', L('엄폐', 'Cover', '遮蔽', '隐蔽')],
+  ['skill1', 'ShiftLeft', L('이동 스킬', 'Movement skill', '移動スキル', '位移技能')],
+  ['skill2', 'KeyE', L('보조 스킬', 'Utility skill', 'サポートスキル', '辅助技能')],
+  ['ult', 'KeyQ', L('궁극기', 'Ultimate', 'アルティメット', '终极技能')],
+  ['rbFree', 'KeyF', L('롤백 (자유 작전)', 'Rollback (Free Ops)', 'ロールバック (フリー作戦)', '回滚（自由作战）')],
+];
+if (!settings.keys || typeof settings.keys !== 'object') settings.keys = {};
+const KB = (act) => settings.keys[act] || (KEY_DEFS.find((d) => d[0] === act) || [])[1];
+// 이 키가 이 동작인지 (Shift는 왼쪽·오른쪽 둘 다)
+const isKey = (e, act) => { const k = KB(act); return e.code === k || (/^Shift/.test(k) && /^Shift/.test(e.code)) || (/^Control/.test(k) && /^Control/.test(e.code)) || (/^Alt/.test(k) && /^Alt/.test(e.code)); };
+const keyName = (code) => {
+  if (!code) return '-';
+  if (code.startsWith('Key')) return code.slice(3);
+  if (code.startsWith('Digit')) return code.slice(5);
+  if (code.startsWith('Numpad')) return 'Num ' + code.slice(6);
+  const m = { Space: 'SPACE', ShiftLeft: 'SHIFT', ShiftRight: 'SHIFT', ControlLeft: 'CTRL', ControlRight: 'CTRL', AltLeft: 'ALT', AltRight: 'ALT', Tab: 'TAB', CapsLock: 'CAPS', Enter: 'ENTER', Backspace: 'BKSP', ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→', Backquote: '`', Minus: '-', Equal: '=', BracketLeft: '[', BracketRight: ']', Semicolon: ';', Quote: "'", Comma: ',', Period: '.', Slash: '/', Backslash: '\\' };
+  return m[code] || code;
+};
+// 화면 흔들림 세기 (설정 0~150%, '깜빡임 줄이기'를 켜면 더 약하게)
+const shakeK = () => (settings.shake == null ? 1 : settings.shake) * (settings.reduceFlash ? 0.4 : 1);
 function saveSettings() { Store.set('settings', settings); }
 // 스팀 도전 과제: 게임 도전 과제 키 → ACH_키 (예: release → ACH_RELEASE). 데스크톱 앱 + 스팀 실행 중일 때만
 function steamAch(key) { try { if (window.bhDesktop && window.bhDesktop.achieve) window.bhDesktop.achieve('ACH_' + String(key).toUpperCase()); } catch (e) { /* 스팀 없음 */ } }

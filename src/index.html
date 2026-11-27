@@ -138,12 +138,28 @@
       <label class="opt"><span data-en="Mouse sensitivity" data-ja="マウス感度" data-zh="鼠标灵敏度">마우스 감도</span><input type="range" id="setSens" min="60" max="160" step="5"><b class="optv" id="setSensV">1.00</b></label>
       <label class="opt"><span data-en="Colorblind mode <small style=&quot;color:#7d8478&quot;>(warnings in amber + dashed ring)</small>" data-ja="色覚サポートモード <small style=&quot;color:#7d8478&quot;>(警告を琥珀色+点線リングで)</small>" data-zh="色盲模式 <small style=&quot;color:#7d8478&quot;>（警告改为琥珀色+虚线圈）</small>">색약 모드 <small style="color:#7d8478">(경고를 호박색·점선 고리로)</small></span><input type="checkbox" id="setCb"></label>
       <label class="opt"><span data-en="Reduce flashing &amp; shake" data-ja="点滅と揺れを抑える" data-zh="减少闪烁与震动">깜빡임 효과 줄이기</span><input type="checkbox" id="setFlash"></label>
+      <label class="opt"><span data-en="Screen shake" data-ja="画面の揺れ" data-zh="画面震动">화면 흔들림</span><input type="range" id="setShake" min="0" max="150" step="10"><b id="setShakeV" style="min-width:52px;text-align:right">100%</b></label>
+      <label class="opt hidden" id="optWin"><span data-en="Window size" data-ja="ウィンドウサイズ" data-zh="窗口大小">창 크기</span>
+        <select id="setWin"><option value="full" data-en="Fullscreen" data-ja="フルスクリーン" data-zh="全屏">전체 화면</option><option value="1280x720">1280 × 720</option><option value="1600x900">1600 × 900</option><option value="1920x1080">1920 × 1080</option></select>
+      </label>
       <label class="opt"><span data-en="Quality" data-ja="画質" data-zh="画质">화질</span>
         <select id="setQuality"><option value="auto" data-en="Auto" data-ja="自動" data-zh="自动">자동</option><option value="high" data-en="High" data-ja="高" data-zh="高">높음</option><option value="low" data-en="Low" data-ja="低" data-zh="低">낮음</option></select>
       </label>
+      <button class="btn sm" id="btnKeys" data-en="Key bindings" data-ja="キー設定" data-zh="按键设置">키 설정</button>
       <button class="btn sm" id="btnIntro" data-en="Replay story intro" data-ja="ストーリーイントロをもう一度見る" data-zh="重看剧情开场">스토리 인트로 다시 보기</button>
       <button class="btn sm" id="btnTutReset" data-en="Show tip cards again" data-ja="ヒントカードをもう一度表示" data-zh="重新显示提示卡">안내 카드 다시 보기</button>
       <button class="btn pri" id="btnSetBack" data-en="Close" data-ja="閉じる" data-zh="关闭">닫기</button>
+    </div>
+  </section>
+
+  <!-- 키 설정 -->
+  <section id="scrKeys" class="scr dim hidden">
+    <div class="panel">
+      <h2 data-en="Key bindings" data-ja="キー設定" data-zh="按键设置">키 설정</h2>
+      <p class="keyhelp" data-en="Click an action, then press a new key. (Esc: cancel · squad 1–4 and Esc are fixed)" data-ja="動作をクリックしてから新しいキーを押してください。(Esc: キャンセル · 分隊1〜4とEscは固定)" data-zh="点击动作后按下新按键。（Esc：取消 · 小队1~4与Esc固定）">바꿀 동작을 누른 뒤 새 키를 누르세요. (Esc: 취소 · 분대원 1~4와 Esc는 고정)</p>
+      <div id="keyList"></div>
+      <button class="btn sm" id="btnKeysReset" data-en="Reset to defaults" data-ja="初期設定に戻す" data-zh="恢复默认">기본값으로</button>
+      <button class="btn pri" id="btnKeysBack" data-en="Close" data-ja="閉じる" data-zh="关闭">닫기</button>
     </div>
   </section>
 
@@ -238,9 +254,9 @@
       <div class="tag">FREE OPS</div>
       <h2 data-en="Free Ops — Controls" data-ja="フリー作戦 — 操作" data-zh="自由作战 — 操作">자유 작전 — 조작</h2>
       <div class="fi-keys">
-        <span><b>W A S D</b><i data-en="Move" data-ja="移動" data-zh="移动">이동</i></span><span><b>MOUSE</b><i data-en="Look / aim" data-ja="視点・照準" data-zh="视角/瞄准">시점·조준</i></span><span><b>LMB</b><i data-en="Shoot (Pin: hold to charge)" data-ja="射撃 (ピン: 長押しでチャージ)" data-zh="射击（平：按住蓄力）">사격 (핀: 누르고 있으면 충전)</i></span>
-        <span><b>R</b><i data-en="Reload" data-ja="リロード" data-zh="换弹">재장전</i></span><span><b>Z</b><i data-en="Cover (crouch behind low walls)" data-ja="遮蔽 (低い壁の後ろでしゃがむ)" data-zh="隐蔽（蹲在矮墙后）">엄폐 (낮은 벽 뒤에서 웅크리기)</i></span><span><b>1 2 3 4</b><i data-en="Switch squad member" data-ja="メンバー切り替え" data-zh="切换队员">분대원 교체</i></span>
-        <span><b>SHIFT</b><i data-en="Movement skill" data-ja="移動スキル" data-zh="位移技能">이동 스킬</i></span><span><b>E</b><i data-en="Utility skill" data-ja="サポートスキル" data-zh="辅助技能">보조 스킬</i></span><span><b>Q</b><i data-en="Ultimate" data-ja="アルティメット" data-zh="终极技能">궁극기</i></span><span><b>F</b><i data-en="Rollback (squad)" data-ja="ロールバック (分隊)" data-zh="回滚（小队）">롤백 (분대)</i></span><span><b>ESC</b><i data-en="Pause" data-ja="ポーズ" data-zh="暂停">일시정지</i></span>
+        <span><b data-kb="fwd left back right">W A S D</b><i data-en="Move" data-ja="移動" data-zh="移动">이동</i></span><span><b>MOUSE</b><i data-en="Look / aim" data-ja="視点・照準" data-zh="视角/瞄准">시점·조준</i></span><span><b>LMB</b><i data-en="Shoot (Pin: hold to charge)" data-ja="射撃 (ピン: 長押しでチャージ)" data-zh="射击（平：按住蓄力）">사격 (핀: 누르고 있으면 충전)</i></span>
+        <span><b data-kb="reload">R</b><i data-en="Reload" data-ja="リロード" data-zh="换弹">재장전</i></span><span><b data-kb="cover">Z</b><i data-en="Cover (crouch behind low walls)" data-ja="遮蔽 (低い壁の後ろでしゃがむ)" data-zh="隐蔽（蹲在矮墙后）">엄폐 (낮은 벽 뒤에서 웅크리기)</i></span><span><b>1 2 3 4</b><i data-en="Switch squad member" data-ja="メンバー切り替え" data-zh="切换队员">분대원 교체</i></span>
+        <span><b data-kb="skill1">SHIFT</b><i data-en="Movement skill" data-ja="移動スキル" data-zh="位移技能">이동 스킬</i></span><span><b data-kb="skill2">E</b><i data-en="Utility skill" data-ja="サポートスキル" data-zh="辅助技能">보조 스킬</i></span><span><b data-kb="ult">Q</b><i data-en="Ultimate" data-ja="アルティメット" data-zh="终极技能">궁극기</i></span><span><b data-kb="rbFree">F</b><i data-en="Rollback (squad)" data-ja="ロールバック (分隊)" data-zh="回滚（小队）">롤백 (분대)</i></span><span><b>ESC</b><i data-en="Pause" data-ja="ポーズ" data-zh="暂停">일시정지</i></span>
       </div>
       <div class="fi-sk"></div>
       <div class="fi-go" data-en="Click to start ▶" data-ja="クリックでスタート ▶" data-zh="点击开始 ▶">클릭해서 시작 ▶</div>

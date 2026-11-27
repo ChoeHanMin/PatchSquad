@@ -304,3 +304,10 @@ body.freeops #gl{cursor:none}
 #story .stmem b{color:var(--c,#cfd6c8);font-size:26px;margin-top:6px}#story .stmem span{color:#aab2a3;font-size:15px}#story .stmem em{color:#E8EDE2;font-size:16px;font-style:normal;margin-top:6px;text-align:center}
 #story .stmem.mystery{--c:#3a3f37}#story .stmem.mystery .stmimg{filter:brightness(0) drop-shadow(0 0 6px #FF5FA2)}#story .stmem.mystery b{color:#FF5FA2}
 #story .stcar{color:var(--lime);animation:blink .8s infinite steps(2)}
+
+#scrKeys .keyhelp{color:#aab2a3;font-size:15px;margin:0 0 12px}
+#keyList{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin-bottom:16px}
+#keyList .keyrow{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#0f130e;border:2px solid #2f342c;padding:8px 12px;cursor:pointer;font-size:16px}
+#keyList .keyrow:hover{border-color:var(--lime)}
+#keyList .keyrow b{font-family:var(--mono);color:var(--lime);min-width:64px;text-align:center;background:#1b1f19;border:2px solid #3a3f37;padding:2px 8px}
+#keyList .keyrow.wait{border-color:#FFD34D}#keyList .keyrow.wait b{color:#FFD34D;animation:blink .8s infinite steps(2)}

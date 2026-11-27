@@ -151,7 +151,7 @@ const Game = {
       if (e.key === 'Escape') { if (this.state === 'play') UI.pause(); else if (this.state === 'paused') UI.resume(); return; }
       if (this.state !== 'play') return;
       if (e.key >= '1' && e.key <= String(SQUAD.length)) this.selectMember(+e.key - 1);
-      else if (e.code === 'Space' || e.key === 'q' || e.key === 'Q') { this.rollback(); e.preventDefault(); }
+      else if (isKey(e, 'rbRail') || (!settings.keys.rbRail && (e.key === 'q' || e.key === 'Q'))) { this.rollback(); e.preventDefault(); }
     });
     $$('.mem').forEach((b) => b.addEventListener('pointerdown', (e) => { e.stopPropagation(); e.preventDefault(); SND.init(); this.selectMember(+b.dataset.m); }));
     $$('.wpn.rb').forEach((b) => b.addEventListener('pointerdown', (e) => { e.stopPropagation(); e.preventDefault(); SND.init(); this.rollback(); }));
@@ -501,9 +501,12 @@ const Game = {
       if (a.src && a.src.alive === false && a.t < a.dur * 0.4) { a.done = true; this.pop(a.x, a.y, L('취소!', 'Cancelled!', 'キャンセル!', '已取消！'), '#9CFF7A'); continue; } // 쏘기 전에 잡으면 취소
       if (a.t >= a.dur) {
         a.done = true;
-        const exposed = this.outK > 0.45 || this.cover.broken;
+        const exposed = this.outK > 0.45 || this.cover.broken, ck = this.coverKind();
+        // 낮은 벽: 던지는 버그(throw)의 패킷은 가끔 벽을 넘어옴 (반만 맞음)
+        const lob = !exposed && ck === 'low' && a.src && a.src.type === 'throw' && !this.S.def.boss && !this.isTut() && Math.random() < 0.25;
         if (exposed) this.hurt(a.dmg, 'packet');
-        else this.coverHit(a.dmg);
+        else if (lob) { this.hurt(Math.ceil(a.dmg * 0.5), 'packet'); this.pop(this.W / 2 + rnd(-60, 60), this.H * 0.66, L('벽을 넘어왔다!', 'Lobbed over!', '壁を越えてきた!', '越过墙了！'), '#FF9E3D'); this.run.st.lob = (this.run.st.lob || 0) + 1; if (!this.seen.lob) { this.seen.lob = true; UI.hint(L('낮은 벽은 던지는 버그(throw)의 공격이 가끔 넘어와요. 먼저 잡거나 기둥에서 버티세요!', 'Throw bugs can lob packets over low walls. Take them out first!', '低い壁はスローバグの攻撃がときどき越えてくる。先に倒そう!', '矮墙挡不住投掷Bug偶尔抛过来的攻击，先解决它们！'), 4); } }
+        else this.coverHit(ck === 'side' ? a.dmg * 0.6 : a.dmg); // 기둥은 단단해서 엄폐물이 덜 깎임
       }
     }
     this.attacks = this.attacks.filter((a) => !a.done);
@@ -745,7 +748,7 @@ const Game = {
       S.moveT += dt;
       const k = smooth(clamp(S.moveT / 2.6, 0, 1));
       S.u = lerp(S.covers[S.ci - 1].u, S.covers[S.ci].u, k);
-      if (S.moveT >= 2.6) { S.phase = 'fight'; this.loadWave(); UI.toast(L(`엄폐 지점 ${S.ci + 1}/3`, `Cover point ${S.ci + 1}/3`, `遮蔽ポイント ${S.ci + 1}/3`, `掩体点 ${S.ci + 1}/3`) + ' · ' + (this.coverKind() === 'side' ? L('기둥 — 오른쪽으로 몸을 빼서 쏴요', 'Pillar — lean out right to shoot', '柱 — 右に身を乗り出して撃つ', '柱子 — 向右探身射击') : L('낮은 벽 — 일어나서 쏴요', 'Low wall — stand up to shoot', '低い壁 — 立ち上がって撃つ', '矮墙 — 起身射击'))); }
+      if (S.moveT >= 2.6) { S.phase = 'fight'; this.loadWave(); UI.toast(L(`엄폐 지점 ${S.ci + 1}/3`, `Cover point ${S.ci + 1}/3`, `遮蔽ポイント ${S.ci + 1}/3`, `掩体点 ${S.ci + 1}/3`) + ' · ' + (this.coverKind() === 'side' ? L('기둥: 단단해서 오래 버팀 · 몸 빼기는 조금 느림', 'Pillar: sturdy cover · slower to lean out', '柱: 頑丈で長持ち · 身を乗り出すのは少し遅い', '柱子：坚固耐用 · 探身稍慢') : L('낮은 벽: 빨리 일어남 · 던지는 공격이 가끔 넘어옴', 'Low wall: quick to pop up · lobbed packets can get over', '低い壁: すばやく立てる · 投げた攻撃がときどき越えてくる', '矮墙：起身快 · 抛来的攻击偶尔会越过'))); }
       return;
     }
     if (S.def.boss || S.def.tutorial) return;
@@ -890,7 +893,8 @@ const Game = {
 
     // 엄폐 ↔ 사격 자세
     this.out = this.state === 'play' && this.ptr.down && S.started && S.phase === 'fight' && !Tut.block;
-    this.outK += ((this.out ? 1 : 0) - this.outK) * Math.min(1, dt * 14);
+    const ck = this.coverKind(), outRate = ck === 'side' ? (this.out ? 8.5 : 14) : (this.out ? 19 : 16); // 기둥은 몸을 빼는 데 조금 더 걸림, 낮은 벽은 빨리 일어남
+    this.outK += ((this.out ? 1 : 0) - this.outK) * Math.min(1, dt * outRate);
 
     if (this.state === 'play') {
       if (!S.started) { S.introT -= dt; if (S.introT <= 0) { S.started = true; if (S.def.tutorial) Tut.start(); else { this.stageTutor(); Story.say(S.idx); } } }
@@ -926,9 +930,9 @@ const Game = {
       this.look.lerp(tgt, Math.min(1, dt * (moving ? 3 : 8)));
     }
     this.camera.lookAt(this.look);
-    if (S.phase === 'move') this.camera.rotation.z += Math.sin(S.moveT * 9) * 0.012 * (settings.reduceFlash ? 0.4 : 1); // 달릴 때 좌우로 살짝 기울어짐
+    if (S.phase === 'move') this.camera.rotation.z += Math.sin(S.moveT * 9) * 0.012 * shakeK(); // 달릴 때 좌우로 살짝 기울어짐
     if (this.shake > 0.002) {
-      const k = this.shake * (settings.reduceFlash ? 0.4 : 1);
+      const k = this.shake * shakeK();
       this.camera.position.x += (Math.random() - 0.5) * k; this.camera.position.y += (Math.random() - 0.5) * k;
       this.camera.rotation.z += (Math.random() - 0.5) * k * 0.05;
       this.shake *= Math.exp(-dt * 12);

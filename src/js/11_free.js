@@ -42,12 +42,12 @@ const Free = {
       if (this.intro) return;
       this.keys[e.code] = true;
       if (e.repeat) return;
-      if (e.code === 'KeyR') this.reload();
-      else if (e.code === 'KeyZ') this.toggleCrouch();
-      else if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') this.skill('shift');
-      else if (e.code === 'KeyE') this.skill('e');
-      else if (e.code === 'KeyQ') this.skill('q');
-      else if (e.code === 'KeyF') this.rollback();
+      if (isKey(e, 'reload')) this.reload();
+      else if (isKey(e, 'cover')) this.toggleCrouch();
+      else if (isKey(e, 'skill1')) this.skill('shift');
+      else if (isKey(e, 'skill2')) this.skill('e');
+      else if (isKey(e, 'ult')) this.skill('q');
+      else if (isKey(e, 'rbFree')) this.rollback();
       else if (k >= '1' && k <= String(SQUAD.length)) this.select(+k - 1);
       if (['Space', 'Tab'].includes(e.code)) e.preventDefault();
     });
@@ -149,6 +149,7 @@ const Free = {
     const el = $('#freeIntro'); el.classList.remove('hidden');
     const sk = FREE_SKILLS.map((s, i) => `<div class="fi-m" style="--c:${SQUAD[i].color}"><b>${SQUAD[i].name}</b> <span>${SQUAD[i].label}</span><div>⇧ ${s.shift.name} · E ${s.e.name} · Q ${s.q.name}</div></div>`).join('');
     el.querySelector('.fi-sk').innerHTML = sk;
+    el.querySelectorAll('[data-kb]').forEach((b) => { b.textContent = b.dataset.kb.split(' ').map((a) => keyName(KB(a))).join(' '); });
     this.unlock();
   },
   placeCovers(z, def) {
@@ -543,7 +544,7 @@ const Free = {
     if (!paused) this.update(dt);
     PFX.update(paused ? 0 : dt);
     Game.camera.position.set(this.p.pos.x, this.eye(), this.p.pos.z);
-    const sh = (Game.shake || 0) * (settings.reduceFlash ? 0.4 : 1);
+    const sh = (Game.shake || 0) * shakeK();
     Game.camera.rotation.set(this.p.pitch + (Math.random() - 0.5) * sh * 0.05, this.p.yaw + (Math.random() - 0.5) * sh * 0.05, 0, 'YXZ');
     Game.camera.updateMatrixWorld();
     FX.render(Game.scene, Game.camera, Game.time);
@@ -564,7 +565,8 @@ const Free = {
     // 이동
     const k = this.keys, fw = FV.a.set(-Math.sin(p.yaw), 0, -Math.cos(p.yaw)), rt = FV.b.set(Math.cos(p.yaw), 0, -Math.sin(p.yaw));
     const mv = FV.c.set(0, 0, 0);
-    if (k.KeyW) mv.add(fw); if (k.KeyS) mv.sub(fw); if (k.KeyD) mv.add(rt); if (k.KeyA) mv.sub(rt);
+    const kd = (act) => { const c = KB(act); return k[c] || (/^Shift/.test(c) && (k.ShiftLeft || k.ShiftRight)); };
+    if (kd('fwd')) mv.add(fw); if (kd('back')) mv.sub(fw); if (kd('right')) mv.add(rt); if (kd('left')) mv.sub(rt);
     p.crouchK += ((p.crouch ? 1 : 0) - p.crouchK) * Math.min(1, dt * 12);
     const spd = p.crouch ? 3.2 : 7;
     if (mv.lengthSq() > 0) { mv.normalize(); p.pos.addScaledVector(mv, spd * dt); p.bob += dt * (p.crouch ? 6 : 10); }
@@ -710,7 +712,8 @@ const Free = {
     g.font = `bold 22px ${mono}`; g.fillStyle = '#E8EDE2'; g.textAlign = 'right'; g.fillText(Math.ceil(p.hp) + '%', 372, H - 86);
     g.font = `14px ${mono}`; g.textAlign = 'left'; g.fillStyle = p.crouch ? '#C6F432' : '#7d8478';
     const nc = this.nearCover();
-    g.fillText(p.crouch ? L('Z · 엄폐 중 (낮은 벽 뒤면 에러 패킷을 막음)', 'Z · IN COVER (low walls block packets)', 'Z · 遮蔽中 (低い壁の後ろならパケットを防ぐ)', 'Z · 隐蔽中（矮墙后可挡数据包）') : nc ? L('Z · 엄폐하기', 'Z · Take cover', 'Z · 遮蔽する', 'Z · 进入隐蔽') : L('R 재장전 · F 롤백', 'R Reload · F Rollback', 'R リロード · F ロールバック', 'R 换弹 · F 回滚') + ` (${S.rb})`, 44, H - 40);
+    const kZ = keyName(KB('cover')), kR = keyName(KB('reload')), kF = keyName(KB('rbFree'));
+    g.fillText(p.crouch ? kZ + L(' · 엄폐 중 (낮은 벽 뒤면 에러 패킷을 막음)', ' · IN COVER (low walls block packets)', ' · 遮蔽中 (低い壁の後ろならパケットを防ぐ)', ' · 隐蔽中（矮墙后可挡数据包）') : nc ? kZ + L(' · 엄폐하기', ' · Take cover', ' · 遮蔽する', ' · 进入隐蔽') : `${kR} ` + L('재장전', 'Reload', 'リロード', '换弹') + ` · ${kF} ` + L('롤백', 'Rollback', 'ロールバック', '回滚') + ` (${S.rb})`, 44, H - 40);
     // 점수 (오른쪽 위)
     g.font = `bold 34px ${mono}`; g.textAlign = 'right'; g.fillStyle = '#C6F432'; g.fillText(this.run.score.toLocaleString(), W - 32, 52);
     g.font = `16px ${mono}`; g.fillStyle = '#aab2a3'; g.fillText(L('연속', 'Streak', '連続', '连击') + ' ×' + Math.min(2, 1 + 0.1 * this.run.streak).toFixed(1), W - 32, 78);
@@ -738,17 +741,18 @@ const Free = {
     }
     // 스킬 (오른쪽 아래)
     const sk = FREE_SKILLS[this.member], m = this.cur();
-    const items = [['⇧', sk.shift, m.cd.shift / sk.shift.cd], ['E', sk.e, m.cd.e / sk.e.cd], ['Q', sk.q, m.ult >= 100 ? 0 : 1 - m.ult / 100], ['F', { name: L('롤백', 'Rollback', 'ロールバック', '回滚') }, S.rb > 0 ? 0 : 1]];
+    const kn = (a) => { const c = KB(a); return /^Shift/.test(c) ? '⇧' : keyName(c); };
+    const items = [[kn('skill1'), sk.shift, m.cd.shift / sk.shift.cd, 's1'], [kn('skill2'), sk.e, m.cd.e / sk.e.cd, 's2'], [kn('ult'), sk.q, m.ult >= 100 ? 0 : 1 - m.ult / 100, 'q'], [kn('rbFree'), { name: L('롤백', 'Rollback', 'ロールバック', '回滚') }, S.rb > 0 ? 0 : 1, 'f']];
     const sw = 112, sx0 = W - (sw + 10) * 4 - 22, sy = H - 102;
-    items.forEach(([key, s, cdk], i) => {
+    items.forEach(([key, s, cdk, id], i) => {
       const x = sx0 + i * (sw + 10);
       box(x, sy, sw, 78);
       if (cdk > 0) { g.fillStyle = 'rgba(0,0,0,.55)'; g.fillRect(x, sy, sw, 78 * cdk); }
       const ready = cdk <= 0;
-      g.textAlign = 'center'; g.font = `bold 26px ${mono}`; g.fillStyle = ready ? (key === 'Q' ? '#FFD34D' : m.d.color) : '#6b6f68'; g.fillText(key, x + sw / 2, sy + 34);
+      g.textAlign = 'center'; g.font = `bold 26px ${mono}`; g.fillStyle = ready ? (id === 'q' ? '#FFD34D' : m.d.color) : '#6b6f68'; g.font = `bold ${key.length > 3 ? 18 : 26}px ${mono}`; g.fillText(key, x + sw / 2, sy + 34);
       g.font = `bold 12px ${mono}`; g.fillStyle = ready ? '#E8EDE2' : '#7d8478'; g.fillText(s.name, x + sw / 2, sy + 58);
-      if (!ready && key !== 'Q' && key !== 'F') { g.font = `bold 13px ${mono}`; g.fillStyle = '#FFD34D'; g.fillText((key === '⇧' ? m.cd.shift : m.cd.e).toFixed(1) + 's', x + sw / 2, sy + 73); }
-      if (key === 'Q') { g.font = `bold 13px ${mono}`; g.fillStyle = m.ult >= 100 ? '#FFD34D' : '#aab2a3'; g.fillText(Math.floor(m.ult) + '%', x + sw / 2, sy + 73); }
+      if (!ready && (id === 's1' || id === 's2')) { g.font = `bold 13px ${mono}`; g.fillStyle = '#FFD34D'; g.fillText((id === 's1' ? m.cd.shift : m.cd.e).toFixed(1) + 's', x + sw / 2, sy + 73); }
+      if (id === 'q') { g.font = `bold 13px ${mono}`; g.fillStyle = m.ult >= 100 ? '#FFD34D' : '#aab2a3'; g.fillText(Math.floor(m.ult) + '%', x + sw / 2, sy + 73); }
     });
   },
 };

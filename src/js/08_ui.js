@@ -1,5 +1,5 @@
 // ---------- 화면 · HUD ----------
-const SCREENS = ['#scrTitle', '#scrAskTut', '#scrDiff', '#scrDex', '#scrPause', '#scrSettings', '#scrRecords', '#scrClear', '#scrCrash', '#scrResult', '#scrLang', '#scrDev'];
+const SCREENS = ['#scrTitle', '#scrAskTut', '#scrDiff', '#scrDex', '#scrPause', '#scrSettings', '#scrRecords', '#scrClear', '#scrCrash', '#scrResult', '#scrLang', '#scrDev', '#scrKeys'];
 const CHALLENGES = [
   ['release', L('정식 출시 등급 받기', 'Get the Released grade', '「正式リリース」評価を獲得', '获得“正式发布”评价')],
   ['nocrash', L('무사고 (크래시 0회로 클리어)', 'Zero Crashes (clear with no crashes)', 'ノークラッシュ (クラッシュ0回でクリア)', '零崩溃（无崩溃通关）')],
@@ -124,6 +124,25 @@ const UI = {
     $('#setCb').checked = !!s.cb;
     $('#setCb').addEventListener('change', (e) => { s.cb = e.target.checked; saveSettings(); });
     $('#setQuality').addEventListener('change', (e) => { s.quality = e.target.value; FX.setQuality(); saveSettings(); });
+    // 화면 흔들림
+    const shTxt = () => { $('#setShakeV').textContent = Math.round((s.shake == null ? 1 : s.shake) * 100) + '%'; };
+    $('#setShake').value = Math.round((s.shake == null ? 1 : s.shake) * 100); shTxt();
+    $('#setShake').addEventListener('input', (e) => { s.shake = e.target.value / 100; shTxt(); saveSettings(); });
+    $('#setShake').addEventListener('change', () => { Game.shake = 0.5; });
+    // 키 설정
+    click('#btnKeys', () => { this.only('#scrKeys'); this.renderKeys(); });
+    click('#btnKeysBack', () => { this.keyWait = null; this.only('#scrSettings'); });
+    click('#btnKeysReset', () => { s.keys = {}; saveSettings(); this.keyWait = null; this.renderKeys(); });
+    window.addEventListener('keydown', (e) => {
+      if (!this.keyWait) return;
+      e.preventDefault(); e.stopImmediatePropagation();
+      const act = this.keyWait; this.keyWait = null;
+      if (e.code === 'Escape' || /^Digit[1-9]$/.test(e.code)) { this.renderKeys(); return; }
+      // 같은 키를 쓰던 다른 동작은 서로 맞바꿈 (레일·자유 작전은 따로라서 롤백(레일)은 겹쳐도 됨)
+      const old = KB(act);
+      for (const [a] of KEY_DEFS) if (a !== act && a !== 'rbRail' && act !== 'rbRail' && KB(a) === e.code) s.keys[a] = old;
+      s.keys[act] = e.code; saveSettings(); SND.play('click'); this.renderKeys();
+    }, true);
     // 스팀판(데스크톱 앱): 게임 종료 버튼, 전체 화면 설정. 브라우저에서 열면 숨김
     const D = window.bhDesktop;
     if (D) {
@@ -132,6 +151,21 @@ const UI = {
       const sync = () => D.isFullscreen().then((v) => { $('#setFull').checked = !!v; });
       sync(); D.onFullscreen((v) => { $('#setFull').checked = !!v; });
       $('#setFull').addEventListener('change', (e) => D.setFullscreen(e.target.checked));
+      if (D.setWindowSize) {
+        $('#optWin').classList.remove('hidden');
+        const syncWin = () => D.isFullscreen().then((v) => { if (v) $('#setWin').value = 'full'; else if (s.win && s.win !== 'full') $('#setWin').value = s.win; });
+        syncWin(); D.onFullscreen(() => syncWin());
+        $('#setWin').addEventListener('change', (e) => { const v = e.target.value; s.win = v; saveSettings(); if (v === 'full') D.setFullscreen(true); else { const [w, h] = v.split('x').map(Number); D.setWindowSize(w, h); } });
+      }
+    }
+  },
+  renderKeys() {
+    const box = $('#keyList'); box.innerHTML = '';
+    for (const [act, , name] of KEY_DEFS) {
+      const row = document.createElement('div'); row.className = 'keyrow' + (this.keyWait === act ? ' wait' : '');
+      row.innerHTML = `<span>${name}</span><b>${this.keyWait === act ? L('키를 누르세요…', 'Press a key…', 'キーを押して…', '请按键…') : keyName(KB(act))}</b>`;
+      row.addEventListener('click', () => { this.keyWait = act; SND.play('click'); this.renderKeys(); });
+      box.appendChild(row);
     }
   },
   only(id) { for (const s of SCREENS) $(s).classList.toggle('hidden', s !== id); },

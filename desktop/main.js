@@ -90,6 +90,15 @@ ipcMain.on('bh-ach', (e, name) => {
 });
 ipcMain.handle('bh-is-fullscreen', () => (win ? win.isFullScreen() : false));
 ipcMain.on('bh-set-fullscreen', (e, v) => { if (win) win.setFullScreen(!!v); });
+// 창 크기 바꾸기: 전체 화면을 끄고 그 크기로 (화면보다 크면 화면에 맞춤)
+ipcMain.on('bh-set-size', (e, w, h) => {
+  if (!win) return;
+  const { screen } = require('electron');
+  const wa = screen.getDisplayMatching(win.getBounds()).workAreaSize;
+  w = Math.max(1024, Math.min(w | 0, wa.width)); h = Math.max(576, Math.min(h | 0, wa.height));
+  const go = () => { win.unmaximize(); win.setContentSize(w, h); win.center(); };
+  if (win.isFullScreen()) { win.once('leave-full-screen', () => setTimeout(go, 50)); win.setFullScreen(false); } else go();
+});
 ipcMain.on('bh-quit', () => app.quit());
 
 app.on('second-instance', () => { if (win) { if (win.isMinimized()) win.restore(); win.focus(); } });

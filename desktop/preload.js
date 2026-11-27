@@ -4,6 +4,7 @@ contextBridge.exposeInMainWorld('bhDesktop', {
   quit: () => ipcRenderer.send('bh-quit'),
   isFullscreen: () => ipcRenderer.invoke('bh-is-fullscreen'),
   setFullscreen: (v) => ipcRenderer.send('bh-set-fullscreen', !!v),
+  setWindowSize: (w, h) => ipcRenderer.send('bh-set-size', Number(w) || 1280, Number(h) || 720),
   onFullscreen: (fn) => ipcRenderer.on('bh-fullscreen', (e, v) => fn(v)),
   // 저장 파일 (save.json): 시작할 때 한 번 동기로 읽고, 바뀔 때마다 씀
   saveLoad: () => ipcRenderer.sendSync('bh-save-load'),

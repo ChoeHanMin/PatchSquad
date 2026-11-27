@@ -296,6 +296,12 @@ body.freeops #gl{cursor:none}
 #story .stmem b{color:var(--c,#cfd6c8);font-size:26px;margin-top:6px}#story .stmem span{color:#aab2a3;font-size:15px}#story .stmem em{color:#E8EDE2;font-size:16px;font-style:normal;margin-top:6px;text-align:center}
 #story .stmem.mystery{--c:#3a3f37}#story .stmem.mystery .stmimg{filter:brightness(0) drop-shadow(0 0 6px #FF5FA2)}#story .stmem.mystery b{color:#FF5FA2}
 #story .stcar{color:var(--lime);animation:blink .8s infinite steps(2)}
+#scrKeys .keyhelp{color:#aab2a3;font-size:15px;margin:0 0 12px}
+#keyList{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin-bottom:16px}
+#keyList .keyrow{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#0f130e;border:2px solid #2f342c;padding:8px 12px;cursor:pointer;font-size:16px}
+#keyList .keyrow:hover{border-color:var(--lime)}
+#keyList .keyrow b{font-family:var(--mono);color:var(--lime);min-width:64px;text-align:center;background:#1b1f19;border:2px solid #3a3f37;padding:2px 8px}
+#keyList .keyrow.wait{border-color:#FFD34D}#keyList .keyrow.wait b{color:#FFD34D;animation:blink .8s infinite steps(2)}
 </style>
 </head>
 <body>
@@ -429,12 +435,28 @@ body.freeops #gl{cursor:none}
       <label class="opt"><span data-en="Mouse sensitivity" data-ja="マウス感度" data-zh="鼠标灵敏度">마우스 감도</span><input type="range" id="setSens" min="60" max="160" step="5"><b class="optv" id="setSensV">1.00</b></label>
       <label class="opt"><span data-en="Colorblind mode <small style=&quot;color:#7d8478&quot;>(warnings in amber + dashed ring)</small>" data-ja="色覚サポートモード <small style=&quot;color:#7d8478&quot;>(警告を琥珀色+点線リングで)</small>" data-zh="色盲模式 <small style=&quot;color:#7d8478&quot;>（警告改为琥珀色+虚线圈）</small>">색약 모드 <small style="color:#7d8478">(경고를 호박색·점선 고리로)</small></span><input type="checkbox" id="setCb"></label>
       <label class="opt"><span data-en="Reduce flashing &amp; shake" data-ja="点滅と揺れを抑える" data-zh="减少闪烁与震动">깜빡임 효과 줄이기</span><input type="checkbox" id="setFlash"></label>
+      <label class="opt"><span data-en="Screen shake" data-ja="画面の揺れ" data-zh="画面震动">화면 흔들림</span><input type="range" id="setShake" min="0" max="150" step="10"><b id="setShakeV" style="min-width:52px;text-align:right">100%</b></label>
+      <label class="opt hidden" id="optWin"><span data-en="Window size" data-ja="ウィンドウサイズ" data-zh="窗口大小">창 크기</span>
+        <select id="setWin"><option value="full" data-en="Fullscreen" data-ja="フルスクリーン" data-zh="全屏">전체 화면</option><option value="1280x720">1280 × 720</option><option value="1600x900">1600 × 900</option><option value="1920x1080">1920 × 1080</option></select>
+      </label>
       <label class="opt"><span data-en="Quality" data-ja="画質" data-zh="画质">화질</span>
         <select id="setQuality"><option value="auto" data-en="Auto" data-ja="自動" data-zh="自动">자동</option><option value="high" data-en="High" data-ja="高" data-zh="高">높음</option><option value="low" data-en="Low" data-ja="低" data-zh="低">낮음</option></select>
       </label>
+      <button class="btn sm" id="btnKeys" data-en="Key bindings" data-ja="キー設定" data-zh="按键设置">키 설정</button>
       <button class="btn sm" id="btnIntro" data-en="Replay story intro" data-ja="ストーリーイントロをもう一度見る" data-zh="重看剧情开场">스토리 인트로 다시 보기</button>
       <button class="btn sm" id="btnTutReset" data-en="Show tip cards again" data-ja="ヒントカードをもう一度表示" data-zh="重新显示提示卡">안내 카드 다시 보기</button>
       <button class="btn pri" id="btnSetBack" data-en="Close" data-ja="閉じる" data-zh="关闭">닫기</button>
+    </div>
+  </section>
+
+  <!-- 키 설정 -->
+  <section id="scrKeys" class="scr dim hidden">
+    <div class="panel">
+      <h2 data-en="Key bindings" data-ja="キー設定" data-zh="按键设置">키 설정</h2>
+      <p class="keyhelp" data-en="Click an action, then press a new key. (Esc: cancel · squad 1–4 and Esc are fixed)" data-ja="動作をクリックしてから新しいキーを押してください。(Esc: キャンセル · 分隊1〜4とEscは固定)" data-zh="点击动作后按下新按键。（Esc：取消 · 小队1~4与Esc固定）">바꿀 동작을 누른 뒤 새 키를 누르세요. (Esc: 취소 · 분대원 1~4와 Esc는 고정)</p>
+      <div id="keyList"></div>
+      <button class="btn sm" id="btnKeysReset" data-en="Reset to defaults" data-ja="初期設定に戻す" data-zh="恢复默认">기본값으로</button>
+      <button class="btn pri" id="btnKeysBack" data-en="Close" data-ja="閉じる" data-zh="关闭">닫기</button>
     </div>
   </section>
 
@@ -529,9 +551,9 @@ body.freeops #gl{cursor:none}
       <div class="tag">FREE OPS</div>
       <h2 data-en="Free Ops — Controls" data-ja="フリー作戦 — 操作" data-zh="自由作战 — 操作">자유 작전 — 조작</h2>
       <div class="fi-keys">
-        <span><b>W A S D</b><i data-en="Move" data-ja="移動" data-zh="移动">이동</i></span><span><b>MOUSE</b><i data-en="Look / aim" data-ja="視点・照準" data-zh="视角/瞄准">시점·조준</i></span><span><b>LMB</b><i data-en="Shoot (Pin: hold to charge)" data-ja="射撃 (ピン: 長押しでチャージ)" data-zh="射击（平：按住蓄力）">사격 (핀: 누르고 있으면 충전)</i></span>
-        <span><b>R</b><i data-en="Reload" data-ja="リロード" data-zh="换弹">재장전</i></span><span><b>Z</b><i data-en="Cover (crouch behind low walls)" data-ja="遮蔽 (低い壁の後ろでしゃがむ)" data-zh="隐蔽（蹲在矮墙后）">엄폐 (낮은 벽 뒤에서 웅크리기)</i></span><span><b>1 2 3 4</b><i data-en="Switch squad member" data-ja="メンバー切り替え" data-zh="切换队员">분대원 교체</i></span>
-        <span><b>SHIFT</b><i data-en="Movement skill" data-ja="移動スキル" data-zh="位移技能">이동 스킬</i></span><span><b>E</b><i data-en="Utility skill" data-ja="サポートスキル" data-zh="辅助技能">보조 스킬</i></span><span><b>Q</b><i data-en="Ultimate" data-ja="アルティメット" data-zh="终极技能">궁극기</i></span><span><b>F</b><i data-en="Rollback (squad)" data-ja="ロールバック (分隊)" data-zh="回滚（小队）">롤백 (분대)</i></span><span><b>ESC</b><i data-en="Pause" data-ja="ポーズ" data-zh="暂停">일시정지</i></span>
+        <span><b data-kb="fwd left back right">W A S D</b><i data-en="Move" data-ja="移動" data-zh="移动">이동</i></span><span><b>MOUSE</b><i data-en="Look / aim" data-ja="視点・照準" data-zh="视角/瞄准">시점·조준</i></span><span><b>LMB</b><i data-en="Shoot (Pin: hold to charge)" data-ja="射撃 (ピン: 長押しでチャージ)" data-zh="射击（平：按住蓄力）">사격 (핀: 누르고 있으면 충전)</i></span>
+        <span><b data-kb="reload">R</b><i data-en="Reload" data-ja="リロード" data-zh="换弹">재장전</i></span><span><b data-kb="cover">Z</b><i data-en="Cover (crouch behind low walls)" data-ja="遮蔽 (低い壁の後ろでしゃがむ)" data-zh="隐蔽（蹲在矮墙后）">엄폐 (낮은 벽 뒤에서 웅크리기)</i></span><span><b>1 2 3 4</b><i data-en="Switch squad member" data-ja="メンバー切り替え" data-zh="切换队员">분대원 교체</i></span>
+        <span><b data-kb="skill1">SHIFT</b><i data-en="Movement skill" data-ja="移動スキル" data-zh="位移技能">이동 스킬</i></span><span><b data-kb="skill2">E</b><i data-en="Utility skill" data-ja="サポートスキル" data-zh="辅助技能">보조 스킬</i></span><span><b data-kb="ult">Q</b><i data-en="Ultimate" data-ja="アルティメット" data-zh="终极技能">궁극기</i></span><span><b data-kb="rbFree">F</b><i data-en="Rollback (squad)" data-ja="ロールバック (分隊)" data-zh="回滚（小队）">롤백 (분대)</i></span><span><b>ESC</b><i data-en="Pause" data-ja="ポーズ" data-zh="暂停">일시정지</i></span>
       </div>
       <div class="fi-sk"></div>
       <div class="fi-go" data-en="Click to start ▶" data-ja="クリックでスタート ▶" data-zh="点击开始 ▶">클릭해서 시작 ▶</div>
@@ -646,7 +668,35 @@ const VIEW = { pc: true, w: 1920, h: 1080, s: 1, ox: 0, oy: 0,
   pr() { return Math.min((window.devicePixelRatio || 1) * this.s, 2); }, // 실제로 보이는 크기에 맞춘 해상도
 };
 if (VIEW.pc) document.body.classList.add('pc');
-const settings = Object.assign({ sound: true, sfx: 0.8, music: 0.6, reduceFlash: false, quality: 'auto', sens: 1, cb: false, story: true }, Store.get('settings', {}));
+const settings = Object.assign({ sound: true, sfx: 0.8, music: 0.6, reduceFlash: false, quality: 'auto', sens: 1, cb: false, story: true, shake: 1, keys: {} }, Store.get('settings', {}));
+// 키 설정: 동작 → 키(KeyboardEvent.code). 설정에서 바꿀 수 있음 (분대원 1~4, Esc는 고정)
+const KEY_DEFS = [
+  ['rbRail', 'Space', L('롤백 (레일 모드)', 'Rollback (Rail)', 'ロールバック (レール)', '回滚（轨道模式）')],
+  ['fwd', 'KeyW', L('앞으로 (자유 작전)', 'Forward (Free Ops)', '前進 (フリー作戦)', '前进（自由作战）')],
+  ['back', 'KeyS', L('뒤로', 'Back', '後退', '后退')],
+  ['left', 'KeyA', L('왼쪽', 'Left', '左', '向左')],
+  ['right', 'KeyD', L('오른쪽', 'Right', '右', '向右')],
+  ['reload', 'KeyR', L('재장전', 'Reload', 'リロード', '换弹')],
+  ['cover', 'KeyZ', L('엄폐', 'Cover', '遮蔽', '隐蔽')],
+  ['skill1', 'ShiftLeft', L('이동 스킬', 'Movement skill', '移動スキル', '位移技能')],
+  ['skill2', 'KeyE', L('보조 스킬', 'Utility skill', 'サポートスキル', '辅助技能')],
+  ['ult', 'KeyQ', L('궁극기', 'Ultimate', 'アルティメット', '终极技能')],
+  ['rbFree', 'KeyF', L('롤백 (자유 작전)', 'Rollback (Free Ops)', 'ロールバック (フリー作戦)', '回滚（自由作战）')],
+];
+if (!settings.keys || typeof settings.keys !== 'object') settings.keys = {};
+const KB = (act) => settings.keys[act] || (KEY_DEFS.find((d) => d[0] === act) || [])[1];
+// 이 키가 이 동작인지 (Shift는 왼쪽·오른쪽 둘 다)
+const isKey = (e, act) => { const k = KB(act); return e.code === k || (/^Shift/.test(k) && /^Shift/.test(e.code)) || (/^Control/.test(k) && /^Control/.test(e.code)) || (/^Alt/.test(k) && /^Alt/.test(e.code)); };
+const keyName = (code) => {
+  if (!code) return '-';
+  if (code.startsWith('Key')) return code.slice(3);
+  if (code.startsWith('Digit')) return code.slice(5);
+  if (code.startsWith('Numpad')) return 'Num ' + code.slice(6);
+  const m = { Space: 'SPACE', ShiftLeft: 'SHIFT', ShiftRight: 'SHIFT', ControlLeft: 'CTRL', ControlRight: 'CTRL', AltLeft: 'ALT', AltRight: 'ALT', Tab: 'TAB', CapsLock: 'CAPS', Enter: 'ENTER', Backspace: 'BKSP', ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→', Backquote: '`', Minus: '-', Equal: '=', BracketLeft: '[', BracketRight: ']', Semicolon: ';', Quote: "'", Comma: ',', Period: '.', Slash: '/', Backslash: '\\' };
+  return m[code] || code;
+};
+// 화면 흔들림 세기 (설정 0~150%, '깜빡임 줄이기'를 켜면 더 약하게)
+const shakeK = () => (settings.shake == null ? 1 : settings.shake) * (settings.reduceFlash ? 0.4 : 1);
 function saveSettings() { Store.set('settings', settings); }
 // 스팀 도전 과제: 게임 도전 과제 키 → ACH_키 (예: release → ACH_RELEASE). 데스크톱 앱 + 스팀 실행 중일 때만
 function steamAch(key) { try { if (window.bhDesktop && window.bhDesktop.achieve) window.bhDesktop.achieve('ACH_' + String(key).toUpperCase()); } catch (e) { /* 스팀 없음 */ } }
@@ -2128,7 +2178,7 @@ const Game = {
       if (e.key === 'Escape') { if (this.state === 'play') UI.pause(); else if (this.state === 'paused') UI.resume(); return; }
       if (this.state !== 'play') return;
       if (e.key >= '1' && e.key <= String(SQUAD.length)) this.selectMember(+e.key - 1);
-      else if (e.code === 'Space' || e.key === 'q' || e.key === 'Q') { this.rollback(); e.preventDefault(); }
+      else if (isKey(e, 'rbRail') || (!settings.keys.rbRail && (e.key === 'q' || e.key === 'Q'))) { this.rollback(); e.preventDefault(); }
     });
     $$('.mem').forEach((b) => b.addEventListener('pointerdown', (e) => { e.stopPropagation(); e.preventDefault(); SND.init(); this.selectMember(+b.dataset.m); }));
     $$('.wpn.rb').forEach((b) => b.addEventListener('pointerdown', (e) => { e.stopPropagation(); e.preventDefault(); SND.init(); this.rollback(); }));
@@ -2478,9 +2528,12 @@ const Game = {
       if (a.src && a.src.alive === false && a.t < a.dur * 0.4) { a.done = true; this.pop(a.x, a.y, L('취소!', 'Cancelled!', 'キャンセル!', '已取消！'), '#9CFF7A'); continue; } // 쏘기 전에 잡으면 취소
       if (a.t >= a.dur) {
         a.done = true;
-        const exposed = this.outK > 0.45 || this.cover.broken;
+        const exposed = this.outK > 0.45 || this.cover.broken, ck = this.coverKind();
+        // 낮은 벽: 던지는 버그(throw)의 패킷은 가끔 벽을 넘어옴 (반만 맞음)
+        const lob = !exposed && ck === 'low' && a.src && a.src.type === 'throw' && !this.S.def.boss && !this.isTut() && Math.random() < 0.25;
         if (exposed) this.hurt(a.dmg, 'packet');
-        else this.coverHit(a.dmg);
+        else if (lob) { this.hurt(Math.ceil(a.dmg * 0.5), 'packet'); this.pop(this.W / 2 + rnd(-60, 60), this.H * 0.66, L('벽을 넘어왔다!', 'Lobbed over!', '壁を越えてきた!', '越过墙了！'), '#FF9E3D'); this.run.st.lob = (this.run.st.lob || 0) + 1; if (!this.seen.lob) { this.seen.lob = true; UI.hint(L('낮은 벽은 던지는 버그(throw)의 공격이 가끔 넘어와요. 먼저 잡거나 기둥에서 버티세요!', 'Throw bugs can lob packets over low walls. Take them out first!', '低い壁はスローバグの攻撃がときどき越えてくる。先に倒そう!', '矮墙挡不住投掷Bug偶尔抛过来的攻击，先解决它们！'), 4); } }
+        else this.coverHit(ck === 'side' ? a.dmg * 0.6 : a.dmg); // 기둥은 단단해서 엄폐물이 덜 깎임
       }
     }
     this.attacks = this.attacks.filter((a) => !a.done);
@@ -2722,7 +2775,7 @@ const Game = {
       S.moveT += dt;
       const k = smooth(clamp(S.moveT / 2.6, 0, 1));
       S.u = lerp(S.covers[S.ci - 1].u, S.covers[S.ci].u, k);
-      if (S.moveT >= 2.6) { S.phase = 'fight'; this.loadWave(); UI.toast(L(`엄폐 지점 ${S.ci + 1}/3`, `Cover point ${S.ci + 1}/3`, `遮蔽ポイント ${S.ci + 1}/3`, `掩体点 ${S.ci + 1}/3`) + ' · ' + (this.coverKind() === 'side' ? L('기둥 — 오른쪽으로 몸을 빼서 쏴요', 'Pillar — lean out right to shoot', '柱 — 右に身を乗り出して撃つ', '柱子 — 向右探身射击') : L('낮은 벽 — 일어나서 쏴요', 'Low wall — stand up to shoot', '低い壁 — 立ち上がって撃つ', '矮墙 — 起身射击'))); }
+      if (S.moveT >= 2.6) { S.phase = 'fight'; this.loadWave(); UI.toast(L(`엄폐 지점 ${S.ci + 1}/3`, `Cover point ${S.ci + 1}/3`, `遮蔽ポイント ${S.ci + 1}/3`, `掩体点 ${S.ci + 1}/3`) + ' · ' + (this.coverKind() === 'side' ? L('기둥: 단단해서 오래 버팀 · 몸 빼기는 조금 느림', 'Pillar: sturdy cover · slower to lean out', '柱: 頑丈で長持ち · 身を乗り出すのは少し遅い', '柱子：坚固耐用 · 探身稍慢') : L('낮은 벽: 빨리 일어남 · 던지는 공격이 가끔 넘어옴', 'Low wall: quick to pop up · lobbed packets can get over', '低い壁: すばやく立てる · 投げた攻撃がときどき越えてくる', '矮墙：起身快 · 抛来的攻击偶尔会越过'))); }
       return;
     }
     if (S.def.boss || S.def.tutorial) return;
@@ -2867,7 +2920,8 @@ const Game = {
 
     // 엄폐 ↔ 사격 자세
     this.out = this.state === 'play' && this.ptr.down && S.started && S.phase === 'fight' && !Tut.block;
-    this.outK += ((this.out ? 1 : 0) - this.outK) * Math.min(1, dt * 14);
+    const ck = this.coverKind(), outRate = ck === 'side' ? (this.out ? 8.5 : 14) : (this.out ? 19 : 16); // 기둥은 몸을 빼는 데 조금 더 걸림, 낮은 벽은 빨리 일어남
+    this.outK += ((this.out ? 1 : 0) - this.outK) * Math.min(1, dt * outRate);
 
     if (this.state === 'play') {
       if (!S.started) { S.introT -= dt; if (S.introT <= 0) { S.started = true; if (S.def.tutorial) Tut.start(); else { this.stageTutor(); Story.say(S.idx); } } }
@@ -2903,9 +2957,9 @@ const Game = {
       this.look.lerp(tgt, Math.min(1, dt * (moving ? 3 : 8)));
     }
     this.camera.lookAt(this.look);
-    if (S.phase === 'move') this.camera.rotation.z += Math.sin(S.moveT * 9) * 0.012 * (settings.reduceFlash ? 0.4 : 1); // 달릴 때 좌우로 살짝 기울어짐
+    if (S.phase === 'move') this.camera.rotation.z += Math.sin(S.moveT * 9) * 0.012 * shakeK(); // 달릴 때 좌우로 살짝 기울어짐
     if (this.shake > 0.002) {
-      const k = this.shake * (settings.reduceFlash ? 0.4 : 1);
+      const k = this.shake * shakeK();
       this.camera.position.x += (Math.random() - 0.5) * k; this.camera.position.y += (Math.random() - 0.5) * k;
       this.camera.rotation.z += (Math.random() - 0.5) * k * 0.05;
       this.shake *= Math.exp(-dt * 12);
@@ -3389,7 +3443,7 @@ const Game = {
 
 // ==== 08_ui.js ====
 // ---------- 화면 · HUD ----------
-const SCREENS = ['#scrTitle', '#scrAskTut', '#scrDiff', '#scrDex', '#scrPause', '#scrSettings', '#scrRecords', '#scrClear', '#scrCrash', '#scrResult', '#scrLang', '#scrDev'];
+const SCREENS = ['#scrTitle', '#scrAskTut', '#scrDiff', '#scrDex', '#scrPause', '#scrSettings', '#scrRecords', '#scrClear', '#scrCrash', '#scrResult', '#scrLang', '#scrDev', '#scrKeys'];
 const CHALLENGES = [
   ['release', L('정식 출시 등급 받기', 'Get the Released grade', '「正式リリース」評価を獲得', '获得“正式发布”评价')],
   ['nocrash', L('무사고 (크래시 0회로 클리어)', 'Zero Crashes (clear with no crashes)', 'ノークラッシュ (クラッシュ0回でクリア)', '零崩溃（无崩溃通关）')],
@@ -3514,6 +3568,25 @@ const UI = {
     $('#setCb').checked = !!s.cb;
     $('#setCb').addEventListener('change', (e) => { s.cb = e.target.checked; saveSettings(); });
     $('#setQuality').addEventListener('change', (e) => { s.quality = e.target.value; FX.setQuality(); saveSettings(); });
+    // 화면 흔들림
+    const shTxt = () => { $('#setShakeV').textContent = Math.round((s.shake == null ? 1 : s.shake) * 100) + '%'; };
+    $('#setShake').value = Math.round((s.shake == null ? 1 : s.shake) * 100); shTxt();
+    $('#setShake').addEventListener('input', (e) => { s.shake = e.target.value / 100; shTxt(); saveSettings(); });
+    $('#setShake').addEventListener('change', () => { Game.shake = 0.5; });
+    // 키 설정
+    click('#btnKeys', () => { this.only('#scrKeys'); this.renderKeys(); });
+    click('#btnKeysBack', () => { this.keyWait = null; this.only('#scrSettings'); });
+    click('#btnKeysReset', () => { s.keys = {}; saveSettings(); this.keyWait = null; this.renderKeys(); });
+    window.addEventListener('keydown', (e) => {
+      if (!this.keyWait) return;
+      e.preventDefault(); e.stopImmediatePropagation();
+      const act = this.keyWait; this.keyWait = null;
+      if (e.code === 'Escape' || /^Digit[1-9]$/.test(e.code)) { this.renderKeys(); return; }
+      // 같은 키를 쓰던 다른 동작은 서로 맞바꿈 (레일·자유 작전은 따로라서 롤백(레일)은 겹쳐도 됨)
+      const old = KB(act);
+      for (const [a] of KEY_DEFS) if (a !== act && a !== 'rbRail' && act !== 'rbRail' && KB(a) === e.code) s.keys[a] = old;
+      s.keys[act] = e.code; saveSettings(); SND.play('click'); this.renderKeys();
+    }, true);
     // 스팀판(데스크톱 앱): 게임 종료 버튼, 전체 화면 설정. 브라우저에서 열면 숨김
     const D = window.bhDesktop;
     if (D) {
@@ -3522,6 +3595,21 @@ const UI = {
       const sync = () => D.isFullscreen().then((v) => { $('#setFull').checked = !!v; });
       sync(); D.onFullscreen((v) => { $('#setFull').checked = !!v; });
       $('#setFull').addEventListener('change', (e) => D.setFullscreen(e.target.checked));
+      if (D.setWindowSize) {
+        $('#optWin').classList.remove('hidden');
+        const syncWin = () => D.isFullscreen().then((v) => { if (v) $('#setWin').value = 'full'; else if (s.win && s.win !== 'full') $('#setWin').value = s.win; });
+        syncWin(); D.onFullscreen(() => syncWin());
+        $('#setWin').addEventListener('change', (e) => { const v = e.target.value; s.win = v; saveSettings(); if (v === 'full') D.setFullscreen(true); else { const [w, h] = v.split('x').map(Number); D.setWindowSize(w, h); } });
+      }
+    }
+  },
+  renderKeys() {
+    const box = $('#keyList'); box.innerHTML = '';
+    for (const [act, , name] of KEY_DEFS) {
+      const row = document.createElement('div'); row.className = 'keyrow' + (this.keyWait === act ? ' wait' : '');
+      row.innerHTML = `<span>${name}</span><b>${this.keyWait === act ? L('키를 누르세요…', 'Press a key…', 'キーを押して…', '请按键…') : keyName(KB(act))}</b>`;
+      row.addEventListener('click', () => { this.keyWait = act; SND.play('click'); this.renderKeys(); });
+      box.appendChild(row);
     }
   },
   only(id) { for (const s of SCREENS) $(s).classList.toggle('hidden', s !== id); },
@@ -4276,12 +4364,12 @@ const Free = {
       if (this.intro) return;
       this.keys[e.code] = true;
       if (e.repeat) return;
-      if (e.code === 'KeyR') this.reload();
-      else if (e.code === 'KeyZ') this.toggleCrouch();
-      else if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') this.skill('shift');
-      else if (e.code === 'KeyE') this.skill('e');
-      else if (e.code === 'KeyQ') this.skill('q');
-      else if (e.code === 'KeyF') this.rollback();
+      if (isKey(e, 'reload')) this.reload();
+      else if (isKey(e, 'cover')) this.toggleCrouch();
+      else if (isKey(e, 'skill1')) this.skill('shift');
+      else if (isKey(e, 'skill2')) this.skill('e');
+      else if (isKey(e, 'ult')) this.skill('q');
+      else if (isKey(e, 'rbFree')) this.rollback();
       else if (k >= '1' && k <= String(SQUAD.length)) this.select(+k - 1);
       if (['Space', 'Tab'].includes(e.code)) e.preventDefault();
     });
@@ -4383,6 +4471,7 @@ const Free = {
     const el = $('#freeIntro'); el.classList.remove('hidden');
     const sk = FREE_SKILLS.map((s, i) => `<div class="fi-m" style="--c:${SQUAD[i].color}"><b>${SQUAD[i].name}</b> <span>${SQUAD[i].label}</span><div>⇧ ${s.shift.name} · E ${s.e.name} · Q ${s.q.name}</div></div>`).join('');
     el.querySelector('.fi-sk').innerHTML = sk;
+    el.querySelectorAll('[data-kb]').forEach((b) => { b.textContent = b.dataset.kb.split(' ').map((a) => keyName(KB(a))).join(' '); });
     this.unlock();
   },
   placeCovers(z, def) {
@@ -4777,7 +4866,7 @@ const Free = {
     if (!paused) this.update(dt);
     PFX.update(paused ? 0 : dt);
     Game.camera.position.set(this.p.pos.x, this.eye(), this.p.pos.z);
-    const sh = (Game.shake || 0) * (settings.reduceFlash ? 0.4 : 1);
+    const sh = (Game.shake || 0) * shakeK();
     Game.camera.rotation.set(this.p.pitch + (Math.random() - 0.5) * sh * 0.05, this.p.yaw + (Math.random() - 0.5) * sh * 0.05, 0, 'YXZ');
     Game.camera.updateMatrixWorld();
     FX.render(Game.scene, Game.camera, Game.time);
@@ -4798,7 +4887,8 @@ const Free = {
     // 이동
     const k = this.keys, fw = FV.a.set(-Math.sin(p.yaw), 0, -Math.cos(p.yaw)), rt = FV.b.set(Math.cos(p.yaw), 0, -Math.sin(p.yaw));
     const mv = FV.c.set(0, 0, 0);
-    if (k.KeyW) mv.add(fw); if (k.KeyS) mv.sub(fw); if (k.KeyD) mv.add(rt); if (k.KeyA) mv.sub(rt);
+    const kd = (act) => { const c = KB(act); return k[c] || (/^Shift/.test(c) && (k.ShiftLeft || k.ShiftRight)); };
+    if (kd('fwd')) mv.add(fw); if (kd('back')) mv.sub(fw); if (kd('right')) mv.add(rt); if (kd('left')) mv.sub(rt);
     p.crouchK += ((p.crouch ? 1 : 0) - p.crouchK) * Math.min(1, dt * 12);
     const spd = p.crouch ? 3.2 : 7;
     if (mv.lengthSq() > 0) { mv.normalize(); p.pos.addScaledVector(mv, spd * dt); p.bob += dt * (p.crouch ? 6 : 10); }
@@ -4944,7 +5034,8 @@ const Free = {
     g.font = `bold 22px ${mono}`; g.fillStyle = '#E8EDE2'; g.textAlign = 'right'; g.fillText(Math.ceil(p.hp) + '%', 372, H - 86);
     g.font = `14px ${mono}`; g.textAlign = 'left'; g.fillStyle = p.crouch ? '#C6F432' : '#7d8478';
     const nc = this.nearCover();
-    g.fillText(p.crouch ? L('Z · 엄폐 중 (낮은 벽 뒤면 에러 패킷을 막음)', 'Z · IN COVER (low walls block packets)', 'Z · 遮蔽中 (低い壁の後ろならパケットを防ぐ)', 'Z · 隐蔽中（矮墙后可挡数据包）') : nc ? L('Z · 엄폐하기', 'Z · Take cover', 'Z · 遮蔽する', 'Z · 进入隐蔽') : L('R 재장전 · F 롤백', 'R Reload · F Rollback', 'R リロード · F ロールバック', 'R 换弹 · F 回滚') + ` (${S.rb})`, 44, H - 40);
+    const kZ = keyName(KB('cover')), kR = keyName(KB('reload')), kF = keyName(KB('rbFree'));
+    g.fillText(p.crouch ? kZ + L(' · 엄폐 중 (낮은 벽 뒤면 에러 패킷을 막음)', ' · IN COVER (low walls block packets)', ' · 遮蔽中 (低い壁の後ろならパケットを防ぐ)', ' · 隐蔽中（矮墙后可挡数据包）') : nc ? kZ + L(' · 엄폐하기', ' · Take cover', ' · 遮蔽する', ' · 进入隐蔽') : `${kR} ` + L('재장전', 'Reload', 'リロード', '换弹') + ` · ${kF} ` + L('롤백', 'Rollback', 'ロールバック', '回滚') + ` (${S.rb})`, 44, H - 40);
     // 점수 (오른쪽 위)
     g.font = `bold 34px ${mono}`; g.textAlign = 'right'; g.fillStyle = '#C6F432'; g.fillText(this.run.score.toLocaleString(), W - 32, 52);
     g.font = `16px ${mono}`; g.fillStyle = '#aab2a3'; g.fillText(L('연속', 'Streak', '連続', '连击') + ' ×' + Math.min(2, 1 + 0.1 * this.run.streak).toFixed(1), W - 32, 78);
@@ -4972,17 +5063,18 @@ const Free = {
     }
     // 스킬 (오른쪽 아래)
     const sk = FREE_SKILLS[this.member], m = this.cur();
-    const items = [['⇧', sk.shift, m.cd.shift / sk.shift.cd], ['E', sk.e, m.cd.e / sk.e.cd], ['Q', sk.q, m.ult >= 100 ? 0 : 1 - m.ult / 100], ['F', { name: L('롤백', 'Rollback', 'ロールバック', '回滚') }, S.rb > 0 ? 0 : 1]];
+    const kn = (a) => { const c = KB(a); return /^Shift/.test(c) ? '⇧' : keyName(c); };
+    const items = [[kn('skill1'), sk.shift, m.cd.shift / sk.shift.cd, 's1'], [kn('skill2'), sk.e, m.cd.e / sk.e.cd, 's2'], [kn('ult'), sk.q, m.ult >= 100 ? 0 : 1 - m.ult / 100, 'q'], [kn('rbFree'), { name: L('롤백', 'Rollback', 'ロールバック', '回滚') }, S.rb > 0 ? 0 : 1, 'f']];
     const sw = 112, sx0 = W - (sw + 10) * 4 - 22, sy = H - 102;
-    items.forEach(([key, s, cdk], i) => {
+    items.forEach(([key, s, cdk, id], i) => {
       const x = sx0 + i * (sw + 10);
       box(x, sy, sw, 78);
       if (cdk > 0) { g.fillStyle = 'rgba(0,0,0,.55)'; g.fillRect(x, sy, sw, 78 * cdk); }
       const ready = cdk <= 0;
-      g.textAlign = 'center'; g.font = `bold 26px ${mono}`; g.fillStyle = ready ? (key === 'Q' ? '#FFD34D' : m.d.color) : '#6b6f68'; g.fillText(key, x + sw / 2, sy + 34);
+      g.textAlign = 'center'; g.font = `bold 26px ${mono}`; g.fillStyle = ready ? (id === 'q' ? '#FFD34D' : m.d.color) : '#6b6f68'; g.font = `bold ${key.length > 3 ? 18 : 26}px ${mono}`; g.fillText(key, x + sw / 2, sy + 34);
       g.font = `bold 12px ${mono}`; g.fillStyle = ready ? '#E8EDE2' : '#7d8478'; g.fillText(s.name, x + sw / 2, sy + 58);
-      if (!ready && key !== 'Q' && key !== 'F') { g.font = `bold 13px ${mono}`; g.fillStyle = '#FFD34D'; g.fillText((key === '⇧' ? m.cd.shift : m.cd.e).toFixed(1) + 's', x + sw / 2, sy + 73); }
-      if (key === 'Q') { g.font = `bold 13px ${mono}`; g.fillStyle = m.ult >= 100 ? '#FFD34D' : '#aab2a3'; g.fillText(Math.floor(m.ult) + '%', x + sw / 2, sy + 73); }
+      if (!ready && (id === 's1' || id === 's2')) { g.font = `bold 13px ${mono}`; g.fillStyle = '#FFD34D'; g.fillText((id === 's1' ? m.cd.shift : m.cd.e).toFixed(1) + 's', x + sw / 2, sy + 73); }
+      if (id === 'q') { g.font = `bold 13px ${mono}`; g.fillStyle = m.ult >= 100 ? '#FFD34D' : '#aab2a3'; g.fillText(Math.floor(m.ult) + '%', x + sw / 2, sy + 73); }
     });
   },
 };
