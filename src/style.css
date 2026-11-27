@@ -281,7 +281,7 @@ html:lang(zh){--mono:ui-monospace,Consolas,"Microsoft YaHei","Noto Sans Mono CJK
 #freeIntro .fi-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 #freeIntro .fi-keys span{display:flex;flex-direction:column;gap:4px;background:#151913;border:2px solid #2f342c;padding:10px 12px}
 #freeIntro .fi-keys b{font-family:var(--mono);font-size:20px;color:var(--yel)}#freeIntro .fi-keys i{font-style:normal;font-size:16px;color:#cfd6c8}
-#freeIntro .fi-sk{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+#freeIntro .fi-sk{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 #freeIntro .fi-m{border:2px solid var(--c);padding:10px 12px;font-size:15px;line-height:1.5;color:#cfd6c8}#freeIntro .fi-m b{color:var(--c);font-size:18px}#freeIntro .fi-m span{color:#aab2a3}
 #freeIntro .fi-go{font-family:var(--mono);font-size:22px;color:var(--lime);text-align:right;animation:blink 1s infinite steps(2)}
 body.freeops #gl{cursor:none}
