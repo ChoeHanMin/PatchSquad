@@ -100,7 +100,7 @@ const Free = {
     for (const b of this.bugs) b.remove(); this.bugs = [];
     for (const s of this.shots) s.remove(); this.shots = [];
     for (const w of this.walls) w.remove(); this.walls = [];
-    this.covers = []; this.pops = []; this.hitDirs = []; this.marks = []; this.blasts = []; this.heals = []; if (this.drone) { Game.scene.remove(this.drone.spr); this.drone = null; }
+    this.covers = []; this.pops = []; this.hitDirs = []; this.marks = []; this.blasts = []; this.heals = []; for (const c of this.caps || []) Game.scene.remove(c.spr); this.caps = []; if (this.drone) { Game.scene.remove(this.drone.spr); this.drone = null; }
     if (this.barrier) { World.group.remove(this.barrier); this.barrier = null; }
     if (this.beacon) { World.group.remove(this.beacon); this.beacon = null; }
     if (this.bossObj) { this.bossObj.remove(); this.bossObj = null; }
@@ -310,6 +310,14 @@ const Free = {
     for (const c of this.allCovers()) { const k = this.segHitsCover(o, FV.b.copy(o).addScaledVector(dir, maxT), c); if (k >= 0) t = Math.min(t, k * maxT); }
     return o.clone().addScaledVector(dir, t);
   },
+  capsule(from, to, dur) { // 날아가는 테스트 캡슐 (그림만)
+    if (!TEX.capsule) return;
+    const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX.capsule, transparent: true, fog: false, depthWrite: false })); spr.scale.setScalar(0.7); Game.scene.add(spr);
+    (this.caps = this.caps || []).push({ a: from.clone(), b: to.clone(), t: 0, dur, spr });
+  },
+  updateCaps(dt) {
+    this.caps = (this.caps || []).filter((c) => { c.t += dt; const k = Math.min(1, c.t / c.dur); c.spr.position.lerpVectors(c.a, c.b, k); if (k >= 1) { Game.scene.remove(c.spr); c.spr.material.dispose(); return false; } return true; });
+  },
   blast(at, R, dmg, kind = 'launcher') {
     let any = false;
     for (const b of this.bugs.slice()) if (b.alive && b.hittable() && b.hitPos().distanceTo(at) < R + b.radius()) { if (this.hitTarget(b, dmg, false, kind, FV.d.subVectors(b.pos, at).normalize().clone())) any = true; }
@@ -322,6 +330,7 @@ const Free = {
   fireLauncher(m) {
     const at = this.aimPoint();
     this.tracers.push({ a: Game.camera.position.clone().add(FV.d.set(0, -0.3, 0)), b: at.clone(), t: 0, c: m.d.color, w: 5 });
+    this.capsule(Game.camera.position.clone().add(FV.d.set(0, -0.3, 0)), at, 0.12);
     if (this.blast(at, 2.4, m.d.dmg)) { this.run.hits++; this.hitMark = 0.15; }
     SND.play('boom'); Game.shake = Math.max(Game.shake || 0, 0.12);
   },
@@ -419,7 +428,7 @@ const Free = {
       UI.only('#scrClear');
     }, 2700);
   },
-  nextStage() { this.startStage(this.run.stage + 1); },
+  nextStage() { const n = this.run.stage + 1; Story.beforeStage(n, () => this.startStage(n)); },
   showResult() {
     const r = this.run, acc = r.shots ? r.hits / r.shots : 0;
     const gi = r.crashes === 0 && acc >= 0.45 ? 0 : r.crashes <= 2 ? 1 : 2;
@@ -486,13 +495,13 @@ const Free = {
       if (slot === 'shift') { p.dashV.copy(fw).multiplyScalar(26); p.dashT = 0.3; p.iT = 0.25; this.heals.push({ pos: p.pos.clone(), t: 5 }); SND.play('rush'); }
       if (slot === 'e') {
         if (this.drone) Game.scene.remove(this.drone.spr);
-        const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: Free.droneTex || TEX.glow, color: Free.droneTex ? 0xffffff : 0xFF5FA2, transparent: true, fog: false }));
+        const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX.drone || TEX.glow, color: TEX.drone ? 0xffffff : 0xFF5FA2, transparent: true, fog: false }));
         spr.scale.setScalar(0.9); Game.scene.add(spr);
         this.drone = { t: 8, fireT: 0.3, spr, pos: p.pos.clone().add(FV.d.set(0, 2.4, 0)) }; SND.play('unlock');
       }
       if (slot === 'q') {
         const at = this.aimPoint(34); at.y = 0;
-        for (let k = 0; k < 10; k++) this.blasts.push({ at: at.clone().add(FV.d.set(rnd(-4.5, 4.5), 0.6, rnd(-4.5, 4.5))), t: 0.25 + k * 0.16 });
+        for (let k = 0; k < 10; k++) { const b = { at: at.clone().add(FV.d.set(rnd(-4.5, 4.5), 0.6, rnd(-4.5, 4.5))), t: 0.25 + k * 0.16 }; this.blasts.push(b); this.capsule(b.at.clone().add(FV.d.set(rnd(-1, 1), 9, rnd(-1, 1))), b.at, b.t); }
         this.marks.push({ pos: at, t: 0, dur: 1.9, kind: 'rain', R: 6 }); SND.play('aim'); UI.banner('', 'REGRESSION TEST', 1.4);
       }
     }
@@ -569,6 +578,7 @@ const Free = {
     this.hitMark = Math.max(0, (this.hitMark || 0) - dt);
     this.updateWeapon(dt);
     this.updateAda(dt * ws);
+    this.updateCaps(dt * ws);
     // 구역 진행
     if (S.phase === 'travel' && !S.def.boss) {
       const z = this.zones[S.zi];

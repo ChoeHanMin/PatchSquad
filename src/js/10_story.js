@@ -14,6 +14,9 @@ const STORY = {
     { pic: 'end3', t: L('패치 스쿼드', 'The Patch Squad', 'パッチ・スクワッド', '补丁小队'), b: L('도트: "수고했어, 다들."<br>렉스: "다음 버그는 어디야? 다 갈아엎어 주지!"<br>핀: "…방금 메인 루프가 웃은 것 같은데."<br>에이다: "회귀 테스트까지 통과! 완벽해."', 'Dot: "Good work, everyone."<br>Rex: "Where\'s the next bug? I\'ll refactor it all!"<br>Pin: "...Did the Main Loop just smile?"<br>Ada: "Regression tests passed! Perfect."', 'ドット:「おつかれ、みんな。」<br>レックス:「次のバグはどこだ? 全部リファクタしてやる!」<br>ピン:「…今、メインループが笑った気がする。」<br>エイダ:「回帰テストもパス! 完璧!」', '多特：“辛苦了，大家。”<br>雷克斯：“下一个Bug在哪？我全给它重构了！”<br>平：“……刚才主循环好像笑了。”<br>艾达：“回归测试也通过了！完美。”'), art: 'squad' },
     { pic: 'end4', t: L('그런데…', 'But...', 'でも…', '可是……'), b: L('이 세계를 처음 망가뜨린 건<br>누구였을까?<br><br><b>— 1장 끝 · 다음 임무 준비 중 —</b>', 'who broke this world<br>in the first place?<br><br><b>— END OF CHAPTER 1 · NEXT MISSION IN PREPARATION —</b>', 'この世界を最初に壊したのは<br>誰だったのだろう?<br><br><b>— 第1章 完 · 次の任務 準備中 —</b>', '最初把这个世界弄坏的<br>到底是谁？<br><br><b>— 第1章 完 · 下一个任务准备中 —</b>'), art: 'mystery' },
   ],
+  adaJoin: [
+    { pic: 'ada_join', t: L('새 분대원 합류', 'A new squad member', '新メンバー合流', '新队员加入'), b: L('에이다: "안녕! 오늘부터 QA 담당 에이다야.<br>테스트 안 한 코드는 고장 난 코드라고~ 서버실은 내가 맡을게!"', 'Ada: "Hi! I\'m Ada, your new QA tester.<br>Untested code is broken code~ Leave the server room to me!"', 'エイダ:「やっほー! 今日からQA担当のエイダだよ。<br>テストしてないコードは壊れたコード~ サーバールームは任せて!」', '艾达：“嗨！我是今天起负责QA的艾达。<br>没测过的代码就是坏代码~ 服务器机房交给我吧！”') },
+  ],
   // 스테이지 시작 대사: [분대원 번호(0 도트·1 렉스·2 핀), 대사]
   lines: [
     [0, L('회색 숲이네. 고치는 만큼 색이 돌아올 거야.', 'A grey forest. Every bug we fix brings the color back.', '灰色の森か。直すたびに色が戻ってくるはずだ。', '灰色的森林啊。每修好一个，色彩就会回来。')],
@@ -69,6 +72,8 @@ const Story = {
   },
   intro(done) { this.play(STORY.intro, () => { Store.set('introSeen', true); if (done) done(); }); },
   ending(done) { this.play(STORY.ending, done); },
+  // 에이다가 합류하는 스테이지 직전 (처음 한 번)
+  beforeStage(idx, go) { if (STAGES[idx] && STAGES[idx].join === 3 && !Store.get('adaSeen', false)) { Store.set('adaSeen', true); return this.play(STORY.adaJoin, go); } go(); },
   // 스테이지 시작 한마디 (화면 왼쪽 아래, 얼굴 + 이름 + 대사)
   say(stageIdx) {
     const ln = STORY.lines[stageIdx]; if (!ln) return;

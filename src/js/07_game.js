@@ -266,7 +266,7 @@ const Game = {
     SND.play('boom'); this.shake = Math.max(this.shake, 0.14); this.recoil = 1.8;
     const a = this.aim(), g = this.gunPos(), R = this.retR() * 3.2;
     this.tracers.push({ x0: g.x, y0: g.y, x1: a.x, y1: a.y, t: 0, w: 6, c: m.d.color });
-    this.blastFx = { x: a.x, y: a.y, r: R, t: 0 };
+    this.blastFx = { x: a.x, y: a.y, r: R, t: 0, x0: g.x, y0: g.y };
     let any = false;
     for (const t of this.targetsNear(a.x, a.y, R)) { if (this.damage(t, m.d.dmg, false, false, 'launcher')) any = true; }
     if (any) { this.run.st.hits++; this.S.hits++; }
@@ -796,7 +796,7 @@ const Game = {
   },
   nextStage() {
     if (STAGES[this.run.stage].boss) return Story.ending(() => UI.showResult());
-    this.startStage(this.run.stage + 1);
+    const n = this.run.stage + 1; Story.beforeStage(n, () => this.startStage(n));
   },
 
   // ----- 타이틀 배경 (회색 세상 + 기어 다니는 버그) -----
@@ -1185,7 +1185,7 @@ const Game = {
     const mono = 'ui-monospace,Menlo,monospace';
     this.drawCoverImg(g);
     if (this.S && this.S.phase === 'move') this.drawMoveEdges(g);
-    if (this.blastFx) { const b = this.blastFx; b.t += dt; const k = b.t / 0.35; if (k >= 1) this.blastFx = null; else { g.globalAlpha = 1 - k; g.strokeStyle = '#FF5FA2'; g.lineWidth = 6; g.beginPath(); g.arc(b.x, b.y, b.r * (0.4 + k * 0.6), 0, 6.283); g.stroke(); g.fillStyle = 'rgba(255,95,162,.18)'; g.fill(); g.globalAlpha = 1; } }
+    if (this.blastFx) { const b = this.blastFx; b.t += dt; const k = b.t / 0.35; if (k >= 1) this.blastFx = null; else { if (IMG.capsule && k < 0.3) { const q = k / 0.3, cs = 46 * (1 - q * 0.5); g.save(); g.translate(lerp(b.x0, b.x, q), lerp(b.y0, b.y, q)); g.rotate(Math.atan2(b.y - b.y0, b.x - b.x0) + 0.45); g.drawImage(IMG.capsule, -cs / 2, -cs / 2, cs, cs); g.restore(); } g.globalAlpha = 1 - k; g.strokeStyle = '#FF5FA2'; g.lineWidth = 6; g.beginPath(); g.arc(b.x, b.y, b.r * (0.4 + k * 0.6), 0, 6.283); g.stroke(); g.fillStyle = 'rgba(255,95,162,.18)'; g.fill(); g.globalAlpha = 1; } }
     // 적 공격 예고 (빨간 원 → 패킷이 날아옴)
     for (const a of this.attacks) {
       const k = clamp(a.t / a.dur, 0, 1), pulse = 0.5 + 0.5 * Math.sin(this.time * 24);

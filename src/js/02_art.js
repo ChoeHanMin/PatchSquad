@@ -111,6 +111,10 @@ function buildTextures() {
   TEX.missile = [texFromCanvas(missileCanvas(0)), texFromCanvas(missileCanvas(1))];
   if (ASSETS.proj_missile) TEX.missile = [assetTex(ASSETS.proj_missile), null]; if (!TEX.missile[1]) TEX.missile[1] = TEX.missile[0];
   IMG.packet = ASSETS.proj_packet ? imgOf(ASSETS.proj_packet) : packetCanvas();
+  // 에이다: 테스트 캡슐 · 테스트 드론
+  IMG.capsule = ASSETS.proj_capsule ? imgOf(ASSETS.proj_capsule) : null;
+  TEX.capsule = ASSETS.proj_capsule ? assetTex(ASSETS.proj_capsule) : null;
+  TEX.drone = ASSETS.drone_ada ? assetTex(ASSETS.drone_ada) : null;
   // 분대 얼굴 (assets/portrait_*.png 있으면 교체)
   IMG.portrait = SQUAD_LOOK.map((s, i) => (ASSETS['portrait_' + s.key] ? imgOf(ASSETS['portrait_' + s.key]) : portraitCanvas(s)));
   IMG.char = SQUAD_LOOK.map((s, i) => (ASSETS['char_' + s.key] ? imgOf(ASSETS['char_' + s.key]) : charCanvas(s, i)));
