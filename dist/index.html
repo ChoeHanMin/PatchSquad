@@ -2977,6 +2977,8 @@ const Game = {
     }
     if (low && !crouch) y += h * 0.3; // 웅크린 그림이 아직 없으면 서 있는 그림을 낮춰 벽 뒤에 숨은 것처럼
     if (low) cx -= W * 0.03;
+    const sideCov = !moving && this.coverKind() === 'side';
+    if (sideCov) cx = W * (W < H ? 0.26 : 0.17); // 기둥: 몸을 왼쪽으로 붙여서 기둥 뒤에 숨김
     if (crouch) y -= h * 0.05; // 웅크린 그림: 무릎이 화면 아래에 잘리지 않게 살짝 올림
     y += this.outK * h * 0.35; // 일어서며 화면 밖으로
     if (this.attacks.some((q) => q.t > q.dur * 0.6)) cx += (Math.random() - 0.5) * 4; // 움찔
@@ -2987,8 +2989,9 @@ const Game = {
       this._sideImgs = this._sideImgs || {};
       let si = this._sideImgs[sideUrl]; if (!si) { si = this._sideImgs[sideUrl] = new Image(); si.src = sideUrl; }
       if (si.complete && si.naturalWidth) {
-        const sh = H * 1.04, swd = sh * si.naturalWidth / si.naturalHeight;
-        const right = lerp(cx - w * 0.16, W * 0.09, clamp(this.outK, 0, 1)); // 나오면 몸을 오른쪽으로 빼서, 기둥 가장자리가 화면 왼쪽에 남음
+        // 기둥을 크게(화면 1.55배 높이) 그려서 캐릭터보다 넓게 — 적이 있는 오른쪽(화면 가운데) 쪽으로 기둥이 캐릭터 몸을 넉넉히 가림
+        const sh = H * 1.55, swd = sh * si.naturalWidth / si.naturalHeight;
+        const right = lerp(cx + w * 0.44, W * 0.1, clamp(this.outK, 0, 1)); // 나오면 몸을 오른쪽으로 빼서, 기둥 가장자리가 화면 왼쪽에 남음
         g.save(); g.globalAlpha = 1; g.imageSmoothingEnabled = false;
         if (this.hudFlipped) { g.translate(W, 0); g.scale(-1, 1); } // UI 뒤집힘 고장: 오른쪽으로
         g.drawImage(si, right - swd, H - sh, swd, sh);
