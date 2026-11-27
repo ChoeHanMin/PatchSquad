@@ -40,7 +40,7 @@ const stage = +(process.argv[2] || 0), maxSec = +(process.argv[3] || 240), lang 
           if (best) { const c = G.camera.position, dx = best.x - c.x, dy = best.y - c.y, dz = best.z - c.z; F.p.yaw = Math.atan2(-dx, -dz); F.p.pitch = Math.atan2(dy, Math.hypot(dx, dz)); F.mouse = true; }
           else { if (F.mouse) F.release(); F.mouse = false; }
           // 분대원 바꾸기 + 스킬
-          if (f % 150 === 75) F.select((F.member + 1) % 3);
+          if (f % 150 === 75) F.select((F.member + 1) % F.mem.length);
           if (f % 60 === 30) F.skill(keys[skillI++ % 3]);
           if (f % 240 === 120) F.rollback();
           if (F.cur().d.kind === 'sniper' && F.charge >= 0.6) { F.release(); }

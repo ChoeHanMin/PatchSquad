@@ -499,6 +499,7 @@ const UI = {
     add(true, L(`총 ${total}개의 버그가 세상에서 사라졌습니다`, `${total} bugs have vanished from the world`, `合計${total}匹のバグが世界から消えた`, `共有${total}只Bug从世界上消失`), 0.8);
     add(st.perfect >= 5, L(`PERFECT 패치 ${st.perfect}회 — 정밀 디버깅 장인`, `${st.perfect} PERFECT patches — master debugger`, `PERFECTパッチ${st.perfect}回 — 精密デバッグの達人`, `PERFECT补丁${st.perfect}次 — 精密调试大师`), 2);
     add(st.hotfix > 0, L(`핫픽스 ${st.hotfix}개 긴급 배포`, `Deployed ${st.hotfix} emergency hotfixes`, `ホットフィックス${st.hotfix}個を緊急配信`, `紧急发布了${st.hotfix}个热修复`), 1.2);
+    add((st.pair || 0) >= 3, L(`페어 프로그래밍 ${st.pair}회 — 혼자 짠 코드보다 버그가 적습니다`, `Pair programming ×${st.pair} — fewer bugs than solo code`, `ペアプロ ${st.pair}回 — ひとりで書いたコードよりバグが少ない`, `结对编程${st.pair}次 — 比单人写的代码Bug更少`), 2);
     add(st.weak >= 8, L(`약점 무기로 ${st.weak}마리 공략 — 분대 운용 만점`, `Took down ${st.weak} bugs with weak weapons — squad tactics: perfect`, `弱点武器で${st.weak}匹を攻略 — 分隊運用は満点`, `用弱点武器攻略${st.weak}只 — 小队配合满分`), 2);
     add(st.blocked >= 10, L(`엄폐물로 에러 패킷 ${st.blocked}개 방어 — 숨기 장인`, `Blocked ${st.blocked} error packets with cover — master of hiding`, `遮蔽物でエラーパケット${st.blocked}個を防御 — 隠れ名人`, `用掩体挡下${st.blocked}个错误数据包 — 隐蔽大师`), 2.2);
     add(st.missiles > 0, L(`관통 미사일 ${st.missiles}발 격추`, `Shot down ${st.missiles} piercing missiles`, `貫通ミサイル${st.missiles}発を撃墜`, `击落${st.missiles}发穿透导弹`), 1.8);

@@ -8,9 +8,20 @@ const SND = {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return;
       this.ctx = new AC();
-      this.master = this.ctx.createGain(); this.master.connect(this.ctx.destination);
-      this.sfxG = this.ctx.createGain(); this.sfxG.connect(this.master);
-      this.musG = this.ctx.createGain(); this.musG.connect(this.master);
+      // 출력: 마스터 → 컴프레서(소리를 한데 뭉쳐 단단하게) → 스피커
+      this.comp = this.ctx.createDynamicsCompressor();
+      this.comp.threshold.value = -16; this.comp.knee.value = 10; this.comp.ratio.value = 4; this.comp.attack.value = 0.004; this.comp.release.value = 0.18;
+      this.master = this.ctx.createGain(); this.master.connect(this.comp); this.comp.connect(this.ctx.destination);
+      // 효과음: 저음 보강(로우셸프) → 살짝 찌그러뜨리기(웨이브셰이퍼) → 마스터 — 총소리·폭발이 굵고 묵직하게
+      this.sfxG = this.ctx.createGain();
+      const low = this.ctx.createBiquadFilter(); low.type = 'lowshelf'; low.frequency.value = 140; low.gain.value = 5;
+      const drive = this.ctx.createWaveShaper(), cv = new Float32Array(1024);
+      for (let i = 0; i < 1024; i++) { const x = i / 511.5 - 1; cv[i] = Math.tanh(x * 1.8) / Math.tanh(1.8); }
+      drive.curve = cv; drive.oversample = '2x';
+      this.sfxG.connect(low); low.connect(drive); drive.connect(this.master);
+      this.musG = this.ctx.createGain();
+      const mlow = this.ctx.createBiquadFilter(); mlow.type = 'lowshelf'; mlow.frequency.value = 160; mlow.gain.value = 3.5; // 음악 저음도 조금 더 두껍게
+      this.musG.connect(mlow); mlow.connect(this.master);
       const len = this.ctx.sampleRate;
       this.noise = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
       const d = this.noise.getChannelData(0);
@@ -48,6 +59,16 @@ const SND = {
     s.connect(f); f.connect(g); g.connect(dest || this.sfxG);
     s.start(t, Math.random() * 0.5); s.stop(t + dur + 0.02);
   },
+  // 묵직한 저음 한 방: 사인파가 빠르게 떨어지는 킥 + 낮은 잡음 몸통
+  thump(f0 = 140, f1 = 42, dur = 0.16, vol = 0.45, when = 0, body = 0.18) {
+    if (!this.ctx) return;
+    const t = when || this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = 'sine'; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur * 0.6);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.003); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(this.sfxG); o.start(t); o.stop(t + dur + 0.02);
+    if (body > 0) this.noiseHit(dur * 0.7, body, 'lowpass', 380, t);
+  },
   // assets/sfx_*.mp3|ogg|wav 가 있으면 그 소리를 씀
   bufs: {},
   loadSamples() {
@@ -72,6 +93,7 @@ const SND = {
     const now = this.ctx.currentTime;
     switch (name) {
       case 'shot': // 패치 탄: 딸깍 + 뿅 하강 + 낮은 쿵 + 디지털 꼬리
+        this.thump(150, 48, 0.12, 0.42, 0, 0.12);
         if (this.sample('sfx_shot', 0.9)) break;
         this.noiseHit(0.025, 0.22, 'highpass', 4500);
         this.tone(1900, 0.075, 'square', 0.11, 420);
@@ -79,6 +101,7 @@ const SND = {
         this.tone(2637, 0.05, 'triangle', 0.05, 2093, now + 0.035);
         break;
       case 'spread': // 리팩터: 묵직한 확산음 + 7발 틱
+        this.thump(120, 36, 0.24, 0.6, 0, 0.3); this.noiseHit(0.09, 0.22, 'bandpass', 600, now + 0.01);
         if (this.sample('sfx_spread', 0.95)) break;
         this.noiseHit(0.16, 0.32, 'bandpass', 1400);
         this.tone(760, 0.16, 'sawtooth', 0.13, 150);
@@ -89,29 +112,29 @@ const SND = {
       case 'perfect': this.tone(3136, 0.16, 'sine', 0.14, null, now + 0.04); this.tone(4186, 0.2, 'sine', 0.1, null, now + 0.1); break;
       case 'warn': this.tone(880, 0.06, 'square', 0.07); this.tone(660, 0.06, 'square', 0.07, null, now + 0.08); break;
       case 'pickup': [0, 4, 7, 12, 16, 19].forEach((s, i) => this.tone(659 * Math.pow(2, s / 12), 0.1, 'triangle', 0.14, null, now + i * 0.045)); break;
-      case 'rush': this.tone(220, 0.25, 'sawtooth', 0.2, 440); this.tone(330, 0.25, 'sawtooth', 0.15, 660, now + 0.25); this.noiseHit(0.3, 0.15, 'bandpass', 900, now + 0.1); break;
+      case 'rush': this.thump(90, 40, 0.35, 0.45, 0, 0.25); this.tone(220, 0.25, 'sawtooth', 0.2, 440); this.tone(330, 0.25, 'sawtooth', 0.15, 660, now + 0.25); this.noiseHit(0.3, 0.15, 'bandpass', 900, now + 0.1); break;
       case 'split': for (let i = 0; i < 3; i++) this.noiseHit(0.05, 0.25, 'bandpass', 2500 + i * 900, now + i * 0.04); this.tone(600, 0.1, 'square', 0.1, 1200); break; // 지직
       case 'tele': this.tone(300, 0.14, 'sine', 0.3, 1800); this.tone(1800, 0.08, 'sine', 0.12, 2600, now + 0.12); break; // 뿅
-      case 'glitch': this.noiseHit(0.35, 0.35, 'bandpass', 1200); this.tone(120, 0.3, 'sawtooth', 0.18, 60); break; // 잡음
+      case 'glitch': this.thump(100, 40, 0.25, 0.35, 0, 0.15); this.noiseHit(0.35, 0.35, 'bandpass', 1200); this.tone(120, 0.3, 'sawtooth', 0.18, 60); break; // 잡음
       case 'combo': [0, 4, 7, 12].forEach((s, i) => this.tone(523 * Math.pow(2, s / 12), 0.12, 'square', 0.12, null, now + i * 0.06)); break; // 올라가는 음
       case 'deflect': this.tone(2400, 0.05, 'square', 0.1, 1800); this.noiseHit(0.04, 0.12, 'highpass', 5000); break;
       case 'rollback': this.tone(900, 0.5, 'sawtooth', 0.12, 220); this.tone(1200, 0.5, 'sine', 0.1, 300); break;
       case 'unlock': [0, 7, 12, 16, 19].forEach((s, i) => this.tone(440 * Math.pow(2, s / 12), 0.16, 'triangle', 0.16, null, now + i * 0.07)); break;
       case 'click': this.tone(660, 0.04, 'square', 0.08); break;
-      case 'crash': this.noiseHit(0.9, 0.45, 'lowpass', 900); this.tone(220, 0.9, 'sawtooth', 0.25, 30); break;
+      case 'crash': this.thump(90, 22, 1.1, 0.8, 0, 0.5); this.noiseHit(0.9, 0.45, 'lowpass', 900); this.tone(220, 0.9, 'sawtooth', 0.25, 30); break;
       case 'clear': [0, 4, 7, 12, 16].forEach((s, i) => this.tone(523 * Math.pow(2, s / 12), 0.22, 'square', 0.12, null, now + i * 0.09)); break;
       case 'success': [0, 4, 7, 12, 7, 12, 16, 19, 24].forEach((s, i) => this.tone(392 * Math.pow(2, s / 12), 0.2, i % 2 ? 'triangle' : 'square', 0.13, null, now + i * 0.1)); break;
-      case 'phase': this.tone(110, 0.6, 'sawtooth', 0.25, 55); this.noiseHit(0.5, 0.2, 'lowpass', 600); break;
+      case 'phase': this.thump(80, 25, 0.9, 0.7, 0, 0.35); this.tone(110, 0.6, 'sawtooth', 0.25, 55); this.noiseHit(0.5, 0.2, 'lowpass', 600); break;
       case 'overheat': this.noiseHit(1.2, 0.3, 'highpass', 3000); this.tone(900, 0.5, 'sawtooth', 0.12, 120); this.tone(1200, 0.08, 'square', 0.1, null, now + 0.02); break; // 치이익
       case 'cool': this.tone(1318, 0.1, 'triangle', 0.14); this.tone(1976, 0.18, 'triangle', 0.12, null, now + 0.08); break;
       case 'jam': this.tone(180, 0.04, 'square', 0.12, 90); this.noiseHit(0.03, 0.1, 'bandpass', 1200); break; // 딸깍(헛방)
-      case 'rifle': if (this.sample('sfx_shot', 0.42)) break; this.noiseHit(0.018, 0.14, 'highpass', 5000); this.tone(1500, 0.045, 'square', 0.06, 600); this.tone(160, 0.05, 'sine', 0.14, 60); break; // 연사 한 발
-      case 'snipe': if (this.sample('sfx_snipe', 1)) break; this.noiseHit(0.05, 0.35, 'highpass', 3000); this.tone(2200, 0.25, 'sawtooth', 0.12, 300); this.tone(110, 0.3, 'sine', 0.45, 35); break; // 저격
+      case 'rifle': this.thump(170, 60, 0.07, 0.26, 0, 0.06); if (this.sample('sfx_shot', 0.42)) break; this.noiseHit(0.018, 0.14, 'highpass', 5000); this.tone(1500, 0.045, 'square', 0.06, 600); this.tone(160, 0.05, 'sine', 0.14, 60); break; // 연사 한 발
+      case 'snipe': this.thump(110, 30, 0.42, 0.7, 0, 0.32); this.tone(55, 0.6, 'sine', 0.22, 38, now + 0.02); if (this.sample('sfx_snipe', 1)) break; this.noiseHit(0.05, 0.35, 'highpass', 3000); this.tone(2200, 0.25, 'sawtooth', 0.12, 300); this.tone(110, 0.3, 'sine', 0.45, 35); break; // 저격
       case 'tick': this.tone(2600, 0.025, 'square', 0.035); break; // 맞힘
-      case 'boom': this.noiseHit(0.4, 0.4, 'lowpass', 700); this.tone(90, 0.35, 'sine', 0.4, 30); break; // 미사일 격추
+      case 'boom': this.thump(110, 28, 0.5, 0.75, 0, 0.45); this.noiseHit(0.55, 0.35, 'lowpass', 900, now + 0.01); this.noiseHit(0.12, 0.18, 'highpass', 2500); break; // 미사일 격추
       case 'aim': this.tone(660, 0.09, 'sawtooth', 0.06, 880); break; // 적이 조준
       case 'missile': this.tone(300, 0.6, 'sawtooth', 0.07, 900); this.noiseHit(0.5, 0.08, 'bandpass', 1600); break;
-      case 'block': this.noiseHit(0.08, 0.3, 'lowpass', 900); this.tone(140, 0.1, 'square', 0.12, 70); break; // 엄폐물에 막힘
+      case 'block': this.thump(130, 50, 0.14, 0.4, 0, 0.25); this.noiseHit(0.08, 0.3, 'lowpass', 900); this.tone(140, 0.1, 'square', 0.12, 70); break; // 엄폐물에 막힘
       case 'reload': this.tone(900, 0.03, 'square', 0.06); this.tone(1300, 0.04, 'square', 0.06, null, now + 0.07); break;
       case 'move': [0, 2, 4].forEach((s, i) => this.tone(330 * Math.pow(2, s / 12), 0.08, 'square', 0.07, null, now + i * 0.06)); break;
       case 'spawn': this.tone(200 + p * 40, 0.05, 'square', 0.05, 400); break;

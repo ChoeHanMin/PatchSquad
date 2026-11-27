@@ -379,6 +379,11 @@ const Free = {
     const mult = Math.min(2, 1 + 0.1 * r.streak);
     r.score += Math.round((b.def.pts || 100) * mult * (this.debugT > 0 ? 1.2 : 1));
     const m = this.cur(); m.ult = Math.min(100, m.ult + 7 + (b.def.pts || 100) / 50);
+    const fk = ['rifle', 'shotgun', 'sniper', 'launcher'].includes(b.lastKind) ? b.lastKind : null; // 페어 프로그래밍 (분대원 바꿔 이어서 고치기)
+    if (fk && this.pairK && this.pairK !== fk && S.t - this.pairT < 1.5) {
+      r.pair = (r.pair || 0) + 1; r.score += 200; this.p.hp = Math.min(100, this.p.hp + 3); this.pairK = null;
+      this.pop(Game.W / 2, Game.H * 0.3, L('페어 프로그래밍! +200', 'PAIR PROGRAMMING! +200', 'ペアプロ! +200', '结对编程！+200'), '#FF9EC8'); SND.play('combo');
+    } else if (fk) { this.pairK = fk; this.pairT = S.t; }
     PFX.fix(b.pos, [1, 0.3, 0.37]); SND.play('hit', r.streak);
     World.colorizeNear(b.pos, 4);
     MUS.layer = Math.min(4, Math.floor(S.fixed / Math.max(1, S.expected) * 4 + 0.0001));
@@ -782,7 +787,7 @@ class FreeBug {
     if (crit && kind === 'rifle' && Math.random() < 0.4) F.pop2(this.pos, 'PERFECT', '#FFD34D');
     PFX.spark(this.pos, [1, 0.85, 0.5], 2, 3);
     if (Math.random() < 0.5) SND.play('tick');
-    if (this.hp <= 0) this.die();
+    if (this.hp <= 0) { this.lastKind = kind; this.die(); }
     return true;
   }
   die() {
@@ -930,6 +935,8 @@ class FreeBoss {
   }
   win() {
     this.dead = true; UI.banner('', 'BUILD SUCCESS', 3, true); SND.play('success');
+    const F = this.F; F.S.phase = 'clear'; // 이긴 뒤 1.5초 동안 맞아서 크래시 나지 않게
+    for (const b of F.bugs) { PFX.fix(b.pos, [1, 0.3, 0.37]); b.remove(); } F.bugs = []; for (const s of F.shots) s.remove(); F.shots = []; F.S.waveQ = [];
     PFX.fix(this.spr.position, [0.78, 0.96, 0.2], 3);
     setTimeout(() => { if (this.F.active) this.F.stageClear(); }, 1500);
   }

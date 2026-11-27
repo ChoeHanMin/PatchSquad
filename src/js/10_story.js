@@ -2,10 +2,12 @@
 // 그림: assets/story_intro1~5.png, story_end1~4.png 가 있으면 그 그림, 없으면 게임 그림으로 장면을 꾸밈
 const STORY = {
   intro: [
-    { pic: 'intro1', t: L('IN A WORLD CALLED A GAME...', 'IN A WORLD CALLED A GAME...', 'IN A WORLD CALLED A GAME...', 'IN A WORLD CALLED A GAME...'), b: L('게임이라는 세계가 있었습니다.<br>그 심장 <b>메인 루프</b>는 1초에 60번, 세상을 그리고 움직이고 기억합니다.', 'There is a world called a game.<br>Its heart, the <b>Main Loop</b>, draws, moves and remembers the world 60 times a second.', 'ゲームという世界があった。<br>その心臓<b>メインループ</b>は1秒に60回、世界を描き、動かし、記憶する。', '有一个名为“游戏”的世界。<br>它的心脏<b>主循环</b>每秒60次描绘、驱动并记住这个世界。'), art: 'loop' },
-    { pic: 'intro2', t: L('누군가 서둘러 만들다 망가뜨렸습니다', 'Someone built it in a hurry... and broke it', '誰かが急いで作り、壊してしまった', '有人匆忙制作，却把它弄坏了'), b: L('텍스처는 사라지고, 건물은 복붙되고, 물리 법칙은 고장 났습니다.', 'The textures vanished, the buildings got copy-pasted, and the laws of physics stopped working.', 'テクスチャは消え、建物はコピペされ、物理法則は壊れた。', '贴图消失了，建筑被复制粘贴，物理法则也坏掉了。'), art: 'broken' },
-    { pic: 'intro3', t: L('깨진 코드 틈에서 버그가 기어 나왔습니다', 'Bugs crawled out of the broken code', '壊れたコードのすき間からバグが這い出してきた', 'Bug从破损代码的缝隙中爬了出来'), b: L('버그가 늘어날수록 세상의 <b>안정성</b>이 떨어집니다.<br>0%가 되면 모든 것이 멈춥니다. <b>CRASH.</b>', 'The more bugs there are, the lower the world\'s <b>Stability</b> falls.<br>At 0%, everything stops. <b>CRASH.</b>', 'バグが増えるほど、世界の<b>安定性</b>が下がっていく。<br>0%になれば、すべてが止まる。<b>CRASH.</b>', 'Bug越多，世界的<b>稳定性</b>就越低。<br>降到0%时，一切都会停止。<b>CRASH.</b>'), art: 'bugs' },
-    { pic: 'intro4', t: L('그래서 그들이 출동했습니다', 'So they were deployed', 'そして彼らが出動した', '于是，他们出动了'), b: L('버그를 죽이지 않고 <b>고치는</b> 패치 건을 든 버그 수리 분대.<br><b>패치 스쿼드.</b>', 'A bug-repair squad armed with patch guns that don\'t kill bugs — they <b>fix</b> them.<br><b>The Patch Squad.</b>', 'バグを倒すのではなく<b>直す</b>パッチガンを持ったバグ修理分隊。<br><b>パッチ・スクワッド。</b>', '手持补丁枪、不消灭Bug而是<b>修复</b>它们的Bug维修小队。<br><b>补丁小队。</b>'), art: 'squad' },
+    { pic: 'intro1', t: L('IN A WORLD CALLED A GAME...', 'IN A WORLD CALLED A GAME...', 'IN A WORLD CALLED A GAME...', 'IN A WORLD CALLED A GAME...'), b: L('게임이라는 세계가 있었습니다.<br>그 심장 <b>메인 루프</b>는 1초에 60번, 세상을 그리고 움직이고 기억합니다.', 'There is a world called a game.<br>Its heart, the <b>Main Loop</b>, draws, moves and remembers the world 60 times a second.', 'ゲームという世界があった。<br>その心臓<b>メインループ</b>は1秒に60回、世界を描き、動かし、記憶する。', '有一个名为“游戏”的世界。<br>它的心脏<b>主循环</b>每秒60次描绘、驱动并记住这个世界。'), art: 'loop', sfx: [['phase', 0]] },
+    { pic: 'intro_commit', t: L('금요일 오후 6시.', 'Friday, 6:00 PM.', '金曜日、午後6時。', '星期五，下午6点。'), b: L('누군가 퇴근 직전에, <b>테스트도 없이</b> 배포 버튼을 눌렀습니다.', 'Right before leaving work, someone hit deploy — <b>without running a single test</b>.', '誰かが退勤直前に、<b>テストもせず</b>デプロイボタンを押した。', '有人在下班前一刻，<b>没做任何测试</b>就按下了部署按钮。'), art: 'commit', sfx: [['click', 0.2], ['click', 0.75], ['click', 1.3], ['warn', 1.9], ['crash', 2.5]] },
+    { pic: 'intro2', t: L('누군가 서둘러 만들다 망가뜨렸습니다', 'Someone built it in a hurry... and broke it', '誰かが急いで作り、壊してしまった', '有人匆忙制作，却把它弄坏了'), b: L('텍스처는 사라지고, 건물은 복붙되고, 물리 법칙은 고장 났습니다.', 'The textures vanished, the buildings got copy-pasted, and the laws of physics stopped working.', 'テクスチャは消え、建物はコピペされ、物理法則は壊れた。', '贴图消失了，建筑被复制粘贴，物理法则也坏掉了。'), art: 'broken', sfx: [['glitch', 0]] },
+    { pic: 'intro3', t: L('깨진 코드 틈에서 버그가 기어 나왔습니다', 'Bugs crawled out of the broken code', '壊れたコードのすき間からバグが這い出してきた', 'Bug从破损代码的缝隙中爬了出来'), b: L('깨진 틈마다 버그가 태어나 세상을 갉아먹기 시작했습니다.<br>복제하고, 숨고, 던지고, 끝없이 돌고.', 'A bug was born in every crack, and they began to eat the world.<br>Cloning, hiding, throwing, looping forever.', '割れ目ごとにバグが生まれ、世界をむしばみ始めた。<br>増殖し、隠れ、投げ、終わりなく回り続ける。', '每道裂缝里都诞生了Bug，开始蚕食这个世界。<br>复制、隐身、投掷、无限循环。'), art: 'bugs', sfx: [['split', 0], ['spawn', 0.3], ['spawn', 0.5]] },
+    { pic: 'intro_stab', t: L('안정성 0% = CRASH', 'Stability 0% = CRASH', '安定性 0% = CRASH', '稳定性 0% = CRASH'), b: L('버그가 늘어날수록 세상의 <b>안정성</b>이 떨어집니다.<br>0%가 되면 모든 것이 멈춥니다. 영원히.', 'The more bugs there are, the lower the world\'s <b>Stability</b> falls.<br>At 0%, everything stops. Forever.', 'バグが増えるほど、世界の<b>安定性</b>が下がっていく。<br>0%になれば、すべてが止まる。永遠に。', 'Bug越多，世界的<b>稳定性</b>就越低。<br>降到0%时，一切都会停止。永远。'), art: 'stab', sfx: [['warn', 0.4], ['warn', 1.0], ['warn', 1.5], ['crash', 2.2]] },
+    { pic: 'intro4', t: L('그래서 그들이 출동했습니다', 'So they were deployed', 'そして彼らが出動した', '于是，他们出动了'), b: L('버그를 죽이지 않고 <b>고치는</b> 패치 건을 든 버그 수리 분대.<br><b>패치 스쿼드.</b>', 'A bug-repair squad armed with patch guns that don\'t kill bugs — they <b>fix</b> them.<br><b>The Patch Squad.</b>', 'バグを倒すのではなく<b>直す</b>パッチガンを持ったバグ修理分隊。<br><b>パッチ・スクワッド。</b>', '手持补丁枪、不消灭Bug而是<b>修复</b>它们的Bug维修小队。<br><b>补丁小队。</b>'), art: 'roster', sfx: [['unlock', 0]] },
     { pic: 'intro5', t: L('도트', 'Dot', 'ドット', '多特'), b: L('"버그는 재현만 되면 잡을 수 있어.<br>회색 숲부터 고치자. 가자!"', '"If a bug can be reproduced, it can be fixed.<br>Let\'s start with the grey forest. Move out!"', '「再現できるバグなら、必ず直せる。<br>まずは灰色の森からだ。行くぞ!」', '“只要能复现的Bug，就一定能修好。<br>先从灰色森林开始。出发！”'), art: 'dot' },
   ],
   ending: [
@@ -44,6 +46,16 @@ const Story = {
       case 'dot': return `<div class="stc">${im('char_dot', 'stchar big')}</div>`;
       case 'world': return `<div class="stc strow">${['cover_forest', 'cover_city', 'cover_subway'].map((k) => im(k, 'stcov')).join('')}</div>`;
       case 'mystery': return `<div class="stc"><div class="stq">?</div></div>`;
+      case 'commit': { // 타자 치듯 한 줄씩 나오는 터미널
+        const ln = [['$ git commit -m "' + L('고침 (아마도)', 'fix (probably)', '修正(たぶん)', '修复（大概）') + '"', ''], ['$ git push --force origin main', ''], ['$ deploy world.exe --skip-tests', ''], ['  ▶ deploying... ██████████ 100%', 'ok'], ['  ✖ FATAL: MainLoop panicked at frame 60', 'err'], ['  ✖ Segmentation fault (core dumped)', 'err']];
+        return `<div class="stc"><div class="stterm">${ln.map(([t, c], i) => `<div class="stl ${c}" style="animation-delay:${0.2 + i * 0.5}s">${t}</div>`).join('')}<div class="stl cur" style="animation-delay:${0.2 + ln.length * 0.5}s">_</div></div></div>`;
+      }
+      case 'stab': return `<div class="stc stcol"><div class="ststab"><div class="ststab-l">STABILITY</div><div class="ststab-bar"><i></i></div><div class="ststab-n"></div></div><div class="stcrash">CRASH</div></div>`;
+      case 'roster': {
+        const card = (k, d, q) => `<div class="stmem" style="--c:${d.color}">${im('char_' + k, 'stmimg')}<b>${d.name}</b><span>${d.role} · ${d.label}</span><em>${q}</em></div>`;
+        const q = [L('"재현되면 고친다."', '"If it repros, I fix it."', '「再現できれば直せる。」', '“能复现就能修。”'), L('"한 방에 갈아엎자!"', '"Refactor it all!"', '「まとめて作り直す!」', '“一口气全重构！”'), L('"…보이는 게 다가 아니야."', '"...Not everything is visible."', '「…見えるものがすべてじゃない。」', '“……看得见的不是全部。”')];
+        return `<div class="stc strow stroster">${[0, 1, 2].map((i) => card(SQUAD[i].key, SQUAD[i], q[i])).join('')}<div class="stmem mystery">${im('char_ada', 'stmimg')}<b>???</b><span>${L('스테이지 4에서 합류', 'Joins at Stage 4', 'ステージ4で合流', '关卡4加入')}</span><em>"…"</em></div></div>`;
+      }
       default: return '';
     }
   },
@@ -54,19 +66,33 @@ const Story = {
   },
   next() {
     if (!this.active || performance.now() < this.readyT) return;
+    if (this.typing) { this.typing(); return; } // 글자가 아직 나오는 중이면 한 번에 다 보여 줌
     this.i++;
     if (this.i >= this.list.length) return this.finish();
     const p = this.list[this.i];
     const el = $('#story');
     el.querySelector('.stpic').innerHTML = this.art(p);
     el.querySelector('.stt').textContent = p.t;
-    el.querySelector('.stb').innerHTML = p.b;
     el.querySelector('.stn').textContent = `${this.i + 1} / ${this.list.length}`;
     el.classList.remove('stin'); void el.offsetWidth; el.classList.add('stin');
-    SND.play(this.i === 0 ? 'phase' : 'click');
+    (this.timers || []).forEach(clearTimeout); this.timers = [];
+    if (p.sfx) for (const [nm, d] of p.sfx) this.timers.push(setTimeout(() => { if (this.active && this.list[this.i] === p) { SND.play(nm); if (nm === 'crash') { el.classList.add('stshake'); setTimeout(() => el.classList.remove('stshake'), 500); } } }, d * 1000));
+    else SND.play('click');
+    if (p.art === 'stab') { const n = el.querySelector('.ststab-n'), t0 = performance.now(); const tick = () => { if (!this.active || this.list[this.i] !== p) return; const k = Math.min(1, (performance.now() - t0) / 2200); n.textContent = Math.round(100 * (1 - k * k)) + '%'; if (k < 1) this.timers.push(setTimeout(tick, 40)); }; tick(); }
+    this.type(el.querySelector('.stb'), p.b);
     this.readyT = performance.now() + 450; // 실수로 바로 넘어가지 않게
   },
+  // 타자 효과: 태그는 그대로, 글자만 하나씩 (한 번 클릭하면 바로 전부)
+  type(box, html) {
+    const parts = html.split(/(<[^>]+>)/).filter(Boolean), total = parts.reduce((a, x) => a + (x[0] === '<' ? 0 : [...x].length), 0);
+    let shown = 0;
+    const render = (n) => { let out = '', left = n; for (const x of parts) { if (x[0] === '<') { out += x; continue; } const ch = [...x]; out += ch.slice(0, Math.max(0, left)).join(''); left -= ch.length; } box.innerHTML = out + (n < total ? '<span class="stcar">▌</span>' : ''); };
+    const done = () => { this.typing = null; clearInterval(this.typeT); render(total); };
+    clearInterval(this.typeT); this.typing = done; render(0);
+    this.typeT = setInterval(() => { shown += LANG === 'en' ? 2 : 1; if (shown % 6 === 0) SND.play('tick'); render(shown); if (shown >= total) done(); }, 28);
+  },
   finish() {
+    (this.timers || []).forEach(clearTimeout); this.timers = []; clearInterval(this.typeT); this.typing = null;
     this.active = false; $('#story').classList.add('hidden');
     const d = this.done; this.done = null; if (d) d();
   },

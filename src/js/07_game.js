@@ -355,7 +355,7 @@ const Game = {
       if (t.hp <= 0) {
         if (t.role === 'missile') this.killMissile(t);
         else if (t.type === 'clone') this.split(t);
-        else { this.perfectShot = !!crit; this.fixBug(t); this.perfectShot = false; }
+        else { this.perfectShot = !!crit; this.fixKind = ally ? null : kind; this.fixBug(t); this.perfectShot = false; this.fixKind = null; }
       }
       return true;
     }
@@ -459,6 +459,14 @@ const Game = {
     this.shake = Math.max(this.shake, perfect ? 0.1 : 0.05);
     PFX.fix(b.pos, b.type === 'ghost' ? [0.75, 0.96, 1] : b.type === 'clone' || b.type === 'mini' ? [1, 0.83, 0.3] : [1, 0.3, 0.37], b.type === 'mini' ? 0.7 : 1);
     this.addScore(b.def.pts * (perfect ? 1.5 : 1), b.sx, b.sy);
+    // 페어 프로그래밍: 다른 분대원으로 1.5초 안에 이어서 고치면 보너스
+    const fk = this.fixKind;
+    if (fk && this.pairK && this.pairK !== fk && this.time - this.pairT < 1.5 && !this.isTut()) {
+      this.run.st.pair = (this.run.st.pair || 0) + 1; this.addScore(200, b.sx, b.sy - 30);
+      this.run.stab = Math.min(100, this.run.stab + 2);
+      this.pop(b.sx, b.sy - b.sr - 60, L('페어 프로그래밍! +200', 'PAIR PROGRAMMING! +200', 'ペアプロ! +200', '结对编程！+200'), '#FF9EC8'); SND.play('combo');
+      this.pairK = null;
+    } else if (fk) { this.pairK = fk; this.pairT = this.time; }
     this.run.st.fixed[b.type] = (this.run.st.fixed[b.type] || 0) + 1;
     if (!this.S.def.boss) this.S.fixed++;
     this.streakUp();
@@ -583,7 +591,7 @@ const Game = {
     this.run = {
       daily, seed, diff: diff || 'normal', stage: 0, score: 0, stab: 100, streak: 0, maxStreak: 0, gw,
       st: { fixed: { basic: 0, clone: 0, mini: 0, ghost: 0, e404: 0, loop: 0, throw: 0, boss: 0 }, shots: 0, hits: 0, crashes: 0, contacts: 0,
-        glitch: { tear: 0, inv: 0, flip: 0, slip: 0, pix: 0 }, rollbacks: 0, tele: 0, bossTime: 0, blastMax: 0, perfect: 0, hotfix: 0, overheat: 0, trojan: 0, dash: 0, blocked: 0, missiles: 0, weak: 0 },
+        glitch: { tear: 0, inv: 0, flip: 0, slip: 0, pix: 0 }, pair: 0, rollbacks: 0, tele: 0, bossTime: 0, blastMax: 0, perfect: 0, hotfix: 0, overheat: 0, trojan: 0, dash: 0, blocked: 0, missiles: 0, weak: 0 },
       crashStreak: [0, 0, 0, 0, 0], help: [false, false, false, false, false], stageRes: [], snap: null,
     };
     this.weapon = 0; this.seen = {};
@@ -681,6 +689,7 @@ const Game = {
     if (def.join === 1) UI.tutor('join_rex');
     if (def.join === 2) { UI.tutor('join_pin'); UI.tutor('rollback'); }
     if (def.join === 3) UI.tutor('join_ada');
+    if (def.join === 1 && !Store.get('pairTip', false)) { Store.set('pairTip', true); setTimeout(() => { if (this.state === 'play' && this.S && this.S.def === def) UI.hint(L('팁: 한 분대원으로 고치고 1.5초 안에 다른 분대원으로 또 고치면 페어 프로그래밍 보너스!', 'Tip: fix a bug, then fix another with a different member within 1.5s for a Pair Programming bonus!', 'ヒント: 1人で直したあと1.5秒以内に別のメンバーでも直すとペアプロボーナス!', '提示：修好一只Bug后，1.5秒内换另一名队员再修一只，可获得结对编程奖励！'), 5); }, 9000); }
     if (this.S.idx === 0 || def.join) UI.tutor('weak');
   },
   loadWave() {
