@@ -274,10 +274,28 @@ html:lang(zh){--mono:ui-monospace,Consolas,"Microsoft YaHei","Noto Sans Mono CJK
 #freeIntro .fi-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 #freeIntro .fi-keys span{display:flex;flex-direction:column;gap:4px;background:#151913;border:2px solid #2f342c;padding:10px 12px}
 #freeIntro .fi-keys b{font-family:var(--mono);font-size:20px;color:var(--yel)}#freeIntro .fi-keys i{font-style:normal;font-size:16px;color:#cfd6c8}
-#freeIntro .fi-sk{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+#freeIntro .fi-sk{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 #freeIntro .fi-m{border:2px solid var(--c);padding:10px 12px;font-size:15px;line-height:1.5;color:#cfd6c8}#freeIntro .fi-m b{color:var(--c);font-size:18px}#freeIntro .fi-m span{color:#aab2a3}
 #freeIntro .fi-go{font-family:var(--mono);font-size:22px;color:var(--lime);text-align:right;animation:blink 1s infinite steps(2)}
 body.freeops #gl{cursor:none}
+#story .stterm{font-family:var(--mono);font-size:24px;line-height:1.7;color:#cfd6c8;background:#0b0e0a;border:3px solid #2f342c;box-shadow:8px 8px 0 #000;padding:22px 30px;min-width:760px;text-align:left;align-self:center}
+#story .stl{opacity:0;animation:stline .01s forwards}#story .stl.ok{color:var(--lime)}#story .stl.err{color:#FF4D5E}#story .stl.cur{animation:stline .01s forwards,blink 1s infinite steps(2)}
+@keyframes stline{to{opacity:1}}
+#story .stcol{flex-direction:column;align-items:center;justify-content:center;gap:18px}
+#story .ststab{width:720px;font-family:var(--mono)}#story .ststab-l{color:#aab2a3;font-size:22px;font-weight:700}
+#story .ststab-bar{height:34px;background:#1b1f19;border:3px solid #2f342c;margin-top:8px}#story .ststab-bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#FF4D5E,#FFD34D 40%,#C6F432);animation:ststab 2.2s cubic-bezier(.5,0,1,1) forwards}
+#story .ststab-n{font-size:40px;font-weight:900;color:#F2F5EE;margin-top:6px}
+@keyframes ststab{to{width:0}}
+#story .stcrash{font-family:var(--mono);font-size:120px;font-weight:900;color:#FF4D5E;text-shadow:-6px 0 #33f0ff,6px 0 #C6F432;opacity:0;animation:stcrash .5s 2.2s forwards,stglitch 1.2s 2.7s infinite steps(1)}
+@keyframes stcrash{0%{opacity:0;transform:scale(1.6)}60%{opacity:1;transform:scale(.95)}100%{opacity:1;transform:none}}
+#story.stshake{animation:stshake .45s}@keyframes stshake{20%{transform:translate(-14px,6px)}40%{transform:translate(12px,-8px)}60%{transform:translate(-8px,4px)}80%{transform:translate(5px,-2px)}}
+#story .stroster{gap:22px;align-items:stretch}
+#story .stmem{width:230px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;background:#0b0e0a;border:3px solid var(--c,#2f342c);box-shadow:6px 6px 0 #000;padding:10px 10px 14px;font-family:var(--mono);opacity:0;animation:stup .45s forwards}
+#story .stmem:nth-child(2){animation-delay:.25s}#story .stmem:nth-child(3){animation-delay:.5s}#story .stmem:nth-child(4){animation-delay:.9s}
+#story .stmem .stmimg{height:340px;width:auto;object-fit:contain}
+#story .stmem b{color:var(--c,#cfd6c8);font-size:26px;margin-top:6px}#story .stmem span{color:#aab2a3;font-size:15px}#story .stmem em{color:#E8EDE2;font-size:16px;font-style:normal;margin-top:6px;text-align:center}
+#story .stmem.mystery{--c:#3a3f37}#story .stmem.mystery .stmimg{filter:brightness(0) drop-shadow(0 0 6px #FF5FA2)}#story .stmem.mystery b{color:#FF5FA2}
+#story .stcar{color:var(--lime);animation:blink .8s infinite steps(2)}
 </style>
 </head>
 <body>
@@ -512,7 +530,7 @@ body.freeops #gl{cursor:none}
       <h2 data-en="Free Ops — Controls" data-ja="フリー作戦 — 操作" data-zh="自由作战 — 操作">자유 작전 — 조작</h2>
       <div class="fi-keys">
         <span><b>W A S D</b><i data-en="Move" data-ja="移動" data-zh="移动">이동</i></span><span><b>MOUSE</b><i data-en="Look / aim" data-ja="視点・照準" data-zh="视角/瞄准">시점·조준</i></span><span><b>LMB</b><i data-en="Shoot (Pin: hold to charge)" data-ja="射撃 (ピン: 長押しでチャージ)" data-zh="射击（平：按住蓄力）">사격 (핀: 누르고 있으면 충전)</i></span>
-        <span><b>R</b><i data-en="Reload" data-ja="リロード" data-zh="换弹">재장전</i></span><span><b>Z</b><i data-en="Cover (crouch behind low walls)" data-ja="遮蔽 (低い壁の後ろでしゃがむ)" data-zh="隐蔽（蹲在矮墙后）">엄폐 (낮은 벽 뒤에서 웅크리기)</i></span><span><b>1 2 3</b><i data-en="Switch squad member" data-ja="メンバー切り替え" data-zh="切换队员">분대원 교체</i></span>
+        <span><b>R</b><i data-en="Reload" data-ja="リロード" data-zh="换弹">재장전</i></span><span><b>Z</b><i data-en="Cover (crouch behind low walls)" data-ja="遮蔽 (低い壁の後ろでしゃがむ)" data-zh="隐蔽（蹲在矮墙后）">엄폐 (낮은 벽 뒤에서 웅크리기)</i></span><span><b>1 2 3 4</b><i data-en="Switch squad member" data-ja="メンバー切り替え" data-zh="切换队员">분대원 교체</i></span>
         <span><b>SHIFT</b><i data-en="Movement skill" data-ja="移動スキル" data-zh="位移技能">이동 스킬</i></span><span><b>E</b><i data-en="Utility skill" data-ja="サポートスキル" data-zh="辅助技能">보조 스킬</i></span><span><b>Q</b><i data-en="Ultimate" data-ja="アルティメット" data-zh="终极技能">궁극기</i></span><span><b>F</b><i data-en="Rollback (squad)" data-ja="ロールバック (分隊)" data-zh="回滚（小队）">롤백 (분대)</i></span><span><b>ESC</b><i data-en="Pause" data-ja="ポーズ" data-zh="暂停">일시정지</i></span>
       </div>
       <div class="fi-sk"></div>
@@ -977,9 +995,20 @@ const SND = {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return;
       this.ctx = new AC();
-      this.master = this.ctx.createGain(); this.master.connect(this.ctx.destination);
-      this.sfxG = this.ctx.createGain(); this.sfxG.connect(this.master);
-      this.musG = this.ctx.createGain(); this.musG.connect(this.master);
+      // 출력: 마스터 → 컴프레서(소리를 한데 뭉쳐 단단하게) → 스피커
+      this.comp = this.ctx.createDynamicsCompressor();
+      this.comp.threshold.value = -16; this.comp.knee.value = 10; this.comp.ratio.value = 4; this.comp.attack.value = 0.004; this.comp.release.value = 0.18;
+      this.master = this.ctx.createGain(); this.master.connect(this.comp); this.comp.connect(this.ctx.destination);
+      // 효과음: 저음 보강(로우셸프) → 살짝 찌그러뜨리기(웨이브셰이퍼) → 마스터 — 총소리·폭발이 굵고 묵직하게
+      this.sfxG = this.ctx.createGain();
+      const low = this.ctx.createBiquadFilter(); low.type = 'lowshelf'; low.frequency.value = 140; low.gain.value = 5;
+      const drive = this.ctx.createWaveShaper(), cv = new Float32Array(1024);
+      for (let i = 0; i < 1024; i++) { const x = i / 511.5 - 1; cv[i] = Math.tanh(x * 1.8) / Math.tanh(1.8); }
+      drive.curve = cv; drive.oversample = '2x';
+      this.sfxG.connect(low); low.connect(drive); drive.connect(this.master);
+      this.musG = this.ctx.createGain();
+      const mlow = this.ctx.createBiquadFilter(); mlow.type = 'lowshelf'; mlow.frequency.value = 160; mlow.gain.value = 3.5; // 음악 저음도 조금 더 두껍게
+      this.musG.connect(mlow); mlow.connect(this.master);
       const len = this.ctx.sampleRate;
       this.noise = this.ctx.createBuffer(1, len, this.ctx.sampleRate);
       const d = this.noise.getChannelData(0);
@@ -1017,6 +1046,16 @@ const SND = {
     s.connect(f); f.connect(g); g.connect(dest || this.sfxG);
     s.start(t, Math.random() * 0.5); s.stop(t + dur + 0.02);
   },
+  // 묵직한 저음 한 방: 사인파가 빠르게 떨어지는 킥 + 낮은 잡음 몸통
+  thump(f0 = 140, f1 = 42, dur = 0.16, vol = 0.45, when = 0, body = 0.18) {
+    if (!this.ctx) return;
+    const t = when || this.ctx.currentTime;
+    const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+    o.type = 'sine'; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + dur * 0.6);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.003); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(this.sfxG); o.start(t); o.stop(t + dur + 0.02);
+    if (body > 0) this.noiseHit(dur * 0.7, body, 'lowpass', 380, t);
+  },
   // assets/sfx_*.mp3|ogg|wav 가 있으면 그 소리를 씀
   bufs: {},
   loadSamples() {
@@ -1041,6 +1080,7 @@ const SND = {
     const now = this.ctx.currentTime;
     switch (name) {
       case 'shot': // 패치 탄: 딸깍 + 뿅 하강 + 낮은 쿵 + 디지털 꼬리
+        this.thump(150, 48, 0.12, 0.42, 0, 0.12);
         if (this.sample('sfx_shot', 0.9)) break;
         this.noiseHit(0.025, 0.22, 'highpass', 4500);
         this.tone(1900, 0.075, 'square', 0.11, 420);
@@ -1048,6 +1088,7 @@ const SND = {
         this.tone(2637, 0.05, 'triangle', 0.05, 2093, now + 0.035);
         break;
       case 'spread': // 리팩터: 묵직한 확산음 + 7발 틱
+        this.thump(120, 36, 0.24, 0.6, 0, 0.3); this.noiseHit(0.09, 0.22, 'bandpass', 600, now + 0.01);
         if (this.sample('sfx_spread', 0.95)) break;
         this.noiseHit(0.16, 0.32, 'bandpass', 1400);
         this.tone(760, 0.16, 'sawtooth', 0.13, 150);
@@ -1058,29 +1099,29 @@ const SND = {
       case 'perfect': this.tone(3136, 0.16, 'sine', 0.14, null, now + 0.04); this.tone(4186, 0.2, 'sine', 0.1, null, now + 0.1); break;
       case 'warn': this.tone(880, 0.06, 'square', 0.07); this.tone(660, 0.06, 'square', 0.07, null, now + 0.08); break;
       case 'pickup': [0, 4, 7, 12, 16, 19].forEach((s, i) => this.tone(659 * Math.pow(2, s / 12), 0.1, 'triangle', 0.14, null, now + i * 0.045)); break;
-      case 'rush': this.tone(220, 0.25, 'sawtooth', 0.2, 440); this.tone(330, 0.25, 'sawtooth', 0.15, 660, now + 0.25); this.noiseHit(0.3, 0.15, 'bandpass', 900, now + 0.1); break;
+      case 'rush': this.thump(90, 40, 0.35, 0.45, 0, 0.25); this.tone(220, 0.25, 'sawtooth', 0.2, 440); this.tone(330, 0.25, 'sawtooth', 0.15, 660, now + 0.25); this.noiseHit(0.3, 0.15, 'bandpass', 900, now + 0.1); break;
       case 'split': for (let i = 0; i < 3; i++) this.noiseHit(0.05, 0.25, 'bandpass', 2500 + i * 900, now + i * 0.04); this.tone(600, 0.1, 'square', 0.1, 1200); break; // 지직
       case 'tele': this.tone(300, 0.14, 'sine', 0.3, 1800); this.tone(1800, 0.08, 'sine', 0.12, 2600, now + 0.12); break; // 뿅
-      case 'glitch': this.noiseHit(0.35, 0.35, 'bandpass', 1200); this.tone(120, 0.3, 'sawtooth', 0.18, 60); break; // 잡음
+      case 'glitch': this.thump(100, 40, 0.25, 0.35, 0, 0.15); this.noiseHit(0.35, 0.35, 'bandpass', 1200); this.tone(120, 0.3, 'sawtooth', 0.18, 60); break; // 잡음
       case 'combo': [0, 4, 7, 12].forEach((s, i) => this.tone(523 * Math.pow(2, s / 12), 0.12, 'square', 0.12, null, now + i * 0.06)); break; // 올라가는 음
       case 'deflect': this.tone(2400, 0.05, 'square', 0.1, 1800); this.noiseHit(0.04, 0.12, 'highpass', 5000); break;
       case 'rollback': this.tone(900, 0.5, 'sawtooth', 0.12, 220); this.tone(1200, 0.5, 'sine', 0.1, 300); break;
       case 'unlock': [0, 7, 12, 16, 19].forEach((s, i) => this.tone(440 * Math.pow(2, s / 12), 0.16, 'triangle', 0.16, null, now + i * 0.07)); break;
       case 'click': this.tone(660, 0.04, 'square', 0.08); break;
-      case 'crash': this.noiseHit(0.9, 0.45, 'lowpass', 900); this.tone(220, 0.9, 'sawtooth', 0.25, 30); break;
+      case 'crash': this.thump(90, 22, 1.1, 0.8, 0, 0.5); this.noiseHit(0.9, 0.45, 'lowpass', 900); this.tone(220, 0.9, 'sawtooth', 0.25, 30); break;
       case 'clear': [0, 4, 7, 12, 16].forEach((s, i) => this.tone(523 * Math.pow(2, s / 12), 0.22, 'square', 0.12, null, now + i * 0.09)); break;
       case 'success': [0, 4, 7, 12, 7, 12, 16, 19, 24].forEach((s, i) => this.tone(392 * Math.pow(2, s / 12), 0.2, i % 2 ? 'triangle' : 'square', 0.13, null, now + i * 0.1)); break;
-      case 'phase': this.tone(110, 0.6, 'sawtooth', 0.25, 55); this.noiseHit(0.5, 0.2, 'lowpass', 600); break;
+      case 'phase': this.thump(80, 25, 0.9, 0.7, 0, 0.35); this.tone(110, 0.6, 'sawtooth', 0.25, 55); this.noiseHit(0.5, 0.2, 'lowpass', 600); break;
       case 'overheat': this.noiseHit(1.2, 0.3, 'highpass', 3000); this.tone(900, 0.5, 'sawtooth', 0.12, 120); this.tone(1200, 0.08, 'square', 0.1, null, now + 0.02); break; // 치이익
       case 'cool': this.tone(1318, 0.1, 'triangle', 0.14); this.tone(1976, 0.18, 'triangle', 0.12, null, now + 0.08); break;
       case 'jam': this.tone(180, 0.04, 'square', 0.12, 90); this.noiseHit(0.03, 0.1, 'bandpass', 1200); break; // 딸깍(헛방)
-      case 'rifle': if (this.sample('sfx_shot', 0.42)) break; this.noiseHit(0.018, 0.14, 'highpass', 5000); this.tone(1500, 0.045, 'square', 0.06, 600); this.tone(160, 0.05, 'sine', 0.14, 60); break; // 연사 한 발
-      case 'snipe': if (this.sample('sfx_snipe', 1)) break; this.noiseHit(0.05, 0.35, 'highpass', 3000); this.tone(2200, 0.25, 'sawtooth', 0.12, 300); this.tone(110, 0.3, 'sine', 0.45, 35); break; // 저격
+      case 'rifle': this.thump(170, 60, 0.07, 0.26, 0, 0.06); if (this.sample('sfx_shot', 0.42)) break; this.noiseHit(0.018, 0.14, 'highpass', 5000); this.tone(1500, 0.045, 'square', 0.06, 600); this.tone(160, 0.05, 'sine', 0.14, 60); break; // 연사 한 발
+      case 'snipe': this.thump(110, 30, 0.42, 0.7, 0, 0.32); this.tone(55, 0.6, 'sine', 0.22, 38, now + 0.02); if (this.sample('sfx_snipe', 1)) break; this.noiseHit(0.05, 0.35, 'highpass', 3000); this.tone(2200, 0.25, 'sawtooth', 0.12, 300); this.tone(110, 0.3, 'sine', 0.45, 35); break; // 저격
       case 'tick': this.tone(2600, 0.025, 'square', 0.035); break; // 맞힘
-      case 'boom': this.noiseHit(0.4, 0.4, 'lowpass', 700); this.tone(90, 0.35, 'sine', 0.4, 30); break; // 미사일 격추
+      case 'boom': this.thump(110, 28, 0.5, 0.75, 0, 0.45); this.noiseHit(0.55, 0.35, 'lowpass', 900, now + 0.01); this.noiseHit(0.12, 0.18, 'highpass', 2500); break; // 미사일 격추
       case 'aim': this.tone(660, 0.09, 'sawtooth', 0.06, 880); break; // 적이 조준
       case 'missile': this.tone(300, 0.6, 'sawtooth', 0.07, 900); this.noiseHit(0.5, 0.08, 'bandpass', 1600); break;
-      case 'block': this.noiseHit(0.08, 0.3, 'lowpass', 900); this.tone(140, 0.1, 'square', 0.12, 70); break; // 엄폐물에 막힘
+      case 'block': this.thump(130, 50, 0.14, 0.4, 0, 0.25); this.noiseHit(0.08, 0.3, 'lowpass', 900); this.tone(140, 0.1, 'square', 0.12, 70); break; // 엄폐물에 막힘
       case 'reload': this.tone(900, 0.03, 'square', 0.06); this.tone(1300, 0.04, 'square', 0.06, null, now + 0.07); break;
       case 'move': [0, 2, 4].forEach((s, i) => this.tone(330 * Math.pow(2, s / 12), 0.08, 'square', 0.07, null, now + i * 0.06)); break;
       case 'spawn': this.tone(200 + p * 40, 0.05, 'square', 0.05, 400); break;
@@ -2287,7 +2328,7 @@ const Game = {
       if (t.hp <= 0) {
         if (t.role === 'missile') this.killMissile(t);
         else if (t.type === 'clone') this.split(t);
-        else { this.perfectShot = !!crit; this.fixBug(t); this.perfectShot = false; }
+        else { this.perfectShot = !!crit; this.fixKind = ally ? null : kind; this.fixBug(t); this.perfectShot = false; this.fixKind = null; }
       }
       return true;
     }
@@ -2391,6 +2432,14 @@ const Game = {
     this.shake = Math.max(this.shake, perfect ? 0.1 : 0.05);
     PFX.fix(b.pos, b.type === 'ghost' ? [0.75, 0.96, 1] : b.type === 'clone' || b.type === 'mini' ? [1, 0.83, 0.3] : [1, 0.3, 0.37], b.type === 'mini' ? 0.7 : 1);
     this.addScore(b.def.pts * (perfect ? 1.5 : 1), b.sx, b.sy);
+    // 페어 프로그래밍: 다른 분대원으로 1.5초 안에 이어서 고치면 보너스
+    const fk = this.fixKind;
+    if (fk && this.pairK && this.pairK !== fk && this.time - this.pairT < 1.5 && !this.isTut()) {
+      this.run.st.pair = (this.run.st.pair || 0) + 1; this.addScore(200, b.sx, b.sy - 30);
+      this.run.stab = Math.min(100, this.run.stab + 2);
+      this.pop(b.sx, b.sy - b.sr - 60, L('페어 프로그래밍! +200', 'PAIR PROGRAMMING! +200', 'ペアプロ! +200', '结对编程！+200'), '#FF9EC8'); SND.play('combo');
+      this.pairK = null;
+    } else if (fk) { this.pairK = fk; this.pairT = this.time; }
     this.run.st.fixed[b.type] = (this.run.st.fixed[b.type] || 0) + 1;
     if (!this.S.def.boss) this.S.fixed++;
     this.streakUp();
@@ -2515,7 +2564,7 @@ const Game = {
     this.run = {
       daily, seed, diff: diff || 'normal', stage: 0, score: 0, stab: 100, streak: 0, maxStreak: 0, gw,
       st: { fixed: { basic: 0, clone: 0, mini: 0, ghost: 0, e404: 0, loop: 0, throw: 0, boss: 0 }, shots: 0, hits: 0, crashes: 0, contacts: 0,
-        glitch: { tear: 0, inv: 0, flip: 0, slip: 0, pix: 0 }, rollbacks: 0, tele: 0, bossTime: 0, blastMax: 0, perfect: 0, hotfix: 0, overheat: 0, trojan: 0, dash: 0, blocked: 0, missiles: 0, weak: 0 },
+        glitch: { tear: 0, inv: 0, flip: 0, slip: 0, pix: 0 }, pair: 0, rollbacks: 0, tele: 0, bossTime: 0, blastMax: 0, perfect: 0, hotfix: 0, overheat: 0, trojan: 0, dash: 0, blocked: 0, missiles: 0, weak: 0 },
       crashStreak: [0, 0, 0, 0, 0], help: [false, false, false, false, false], stageRes: [], snap: null,
     };
     this.weapon = 0; this.seen = {};
@@ -2613,12 +2662,14 @@ const Game = {
     if (def.join === 1) UI.tutor('join_rex');
     if (def.join === 2) { UI.tutor('join_pin'); UI.tutor('rollback'); }
     if (def.join === 3) UI.tutor('join_ada');
+    if (def.join === 1 && !Store.get('pairTip', false)) { Store.set('pairTip', true); setTimeout(() => { if (this.state === 'play' && this.S && this.S.def === def) UI.hint(L('팁: 한 분대원으로 고치고 1.5초 안에 다른 분대원으로 또 고치면 페어 프로그래밍 보너스!', 'Tip: fix a bug, then fix another with a different member within 1.5s for a Pair Programming bonus!', 'ヒント: 1人で直したあと1.5秒以内に別のメンバーでも直すとペアプロボーナス!', '提示：修好一只Bug后，1.5秒内换另一名队员再修一只，可获得结对编程奖励！'), 5); }, 9000); }
     if (this.S.idx === 0 || def.join) UI.tutor('weak');
   },
   loadWave() {
     const S = this.S, c = S.covers[S.ci];
     this.bugSpeedMul = this.baseSpd * (1 + S.ci * 0.06 + S.wi * 0.02); // 지점·웨이브가 넘어갈수록 빨라짐
     S.waveQ = (c.waves[S.wi] || []).map((q) => Object.assign({}, q));
+    S.trickN = 0; // 상: 웨이브마다 추가 버그는 최대 4마리 (느리게 잡으면 웨이브가 끝나지 않던 문제)
     S.waveT = 0; S.waveIdle = 0;
     if (S.ci === S.covers.length - 1 && S.wi === 0 && !S.rush && !S.def.boss) {
       S.rush = true; setTimeout(() => { if (this.S === S && this.state === 'play') { UI.banner('BUG RUSH', L('마지막 엄폐 지점! 버그가 몰려와요', 'Last cover point! Here they come', '最後の遮蔽ポイント! 押し寄せてくる', '最后的掩体点！它们冲过来了'), 1.8); SND.play('rush'); MUS.tempoMul = 0.82; } }, 300);
@@ -2672,12 +2723,12 @@ const Game = {
     S.waveT += dt * ws;
     while (S.waveQ.length && S.waveQ[0].at <= S.waveT && this.hostiles() < this.maxOn()) { const q = S.waveQ.shift(); this.spawnEntry(q.type, q.intro); }
     // 상: 웨이브 중에도 계속 추가
-    if (this.D.trickle && S.waveQ.length + this.hostiles() > 0) {
+    if (this.D.trickle && S.waveQ.length + this.hostiles() > 0 && (S.trickN || 0) < 4) {
       S.trickT -= dt * ws;
       if (S.trickT <= 0 && this.hostiles() < this.maxOn()) {
         S.trickT = this.D.trickle * rnd(0.7, 1.3);
         const t = pick(Object.keys(S.def.mix).filter((x) => x !== 'loop'));
-        this.spawnEntry(t, false); S.expected += t === 'clone' ? 3 : 1;
+        this.spawnEntry(t, false); S.expected += t === 'clone' ? 3 : 1; S.trickN = (S.trickN || 0) + 1;
       }
     }
     if (!S.waveQ.length && this.hostiles() === 0 && !this.attacks.length) {
@@ -3822,6 +3873,7 @@ const UI = {
     add(true, L(`총 ${total}개의 버그가 세상에서 사라졌습니다`, `${total} bugs have vanished from the world`, `合計${total}匹のバグが世界から消えた`, `共有${total}只Bug从世界上消失`), 0.8);
     add(st.perfect >= 5, L(`PERFECT 패치 ${st.perfect}회 — 정밀 디버깅 장인`, `${st.perfect} PERFECT patches — master debugger`, `PERFECTパッチ${st.perfect}回 — 精密デバッグの達人`, `PERFECT补丁${st.perfect}次 — 精密调试大师`), 2);
     add(st.hotfix > 0, L(`핫픽스 ${st.hotfix}개 긴급 배포`, `Deployed ${st.hotfix} emergency hotfixes`, `ホットフィックス${st.hotfix}個を緊急配信`, `紧急发布了${st.hotfix}个热修复`), 1.2);
+    add((st.pair || 0) >= 3, L(`페어 프로그래밍 ${st.pair}회 — 혼자 짠 코드보다 버그가 적습니다`, `Pair programming ×${st.pair} — fewer bugs than solo code`, `ペアプロ ${st.pair}回 — ひとりで書いたコードよりバグが少ない`, `结对编程${st.pair}次 — 比单人写的代码Bug更少`), 2);
     add(st.weak >= 8, L(`약점 무기로 ${st.weak}마리 공략 — 분대 운용 만점`, `Took down ${st.weak} bugs with weak weapons — squad tactics: perfect`, `弱点武器で${st.weak}匹を攻略 — 分隊運用は満点`, `用弱点武器攻略${st.weak}只 — 小队配合满分`), 2);
     add(st.blocked >= 10, L(`엄폐물로 에러 패킷 ${st.blocked}개 방어 — 숨기 장인`, `Blocked ${st.blocked} error packets with cover — master of hiding`, `遮蔽物でエラーパケット${st.blocked}個を防御 — 隠れ名人`, `用掩体挡下${st.blocked}个错误数据包 — 隐蔽大师`), 2.2);
     add(st.missiles > 0, L(`관통 미사일 ${st.missiles}발 격추`, `Shot down ${st.missiles} piercing missiles`, `貫通ミサイル${st.missiles}発を撃墜`, `击落${st.missiles}发穿透导弹`), 1.8);
@@ -4039,10 +4091,12 @@ const Tut = {
 // 그림: assets/story_intro1~5.png, story_end1~4.png 가 있으면 그 그림, 없으면 게임 그림으로 장면을 꾸밈
 const STORY = {
   intro: [
-    { pic: 'intro1', t: L('IN A WORLD CALLED A GAME...', 'IN A WORLD CALLED A GAME...', 'IN A WORLD CALLED A GAME...', 'IN A WORLD CALLED A GAME...'), b: L('게임이라는 세계가 있었습니다.<br>그 심장 <b>메인 루프</b>는 1초에 60번, 세상을 그리고 움직이고 기억합니다.', 'There is a world called a game.<br>Its heart, the <b>Main Loop</b>, draws, moves and remembers the world 60 times a second.', 'ゲームという世界があった。<br>その心臓<b>メインループ</b>は1秒に60回、世界を描き、動かし、記憶する。', '有一个名为“游戏”的世界。<br>它的心脏<b>主循环</b>每秒60次描绘、驱动并记住这个世界。'), art: 'loop' },
-    { pic: 'intro2', t: L('누군가 서둘러 만들다 망가뜨렸습니다', 'Someone built it in a hurry... and broke it', '誰かが急いで作り、壊してしまった', '有人匆忙制作，却把它弄坏了'), b: L('텍스처는 사라지고, 건물은 복붙되고, 물리 법칙은 고장 났습니다.', 'The textures vanished, the buildings got copy-pasted, and the laws of physics stopped working.', 'テクスチャは消え、建物はコピペされ、物理法則は壊れた。', '贴图消失了，建筑被复制粘贴，物理法则也坏掉了。'), art: 'broken' },
-    { pic: 'intro3', t: L('깨진 코드 틈에서 버그가 기어 나왔습니다', 'Bugs crawled out of the broken code', '壊れたコードのすき間からバグが這い出してきた', 'Bug从破损代码的缝隙中爬了出来'), b: L('버그가 늘어날수록 세상의 <b>안정성</b>이 떨어집니다.<br>0%가 되면 모든 것이 멈춥니다. <b>CRASH.</b>', 'The more bugs there are, the lower the world\'s <b>Stability</b> falls.<br>At 0%, everything stops. <b>CRASH.</b>', 'バグが増えるほど、世界の<b>安定性</b>が下がっていく。<br>0%になれば、すべてが止まる。<b>CRASH.</b>', 'Bug越多，世界的<b>稳定性</b>就越低。<br>降到0%时，一切都会停止。<b>CRASH.</b>'), art: 'bugs' },
-    { pic: 'intro4', t: L('그래서 그들이 출동했습니다', 'So they were deployed', 'そして彼らが出動した', '于是，他们出动了'), b: L('버그를 죽이지 않고 <b>고치는</b> 패치 건을 든 버그 수리 분대.<br><b>패치 스쿼드.</b>', 'A bug-repair squad armed with patch guns that don\'t kill bugs — they <b>fix</b> them.<br><b>The Patch Squad.</b>', 'バグを倒すのではなく<b>直す</b>パッチガンを持ったバグ修理分隊。<br><b>パッチ・スクワッド。</b>', '手持补丁枪、不消灭Bug而是<b>修复</b>它们的Bug维修小队。<br><b>补丁小队。</b>'), art: 'squad' },
+    { pic: 'intro1', t: L('IN A WORLD CALLED A GAME...', 'IN A WORLD CALLED A GAME...', 'IN A WORLD CALLED A GAME...', 'IN A WORLD CALLED A GAME...'), b: L('게임이라는 세계가 있었습니다.<br>그 심장 <b>메인 루프</b>는 1초에 60번, 세상을 그리고 움직이고 기억합니다.', 'There is a world called a game.<br>Its heart, the <b>Main Loop</b>, draws, moves and remembers the world 60 times a second.', 'ゲームという世界があった。<br>その心臓<b>メインループ</b>は1秒に60回、世界を描き、動かし、記憶する。', '有一个名为“游戏”的世界。<br>它的心脏<b>主循环</b>每秒60次描绘、驱动并记住这个世界。'), art: 'loop', sfx: [['phase', 0]] },
+    { pic: 'intro_commit', t: L('금요일 오후 6시.', 'Friday, 6:00 PM.', '金曜日、午後6時。', '星期五，下午6点。'), b: L('누군가 퇴근 직전에, <b>테스트도 없이</b> 배포 버튼을 눌렀습니다.', 'Right before leaving work, someone hit deploy — <b>without running a single test</b>.', '誰かが退勤直前に、<b>テストもせず</b>デプロイボタンを押した。', '有人在下班前一刻，<b>没做任何测试</b>就按下了部署按钮。'), art: 'commit', sfx: [['click', 0.2], ['click', 0.75], ['click', 1.3], ['warn', 1.9], ['crash', 2.5]] },
+    { pic: 'intro2', t: L('누군가 서둘러 만들다 망가뜨렸습니다', 'Someone built it in a hurry... and broke it', '誰かが急いで作り、壊してしまった', '有人匆忙制作，却把它弄坏了'), b: L('텍스처는 사라지고, 건물은 복붙되고, 물리 법칙은 고장 났습니다.', 'The textures vanished, the buildings got copy-pasted, and the laws of physics stopped working.', 'テクスチャは消え、建物はコピペされ、物理法則は壊れた。', '贴图消失了，建筑被复制粘贴，物理法则也坏掉了。'), art: 'broken', sfx: [['glitch', 0]] },
+    { pic: 'intro3', t: L('깨진 코드 틈에서 버그가 기어 나왔습니다', 'Bugs crawled out of the broken code', '壊れたコードのすき間からバグが這い出してきた', 'Bug从破损代码的缝隙中爬了出来'), b: L('깨진 틈마다 버그가 태어나 세상을 갉아먹기 시작했습니다.<br>복제하고, 숨고, 던지고, 끝없이 돌고.', 'A bug was born in every crack, and they began to eat the world.<br>Cloning, hiding, throwing, looping forever.', '割れ目ごとにバグが生まれ、世界をむしばみ始めた。<br>増殖し、隠れ、投げ、終わりなく回り続ける。', '每道裂缝里都诞生了Bug，开始蚕食这个世界。<br>复制、隐身、投掷、无限循环。'), art: 'bugs', sfx: [['split', 0], ['spawn', 0.3], ['spawn', 0.5]] },
+    { pic: 'intro_stab', t: L('안정성 0% = CRASH', 'Stability 0% = CRASH', '安定性 0% = CRASH', '稳定性 0% = CRASH'), b: L('버그가 늘어날수록 세상의 <b>안정성</b>이 떨어집니다.<br>0%가 되면 모든 것이 멈춥니다. 영원히.', 'The more bugs there are, the lower the world\'s <b>Stability</b> falls.<br>At 0%, everything stops. Forever.', 'バグが増えるほど、世界の<b>安定性</b>が下がっていく。<br>0%になれば、すべてが止まる。永遠に。', 'Bug越多，世界的<b>稳定性</b>就越低。<br>降到0%时，一切都会停止。永远。'), art: 'stab', sfx: [['warn', 0.4], ['warn', 1.0], ['warn', 1.5], ['crash', 2.2]] },
+    { pic: 'intro4', t: L('그래서 그들이 출동했습니다', 'So they were deployed', 'そして彼らが出動した', '于是，他们出动了'), b: L('버그를 죽이지 않고 <b>고치는</b> 패치 건을 든 버그 수리 분대.<br><b>패치 스쿼드.</b>', 'A bug-repair squad armed with patch guns that don\'t kill bugs — they <b>fix</b> them.<br><b>The Patch Squad.</b>', 'バグを倒すのではなく<b>直す</b>パッチガンを持ったバグ修理分隊。<br><b>パッチ・スクワッド。</b>', '手持补丁枪、不消灭Bug而是<b>修复</b>它们的Bug维修小队。<br><b>补丁小队。</b>'), art: 'roster', sfx: [['unlock', 0]] },
     { pic: 'intro5', t: L('도트', 'Dot', 'ドット', '多特'), b: L('"버그는 재현만 되면 잡을 수 있어.<br>회색 숲부터 고치자. 가자!"', '"If a bug can be reproduced, it can be fixed.<br>Let\'s start with the grey forest. Move out!"', '「再現できるバグなら、必ず直せる。<br>まずは灰色の森からだ。行くぞ!」', '“只要能复现的Bug，就一定能修好。<br>先从灰色森林开始。出发！”'), art: 'dot' },
   ],
   ending: [
@@ -4081,6 +4135,16 @@ const Story = {
       case 'dot': return `<div class="stc">${im('char_dot', 'stchar big')}</div>`;
       case 'world': return `<div class="stc strow">${['cover_forest', 'cover_city', 'cover_subway'].map((k) => im(k, 'stcov')).join('')}</div>`;
       case 'mystery': return `<div class="stc"><div class="stq">?</div></div>`;
+      case 'commit': { // 타자 치듯 한 줄씩 나오는 터미널
+        const ln = [['$ git commit -m "' + L('고침 (아마도)', 'fix (probably)', '修正(たぶん)', '修复（大概）') + '"', ''], ['$ git push --force origin main', ''], ['$ deploy world.exe --skip-tests', ''], ['  ▶ deploying... ██████████ 100%', 'ok'], ['  ✖ FATAL: MainLoop panicked at frame 60', 'err'], ['  ✖ Segmentation fault (core dumped)', 'err']];
+        return `<div class="stc"><div class="stterm">${ln.map(([t, c], i) => `<div class="stl ${c}" style="animation-delay:${0.2 + i * 0.5}s">${t}</div>`).join('')}<div class="stl cur" style="animation-delay:${0.2 + ln.length * 0.5}s">_</div></div></div>`;
+      }
+      case 'stab': return `<div class="stc stcol"><div class="ststab"><div class="ststab-l">STABILITY</div><div class="ststab-bar"><i></i></div><div class="ststab-n"></div></div><div class="stcrash">CRASH</div></div>`;
+      case 'roster': {
+        const card = (k, d, q) => `<div class="stmem" style="--c:${d.color}">${im('char_' + k, 'stmimg')}<b>${d.name}</b><span>${d.role} · ${d.label}</span><em>${q}</em></div>`;
+        const q = [L('"재현되면 고친다."', '"If it repros, I fix it."', '「再現できれば直せる。」', '“能复现就能修。”'), L('"한 방에 갈아엎자!"', '"Refactor it all!"', '「まとめて作り直す!」', '“一口气全重构！”'), L('"…보이는 게 다가 아니야."', '"...Not everything is visible."', '「…見えるものがすべてじゃない。」', '“……看得见的不是全部。”')];
+        return `<div class="stc strow stroster">${[0, 1, 2].map((i) => card(SQUAD[i].key, SQUAD[i], q[i])).join('')}<div class="stmem mystery">${im('char_ada', 'stmimg')}<b>???</b><span>${L('스테이지 4에서 합류', 'Joins at Stage 4', 'ステージ4で合流', '关卡4加入')}</span><em>"…"</em></div></div>`;
+      }
       default: return '';
     }
   },
@@ -4091,19 +4155,33 @@ const Story = {
   },
   next() {
     if (!this.active || performance.now() < this.readyT) return;
+    if (this.typing) { this.typing(); return; } // 글자가 아직 나오는 중이면 한 번에 다 보여 줌
     this.i++;
     if (this.i >= this.list.length) return this.finish();
     const p = this.list[this.i];
     const el = $('#story');
     el.querySelector('.stpic').innerHTML = this.art(p);
     el.querySelector('.stt').textContent = p.t;
-    el.querySelector('.stb').innerHTML = p.b;
     el.querySelector('.stn').textContent = `${this.i + 1} / ${this.list.length}`;
     el.classList.remove('stin'); void el.offsetWidth; el.classList.add('stin');
-    SND.play(this.i === 0 ? 'phase' : 'click');
+    (this.timers || []).forEach(clearTimeout); this.timers = [];
+    if (p.sfx) for (const [nm, d] of p.sfx) this.timers.push(setTimeout(() => { if (this.active && this.list[this.i] === p) { SND.play(nm); if (nm === 'crash') { el.classList.add('stshake'); setTimeout(() => el.classList.remove('stshake'), 500); } } }, d * 1000));
+    else SND.play('click');
+    if (p.art === 'stab') { const n = el.querySelector('.ststab-n'), t0 = performance.now(); const tick = () => { if (!this.active || this.list[this.i] !== p) return; const k = Math.min(1, (performance.now() - t0) / 2200); n.textContent = Math.round(100 * (1 - k * k)) + '%'; if (k < 1) this.timers.push(setTimeout(tick, 40)); }; tick(); }
+    this.type(el.querySelector('.stb'), p.b);
     this.readyT = performance.now() + 450; // 실수로 바로 넘어가지 않게
   },
+  // 타자 효과: 태그는 그대로, 글자만 하나씩 (한 번 클릭하면 바로 전부)
+  type(box, html) {
+    const parts = html.split(/(<[^>]+>)/).filter(Boolean), total = parts.reduce((a, x) => a + (x[0] === '<' ? 0 : [...x].length), 0);
+    let shown = 0;
+    const render = (n) => { let out = '', left = n; for (const x of parts) { if (x[0] === '<') { out += x; continue; } const ch = [...x]; out += ch.slice(0, Math.max(0, left)).join(''); left -= ch.length; } box.innerHTML = out + (n < total ? '<span class="stcar">▌</span>' : ''); };
+    const done = () => { this.typing = null; clearInterval(this.typeT); render(total); };
+    clearInterval(this.typeT); this.typing = done; render(0);
+    this.typeT = setInterval(() => { shown += LANG === 'en' ? 2 : 1; if (shown % 6 === 0) SND.play('tick'); render(shown); if (shown >= total) done(); }, 28);
+  },
   finish() {
+    (this.timers || []).forEach(clearTimeout); this.timers = []; clearInterval(this.typeT); this.typing = null;
     this.active = false; $('#story').classList.add('hidden');
     const d = this.done; this.done = null; if (d) d();
   },
@@ -4519,6 +4597,11 @@ const Free = {
     const mult = Math.min(2, 1 + 0.1 * r.streak);
     r.score += Math.round((b.def.pts || 100) * mult * (this.debugT > 0 ? 1.2 : 1));
     const m = this.cur(); m.ult = Math.min(100, m.ult + 7 + (b.def.pts || 100) / 50);
+    const fk = ['rifle', 'shotgun', 'sniper', 'launcher'].includes(b.lastKind) ? b.lastKind : null; // 페어 프로그래밍 (분대원 바꿔 이어서 고치기)
+    if (fk && this.pairK && this.pairK !== fk && S.t - this.pairT < 1.5) {
+      r.pair = (r.pair || 0) + 1; r.score += 200; this.p.hp = Math.min(100, this.p.hp + 3); this.pairK = null;
+      this.pop(Game.W / 2, Game.H * 0.3, L('페어 프로그래밍! +200', 'PAIR PROGRAMMING! +200', 'ペアプロ! +200', '结对编程！+200'), '#FF9EC8'); SND.play('combo');
+    } else if (fk) { this.pairK = fk; this.pairT = S.t; }
     PFX.fix(b.pos, [1, 0.3, 0.37]); SND.play('hit', r.streak);
     World.colorizeNear(b.pos, 4);
     MUS.layer = Math.min(4, Math.floor(S.fixed / Math.max(1, S.expected) * 4 + 0.0001));
@@ -4922,7 +5005,7 @@ class FreeBug {
     if (crit && kind === 'rifle' && Math.random() < 0.4) F.pop2(this.pos, 'PERFECT', '#FFD34D');
     PFX.spark(this.pos, [1, 0.85, 0.5], 2, 3);
     if (Math.random() < 0.5) SND.play('tick');
-    if (this.hp <= 0) this.die();
+    if (this.hp <= 0) { this.lastKind = kind; this.die(); }
     return true;
   }
   die() {
@@ -5070,6 +5153,8 @@ class FreeBoss {
   }
   win() {
     this.dead = true; UI.banner('', 'BUILD SUCCESS', 3, true); SND.play('success');
+    const F = this.F; F.S.phase = 'clear'; // 이긴 뒤 1.5초 동안 맞아서 크래시 나지 않게
+    for (const b of F.bugs) { PFX.fix(b.pos, [1, 0.3, 0.37]); b.remove(); } F.bugs = []; for (const s of F.shots) s.remove(); F.shots = []; F.S.waveQ = [];
     PFX.fix(this.spr.position, [0.78, 0.96, 0.2], 3);
     setTimeout(() => { if (this.F.active) this.F.stageClear(); }, 1500);
   }

@@ -1,7 +1,7 @@
 {
   "name": "patchsquad",
   "productName": "Patch Squad",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Patch Squad (Steam)",
   "main": "main.js",
   "author": "Soodal Games (Choi Hanmin)",
