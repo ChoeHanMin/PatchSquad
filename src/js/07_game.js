@@ -1000,6 +1000,7 @@ const Game = {
     }
     if (low && !crouch) y += h * 0.3; // 웅크린 그림이 아직 없으면 서 있는 그림을 낮춰 벽 뒤에 숨은 것처럼
     if (low) cx -= W * 0.03;
+    if (crouch) y -= h * 0.05; // 웅크린 그림: 무릎이 화면 아래에 잘리지 않게 살짝 올림
     y += this.outK * h * 0.35; // 일어서며 화면 밖으로
     if (this.attacks.some((q) => q.t > q.dur * 0.6)) cx += (Math.random() - 0.5) * 4; // 움찔
     const br = 1 + Math.sin(this.time * 2.2) * 0.012; // 숨쉬기
