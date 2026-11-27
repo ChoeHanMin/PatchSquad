@@ -399,7 +399,7 @@ const Boss = {
       else { g.globalAlpha = 0.85; g.fillStyle = '#FF4D5E'; g.fillRect(-26, 0, 52, len); g.fillStyle = '#2a070c'; g.fillRect(-8, 0, 16, len); }
       g.restore(); g.globalAlpha = 1;
       g.font = 'bold 34px ui-monospace,Menlo,monospace'; g.textAlign = 'center'; g.fillStyle = '#FFD34D';
-      if (d.handWarn > 0) g.fillText(L('시계 바늘이 돈다 — 숨어!', 'Clock hands incoming — HIDE!', '時計の針が来る — 隠れて!', '时针来了 — 快隐蔽！'), W / 2, H * 0.62);
+      if (d.handWarn > 0) { g.lineWidth = 6; g.strokeStyle = '#000'; const t = L('시계 바늘이 돈다 — 숨어!', 'Clock hands incoming — HIDE!', '時計の針が来る — 隠れて!', '时针来了 — 快隐蔽！'); g.strokeText(t, W / 2, H * 0.3); g.fillText(t, W / 2, H * 0.3); }
     }
     if (this.phase >= 3) { // 배포 막대
       const bw = Math.min(620, W * 0.5), x = W / 2 - bw / 2, y = 96;

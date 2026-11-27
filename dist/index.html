@@ -302,6 +302,12 @@ body.freeops #gl{cursor:none}
 #keyList .keyrow:hover{border-color:var(--lime)}
 #keyList .keyrow b{font-family:var(--mono);color:var(--lime);min-width:64px;text-align:center;background:#1b1f19;border:2px solid #3a3f37;padding:2px 8px}
 #keyList .keyrow.wait{border-color:#FFD34D}#keyList .keyrow.wait b{color:#FFD34D;animation:blink .8s infinite steps(2)}
+#scrDiff .chs{display:flex;gap:12px;justify-content:center;margin:4px 0 10px}
+#scrDiff .chcard{position:relative;display:flex;align-items:center;gap:10px;background:#0f130e;border:2px solid #2f342c;color:#cfd6c8;padding:10px 18px;font-size:17px;cursor:pointer}
+#scrDiff .chcard b{font-family:var(--mono);font-size:22px;color:#7d8478}
+#scrDiff .chcard.sel{border-color:var(--lime);color:#F2F5EE}#scrDiff .chcard.sel b{color:var(--lime)}
+#scrDiff .chcard[data-ch="2"].sel{border-color:#FFB347}#scrDiff .chcard[data-ch="2"].sel b{color:#FFB347}
+#scrDiff .chcard .lock{display:none;font-style:normal}#scrDiff .chcard.locked{opacity:.55}#scrDiff .chcard.locked .lock{display:inline}
 </style>
 </head>
 <body>
@@ -334,6 +340,7 @@ body.freeops #gl{cursor:none}
       <button class="mem" data-m="1"><b class="k">2</b><canvas class="pt" width="64" height="64"></canvas><span class="mn" data-en="Rex" data-ja="レックス" data-zh="雷克斯">렉스</span><span class="mr" data-en="Spread" data-ja="散弾" data-zh="散弹">산탄</span><i class="am"><i></i></i><em class="lock">🔒</em></button>
       <button class="mem" data-m="2"><b class="k">3</b><canvas class="pt" width="64" height="64"></canvas><span class="mn" data-en="Pin" data-ja="ピン" data-zh="平">핀</span><span class="mr" data-en="Sniper" data-ja="狙撃" data-zh="狙击">저격</span><i class="am"><i></i></i><em class="lock">🔒</em></button>
       <button class="mem" data-m="3"><b class="k">4</b><canvas class="pt" width="64" height="64"></canvas><span class="mn" data-en="Ada" data-ja="エイダ" data-zh="艾达">에이다</span><span class="mr" data-en="Launcher" data-ja="ランチャー" data-zh="发射器">런처</span><i class="am"><i></i></i><em class="lock">🔒</em></button>
+      <button class="mem" data-m="4"><b class="k">5</b><canvas class="pt" width="64" height="64"></canvas><span class="mn" data-en="Cobol" data-ja="コボル" data-zh="科博">코볼</span><span class="mr" data-en="Beam" data-ja="ビーム" data-zh="光束">빔</span><i class="am"><i></i></i><em class="lock">🔒</em></button>
       <button class="wpn rb" data-w="2"><b class="k">␣</b><span class="ic">◀◀</span><span class="nm" data-en="Rollback <span id=&quot;rbCount&quot;>2</span>" data-ja="ロールバック <span id=&quot;rbCount&quot;>2</span>" data-zh="回滚 <span id=&quot;rbCount&quot;>2</span>">롤백 <span id="rbCount">2</span></span><span class="sub" data-en="3s slow-mo" data-ja="3秒スロー" data-zh="3秒慢动作">3초 슬로우</span><em class="lock">🔒</em></button>
     </div>
   </div>
@@ -401,6 +408,10 @@ body.freeops #gl{cursor:none}
   <section id="scrDiff" class="scr dim hidden">
     <div class="panel wide">
       <div class="tag" id="diffMode" data-en="Release Build" data-ja="正式ビルド" data-zh="正式构建">정식 빌드</div>
+      <div class="chs">
+        <button class="chcard" data-ch="1"><b>1</b><span data-en="Chapter 1: Main Loop" data-ja="第1章: メインループ" data-zh="第1章：主循环">1장: 메인 루프</span></button>
+        <button class="chcard" data-ch="2"><b>2</b><span data-en="Chapter 2: Legacy Code" data-ja="第2章: レガシーコード" data-zh="第2章：遗留代码">2장: 레거시 코드</span><em class="lock">🔒</em></button>
+      </div>
       <h2 data-en="Difficulty" data-ja="難易度" data-zh="难度">난이도</h2>
       <div class="diffs">
         <button class="dcard tut" data-d="tutorial"><b>?</b><span class="dn" data-en="Tutorial" data-ja="チュートリアル" data-zh="教程">튜토리얼</span><span class="dd" data-en="Learn the screen, controls, squad and weapons, and all 7 bugs hands-on. No crashes." data-ja="画面の見方・操作・分隊と武器・バグ7種を実際に試しながら学ぶ。クラッシュなし。" data-zh="亲手学习画面、操作、小队与武器以及7种Bug。不会崩溃。">화면 구성, 조작, 분대·무기, 버그 7종을 하나씩 직접 해 보며 배워요. 크래시 없음.</span></button>
@@ -552,7 +563,7 @@ body.freeops #gl{cursor:none}
       <h2 data-en="Free Ops — Controls" data-ja="フリー作戦 — 操作" data-zh="自由作战 — 操作">자유 작전 — 조작</h2>
       <div class="fi-keys">
         <span><b data-kb="fwd left back right">W A S D</b><i data-en="Move" data-ja="移動" data-zh="移动">이동</i></span><span><b>MOUSE</b><i data-en="Look / aim" data-ja="視点・照準" data-zh="视角/瞄准">시점·조준</i></span><span><b>LMB</b><i data-en="Shoot (Pin: hold to charge)" data-ja="射撃 (ピン: 長押しでチャージ)" data-zh="射击（平：按住蓄力）">사격 (핀: 누르고 있으면 충전)</i></span>
-        <span><b data-kb="reload">R</b><i data-en="Reload" data-ja="リロード" data-zh="换弹">재장전</i></span><span><b data-kb="cover">Z</b><i data-en="Cover (crouch behind low walls)" data-ja="遮蔽 (低い壁の後ろでしゃがむ)" data-zh="隐蔽（蹲在矮墙后）">엄폐 (낮은 벽 뒤에서 웅크리기)</i></span><span><b>1 2 3 4</b><i data-en="Switch squad member" data-ja="メンバー切り替え" data-zh="切换队员">분대원 교체</i></span>
+        <span><b data-kb="reload">R</b><i data-en="Reload" data-ja="リロード" data-zh="换弹">재장전</i></span><span><b data-kb="cover">Z</b><i data-en="Cover (crouch behind low walls)" data-ja="遮蔽 (低い壁の後ろでしゃがむ)" data-zh="隐蔽（蹲在矮墙后）">엄폐 (낮은 벽 뒤에서 웅크리기)</i></span><span><b>1 2 3 4 5</b><i data-en="Switch squad member" data-ja="メンバー切り替え" data-zh="切换队员">분대원 교체</i></span>
         <span><b data-kb="skill1">SHIFT</b><i data-en="Movement skill" data-ja="移動スキル" data-zh="位移技能">이동 스킬</i></span><span><b data-kb="skill2">E</b><i data-en="Utility skill" data-ja="サポートスキル" data-zh="辅助技能">보조 스킬</i></span><span><b data-kb="ult">Q</b><i data-en="Ultimate" data-ja="アルティメット" data-zh="终极技能">궁극기</i></span><span><b data-kb="rbFree">F</b><i data-en="Rollback (squad)" data-ja="ロールバック (分隊)" data-zh="回滚（小队）">롤백 (분대)</i></span><span><b>ESC</b><i data-en="Pause" data-ja="ポーズ" data-zh="暂停">일시정지</i></span>
       </div>
       <div class="fi-sk"></div>
@@ -722,6 +733,9 @@ const GLYPH = {
   '0': ['###', '#.#', '#.#', '#.#', '###'],
   '!': ['#', '#', '#', '.', '#'],
   '~': ['.....', '.#.#.', '#.#.#', '.#.#.', '.....'], // ∞
+  '<': ['..#', '.#.', '#..', '.#.', '..#'],
+  '%': ['#.#', '..#', '.#.', '#..', '#.#'],
+  '-': ['...', '...', '###', '...', '...'],
 };
 function drawGlyphs(g, str, cx, cy, color) {
   const rows = str.split('').map((c) => GLYPH[c]);
@@ -753,6 +767,9 @@ const BUGSTYLE = {
   e404: { body: '#FF8A3D', dark: '#7a3210', eye: '#FFD34D', sym: '404', symc: '#2a0a00', rx: 8, ry: 6, legs: 3 },
   loop: { body: '#E05BFF', dark: '#5a1a70', eye: '#FFD34D', sym: '~', symc: '#25062e', rx: 7, ry: 7, legs: 2 },
   throw: { body: '#FF6B3D', dark: '#7a2410', eye: '#FFD34D', sym: '!', symc: '#2a0700', rx: 7, ry: 6, legs: 3 },
+  merge: { body: '#B07CFF', dark: '#3a1a6a', eye: '#FFD34D', sym: '<<', symc: '#1a0a2e', rx: 7, ry: 6, legs: 3 },
+  leak: { body: '#6FE7FF', dark: '#1a6a7a', eye: '#2a070c', sym: '%', symc: '#0a2a30', rx: 7, ry: 7, legs: 2 },
+  deprecated: { body: '#9a968a', dark: '#4a4840', eye: '#d8d4c8', sym: '--', symc: '#2a2820', rx: 7, ry: 6, legs: 3 },
 };
 function bugCanvas(type, frame) {
   const st = BUGSTYLE[type];
@@ -815,6 +832,13 @@ function buildTextures() {
     }
   }
   // 핫픽스 아이템 (assets/item_hotfix.png 있으면 교체)
+  TEX.merge_l = TEX.merge; TEX.merge_r = [texFromCanvas(bugCanvas('merge', 0)), texFromCanvas(bugCanvas('merge', 1))];
+  if (ASSETS.bug_merge) {
+    const half = (side) => { const t = new THREE.Texture(); t.magFilter = THREE.NearestFilter; t.minFilter = THREE.LinearFilter; t.generateMipmaps = false; return t; };
+    const L2 = half('l'), R2 = half('r'), img = new Image();
+    img.onload = () => { const w = img.width, h = img.height; for (const [t, x0] of [[L2, 0], [R2, w / 2]]) { const c = document.createElement('canvas'); c.width = c.height = Math.round(w / 2); c.getContext('2d').drawImage(img, x0, h / 2 - w / 4, w / 2, w / 2, 0, 0, c.width, c.height); t.image = c; t.needsUpdate = true; } };
+    img.src = ASSETS.bug_merge; TEX.merge_l = [L2, L2]; TEX.merge_r = [R2, R2];
+  }
   TEX.hotfix = [texFromCanvas(hotfixCanvas(0)), texFromCanvas(hotfixCanvas(1))];
   if (ASSETS.item_hotfix) {
     const t = new THREE.Texture(); t.magFilter = THREE.NearestFilter; t.minFilter = THREE.LinearFilter; t.generateMipmaps = false;
@@ -829,6 +853,7 @@ function buildTextures() {
   IMG.capsule = ASSETS.proj_capsule ? imgOf(ASSETS.proj_capsule) : null;
   TEX.capsule = ASSETS.proj_capsule ? assetTex(ASSETS.proj_capsule) : null;
   TEX.drone = ASSETS.drone_ada ? assetTex(ASSETS.drone_ada) : null;
+  TEX.deadline = ASSETS.boss_deadline ? assetTex(ASSETS.boss_deadline) : null;
   // 분대 얼굴 (assets/portrait_*.png 있으면 교체)
   IMG.portrait = SQUAD_LOOK.map((s, i) => (ASSETS['portrait_' + s.key] ? imgOf(ASSETS['portrait_' + s.key]) : portraitCanvas(s)));
   IMG.char = SQUAD_LOOK.map((s, i) => (ASSETS['char_' + s.key] ? imgOf(ASSETS['char_' + s.key]) : charCanvas(s, i)));
@@ -934,7 +959,7 @@ function gunCanvas(stripe) {
   R(18, 4, 2, 2, '#FF4D5E');
   return c;
 }
-const ASSET_KEY = { basic: 'bug_basic', clone: 'bug_clone', mini: 'bug_mini', ghost: 'bug_ghost', e404: 'bug_404', loop: 'bug_loop', throw: 'bug_throw' };
+const ASSET_KEY = { basic: 'bug_basic', clone: 'bug_clone', mini: 'bug_mini', ghost: 'bug_ghost', e404: 'bug_404', loop: 'bug_loop', throw: 'bug_throw', merge: 'bug_merge', leak: 'bug_leak', deprecated: 'bug_deprecated' };
 function bugImgCanvas(type) { // DOM용 (크래시 화면)
   const url = ASSETS[ASSET_KEY[type]];
   if (url) { const img = new Image(); img.src = url; img.className = 'asset'; return img; }
@@ -1004,6 +1029,7 @@ const SQUAD_LOOK = [
   { key: 'rex', hair: '#7a3210', cap: '#FFD34D', skin: '#e8b48a', acc: '#FFD34D' },
   { key: 'pin', hair: '#1d2f6e', cap: '#6fe7ff', skin: '#f6d2b0', acc: '#6fe7ff' },
   { key: 'ada', hair: '#3a2418', cap: '#FF5FA2', skin: '#f4cba6', acc: '#FF5FA2' },
+  { key: 'cobol', hair: '#b8b8b0', cap: '#8a7a5a', skin: '#e8c09a', acc: '#FFB347' },
 ];
 function portraitCanvas(s) {
   const c = document.createElement('canvas'); c.width = c.height = 24; const g = c.getContext('2d');
@@ -1033,7 +1059,7 @@ function charCanvas(s, i) {
   P(10, 9, 12, 11, s.hair); P(10, 8, 12, 4, s.cap); P(9, 10, 2, 3, s.cap); P(9, 13, 2, 5, '#2a2f28'); P(21, 13, 2, 5, '#2a2f28');
   P(12, 18, 8, 2, s.skin);
   // 총 (오른쪽 위로 비스듬히)
-  const gc = ['#C6F432', '#FFD34D', '#6fe7ff', '#FF5FA2'][i] || '#C6F432';
+  const gc = ['#C6F432', '#FFD34D', '#6fe7ff', '#FF5FA2', '#FFB347'][i] || '#C6F432';
   for (let k = 0; k < (i === 2 ? 14 : 10); k++) P(25 + Math.floor(k * 0.4), 30 - k, 2, 2, k > (i === 2 ? 11 : 7) ? gc : '#3a4037');
   return c;
 }
@@ -1659,6 +1685,78 @@ const World = {
       });
     });
   },
+  // ---- 2장 ----
+  // 7. 지원 종료 보관소: 쌓인 브라운관·베이지 본체·플로피 탑
+  archive(r) {
+    const pts = []; for (let i = 0; i <= 12; i++) pts.push(new THREE.Vector3(Math.sin(i * 0.55) * 10 + (r() - 0.5) * 4, 0, -i * 27));
+    this.makeCurve(pts);
+    const mid = this.curve.getPointAt(0.5); this.groundGrid(520, mid.x, mid.z, 0, 70);
+    const beige = [0xD8CBB0, 0xC9B990, 0xBFAF8A], amber = 0xFFB347;
+    this.along(r, 90, 4, 14, (pos) => {
+      const g = new THREE.Group(), pieces = [];
+      const tall = r() < 0.3, n = tall ? 4 + Math.floor(r() * 4) : 1 + Math.floor(r() * 3);
+      for (let k = 0; k < n; k++) {
+        const s = tall ? 0.9 : 1.2 + r() * 0.5;
+        const b = this.piece(GEO.box, pick(beige, r)); b.mesh.scale.set(s * 1.3, s, s); b.mesh.position.y = s / 2 + k * s; g.add(b.mesh); pieces.push(b);
+        if (!tall) { const sc = this.piece(GEO.box, r() < 0.6 ? amber : 0x3a3a34, { basic: true, noLine: true }); sc.mesh.scale.set(s * 0.9, s * 0.6, 0.05); sc.mesh.position.set(0, s / 2 + k * s, s / 2 + 0.03); g.add(sc.mesh); pieces.push(sc); }
+      }
+      g.rotation.y = r() * 6;
+      this.addDecor(g, pieces, pos);
+    });
+  },
+  // 8. 브랜치 분기점: 보라/청록 두 갈래 기둥과 갈라진 아치
+  fork(r) {
+    const pts = []; for (let i = 0; i <= 12; i++) pts.push(new THREE.Vector3(Math.sin(i * 0.4) * 13 + (r() - 0.5) * 3, 0, -i * 28));
+    this.makeCurve(pts);
+    const mid = this.curve.getPointAt(0.5); this.groundGrid(520, mid.x, mid.z, 0, 70);
+    const n = Math.floor(this.curve.getLength() / 8), T = new THREE.Vector3();
+    for (let i = 1; i < n; i++) {
+      const s = i / n, P = this.curve.getPointAt(s); this.curve.getTangentAt(s, T);
+      const g = new THREE.Group(), pieces = [];
+      for (const side of [-1, 1]) {
+        const h = 4 + r() * 3, p = this.piece(GEO.box, side < 0 ? 0xB07CFF : 0x3DE0D0); p.mesh.scale.set(1, h, 1); p.mesh.position.set(side * 6, h / 2, 0); g.add(p.mesh); pieces.push(p);
+        const tip = this.piece(GEO.ico, side < 0 ? 0xd9b8ff : 0x9ff5ea, { basic: true }); tip.mesh.scale.setScalar(0.7); tip.mesh.position.set(side * 6, h + 0.6, 0); g.add(tip.mesh); pieces.push(tip);
+      }
+      if (i % 3 === 0) { // 갈라진 아치: 가운데서 두 갈래
+        for (const side of [-1, 1]) { const a = this.piece(GEO.box, side < 0 ? 0x8a5cff : 0x2aa8a0); a.mesh.scale.set(6.4, 0.4, 0.6); a.mesh.position.set(side * 3, 7.2 + side * 0.4, 0); a.mesh.rotation.z = side * 0.18; g.add(a.mesh); pieces.push(a); }
+      }
+      g.position.copy(P); g.rotation.y = Math.atan2(T.x, T.z);
+      this.addDecor(g, pieces, P);
+    }
+  },
+  // 9. 운영 서버 — 금요일 18:00: 검은 서버 랙 + 빨간 경보등
+  prod(r) {
+    const pts = []; for (let i = 0; i <= 12; i++) pts.push(new THREE.Vector3(Math.sin(i * 0.5) * 9 + (r() - 0.5) * 4, 0, -i * 27));
+    this.makeCurve(pts);
+    const mid = this.curve.getPointAt(0.5); this.groundGrid(520, mid.x, mid.z, 0, 80);
+    const n = Math.floor(this.curve.getLength() / 7), T = new THREE.Vector3();
+    for (let i = 1; i < n; i++) {
+      const s = i / n, P = this.curve.getPointAt(s); this.curve.getTangentAt(s, T);
+      const g = new THREE.Group(), pieces = [], alarms = [];
+      for (const side of [-1, 1]) {
+        const off = side * (5.4 + r()), h = 3.4 + r() * 2;
+        const rack = this.piece(GEO.box, 0x1a1c22); rack.mesh.scale.set(1.4, h, 2.6); rack.mesh.position.set(off, h / 2, 0); g.add(rack.mesh); pieces.push(rack);
+        const al = this.piece(GEO.box, 0xFF4D5E, { basic: true, noLine: true, grayFill: 0x2a1416 }); al.mesh.scale.set(0.5, 0.35, 0.5); al.mesh.position.set(off, h + 0.2, 0); g.add(al.mesh); pieces.push(al); alarms.push(al.mesh);
+      }
+      if (i % 4 === 0) { const note = this.piece(GEO.box, 0xFFD34D, { basic: true }); note.mesh.scale.set(0.5, 0.5, 0.05); note.mesh.position.set(r() < 0.5 ? -4.6 : 4.6, 2 + r() * 2, 1.4); g.add(note.mesh); pieces.push(note); }
+      g.position.copy(P); g.rotation.y = Math.atan2(T.x, T.z);
+      const ph = r() * 6;
+      this.addDecor(g, pieces, P, (d, f) => { alarms.forEach((m) => { m.visible = Math.sin(Game.time * 6 + ph) > -0.2; }); });
+    }
+  },
+  // 10. 최종 보스 아레나: 거대한 달력 종이와 시계 기둥
+  deadline(r) {
+    this.curve = null;
+    this.groundGrid(200, 0, 0, 0, 50);
+    for (let i = 0; i < 16; i++) {
+      const a = (i / 16) * Math.PI * 2, R = 36 + r() * 6;
+      const g = new THREE.Group(), h = 7 + r() * 10;
+      const p = this.piece(GEO.box, i % 2 ? 0xE8DCC0 : 0xFF4D5E); p.mesh.scale.set(4, h, 0.4); p.mesh.position.y = h / 2;
+      const c = this.piece(GEO.cyl, 0xffffff); c.mesh.scale.set(1.4, 0.3, 1.4); c.mesh.rotation.x = Math.PI / 2; c.mesh.position.set(0, h + 1.6, 0);
+      g.add(p.mesh, c.mesh); g.rotation.y = -a + Math.PI / 2;
+      this.addDecor(g, [p, c], new THREE.Vector3(Math.cos(a) * R, 0, Math.sin(a) * R), (d, f) => { c.mesh.rotation.z = Game.time * (i % 2 ? 1 : -1); });
+    }
+  },
   // 6. 중간 보스 아레나
   boss(r) {
     this.curve = null;
@@ -1689,6 +1787,9 @@ const BUGDEF = {
   e404: { name: L('404 버그', '404 Bug', '404バグ', '404 Bug'), role: 'shoot', hp: 8, pts: 250, spd: 4, size: 1.9, dmg: 10, fire: [2.2, 3.5], tip: L('조준선이 1초 겹치면 순간이동!', 'Aim at it for 1s and it teleports!', '1秒狙われるとテレポート!', '被瞄准1秒就会瞬移！') },
   loop: { name: L('무한루프 버그', 'Infinite Loop Bug', '無限ループバグ', '无限循环Bug'), role: 'shoot', hp: 10, pts: 300, spd: 3.4, size: 1.8, dmg: 18, fire: [4.2, 6], missile: true, tip: L('관통 미사일을 쏴요! 숨어도 맞으니 미사일을 쏴서 떨어뜨리세요', 'Fires piercing missiles! Hiding won\'t help, so shoot the missiles down', '貫通ミサイルを撃ってくる! 隠れても当たるのでミサイルを撃ち落とそう', '会发射穿透导弹！隐蔽也会被击中，快把导弹打下来') },
   missile: { name: L('관통 미사일', 'Piercing Missile', '貫通ミサイル', '穿透导弹'), role: 'missile', hp: 2, pts: 50, spd: 4.4, size: 1.3, dmg: 16 },
+  merge: { name: L('머지 충돌 버그', 'Merge Conflict Bug', 'マージコンフリクトバグ', '合并冲突Bug'), role: 'shoot', hp: 5, pts: 180, spd: 3.6, size: 1.7, dmg: 8, fire: [3.4, 4.8], tip: L('두 마리가 한 쌍! 한 마리만 고치면 2초 뒤 되살아나요 — 둘 다 2초 안에', 'Always a pair! Fix one and it revives in 2s — fix both within 2s', '2匹で1組! 片方だけ直すと2秒で復活 — 2秒以内に両方を', '总是成对出现！只修一只2秒后会复活 — 2秒内两只都修好') },
+  leak: { name: L('메모리 누수 버그', 'Memory Leak Bug', 'メモリリークバグ', '内存泄漏Bug'), role: 'rush', hp: 4, pts: 220, spd: 1.6, size: 1.6, dmg: 12, tip: L('점점 커지고 단단해지다 터져요! 작을 때 빨리', 'Grows bigger and tougher, then bursts! Get it while it\'s small', 'どんどん大きく硬くなって破裂! 小さいうちに', '会越长越大越硬然后爆开！趁小快解决') },
+  deprecated: { name: L('지원 종료 버그', 'Deprecated Bug', 'サポート終了バグ', '停止支持Bug'), role: 'rush', hp: 6, pts: 120, spd: 1.9, size: 1.8, dmg: 8, tip: L('최신 무기는 피해가 절반! 코볼의 리뷰 빔이 약점', 'Modern weapons deal half damage! Weak to Cobol\'s Review Beam', '最新の武器はダメージ半分! コボルのレビュービームが弱点', '新武器只造成一半伤害！弱点是科博的审查光束') },
   hotfix: { name: L('핫픽스', 'Hotfix', 'ホットフィックス', '热修复'), role: 'item', hp: 1, pts: 0, spd: 0, size: 2.1, dmg: 0, tip: L('쏘면 안정성 +20, 화면 고장 모두 복구!', 'Shoot it: Stability +20, all glitches repaired!', '撃つと安定性+20、画面の不具合をすべて修復!', '击中后稳定性+20，修复所有画面故障！') },
 };
 const V1 = new THREE.Vector3(), V2 = new THREE.Vector3(), V3 = new THREE.Vector3();
@@ -1711,6 +1812,7 @@ class Bug {
     this.spr = new THREE.Sprite(this.mat);
     this.spr.scale.setScalar(0.01);
     Game.scene.add(this.spr);
+    this.side = opt.side || null; if (type === 'merge') { this.mat.map = TEX['merge_' + (this.side || 'l')][0]; }
     if (type === 'loop') {
       this.ang = rnd(0, 6.28); this.dirA = RNG() < 0.5 ? 1 : -1; this.gAng = Math.PI / 2;
       this.ring = new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX.ring, transparent: true, fog: false, depthWrite: false }));
@@ -1719,6 +1821,7 @@ class Bug {
     }
   }
   get hostile() { return this.role !== 'item'; }
+  down() { this.downT = 2; this.hp = 0; this.flash = 0; }
   remove() {
     this.alive = false;
     Game.scene.remove(this.spr); this.mat.dispose();
@@ -1727,7 +1830,17 @@ class Bug {
   update(dt, ws) {
     const d = dt * ws;
     this.age += d;
-    this.ft += d; if (this.ft > 0.14) { this.ft = 0; this.frame ^= 1; this.mat.map = TEX[this.type][this.frame]; }
+    this.ft += d; if (this.ft > 0.14) { this.ft = 0; this.frame ^= 1; this.mat.map = this.type === 'merge' ? TEX['merge_' + (this.side || 'l')][this.frame] : TEX[this.type][this.frame]; }
+    if (this.downT > 0) { // 머지 충돌: 쓰러진 채 짝을 기다림 → 시간이 지나면 되살아남
+      this.downT -= dt; this.mat.opacity = 0.25 + Math.sin(this.age * 20) * 0.1; this.spr.position.copy(this.pos);
+      if (this.downT <= 0) { this.downT = 0; this.hp = this.maxHp; this.mat.opacity = 1; Game.pop(this.sx, this.sy - 30, L('되살아났다!', 'Revived!', '復活した!', '复活了！'), '#B07CFF'); SND.play('split'); }
+      return;
+    }
+    if (this.type === 'leak' && Game.canEnemiesAct()) { // 메모리 누수: 시간이 지날수록 커지고 단단해짐
+      this.grow = Math.min(1, (this.grow || 0) + d / 9);
+      const want = Math.round(this.def.hp * (1 + this.grow * 1.6)); if (want > this.maxHp) { this.hp += want - this.maxHp; this.maxHp = want; }
+      if (this.grow >= 1) { Game.leakBurst(this); return; }
+    }
     const cam = Game.camera, R = Game.camR, U = Game.camU;
     if (this.role === 'item') { this.updateItem(dt, d); return; }
     const tgt = this.type === 'loop' ? this.center : this.pos;
@@ -1761,7 +1874,7 @@ class Bug {
       tgt.addScaledVector(U, Math.sin(this.age * this.wf * 1.3 + this.ph) * wa * 0.5 * d);
       if (this.sep) { tgt.addScaledVector(this.sep, d); this.sep.multiplyScalar(Math.max(0, 1 - d * 2.5)); }
     }
-    let scale = this.def.size * Math.min(1, this.age / 0.3);
+    let scale = this.def.size * Math.min(1, this.age / 0.3) * (this.type === 'leak' ? 1 + (this.grow || 0) * 0.9 : 1);
     this.flash = Math.max(0, this.flash - dt * 6);
     if (this.type === 'ghost') {
       const cyc = (this.age + this.ph) % 1.5;
@@ -1885,13 +1998,38 @@ const CODE = [
   ['  }', '  } }'],
   ['}', L('} // TODO: 끝?', '} // TODO: done?', '} // TODO: 完了?', '} // TODO: 完成?')],
 ];
+// 데드라인: 할 일 목록 (정상 / 마감에 쫓긴 버전)
+const CODE_DL = [
+  ['deadline.check();', 'deadline = yesterday;'],
+  ['tests.write(all);', 'tests.skip(all); // no time'],
+  ['review.request(team);', 'review.skip(); // ship it'],
+  ['docs.update();', '// docs: later (never)'],
+  ['sleep(8 * HOUR);', 'sleep(0); coffee++;'],
+  ['estimate = 5 * DAY;', 'estimate = 5 * MINUTE;'],
+  ['if (ready) deploy();', 'deploy(); // ready or not'],
+  ['backup.create();', '// backup? what backup'],
+  ['ci.run();', 'ci.run() || true;'],
+  ['git push origin feature', 'git push --force origin main'],
+  ['bugs.triage();', 'bugs.ignore();'],
+  ['scope = mvp;', 'scope = everything;'],
+  ['qa.signoff();', 'qa.signoff = () => true;'],
+  ['meeting.short();', 'meeting.length = Infinity;'],
+  ['git commit -m "fix login"', 'git commit -m "asdf"'],
+  ['refactor.when = "now";', 'refactor.when = "never";'],
+  ['monitor.alerts.on();', 'monitor.alerts.mute();'],
+  ['release.notes();', 'release.notes = "stuff";'],
+  ['team.rest();', 'team.crunch();'],
+  ['}', '} // TODO: go home'],
+];
+let BOSS_CODE = CODE; // 지금 보스의 코드 줄
+const BOSS_HEAD = { loop: ['{ ◉_◉ } main', '{ ^_^ } main'], deadline: ['⏰ D-3', '⏰ +1 WEEK'] };
 class Snake {
   constructor(real, radius, dir, startAng, yOff) {
     this.real = real; this.R = radius; this.dir = dir; this.ang = startAng; this.yOff = yOff;
     this.segs = []; this.alpha = 1; this.speed = 0.32;
     for (let i = 0; i < 20; i++) {
       const head = i === 0;
-      const text = head ? '{ ◉_◉ } main' : CODE[i][0];
+      const text = head ? BOSS_HEAD[Boss.kind || 'loop'][0] : BOSS_CODE[i][0];
       const tex = codeCanvas(text, 'norm', head);
       const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, fog: false, side: THREE.DoubleSide, depthWrite: false });
       const mesh = new THREE.Mesh(GEO.plane, mat);
@@ -1903,7 +2041,7 @@ class Snake {
   }
   setMode(s, mode) {
     s.tex.dispose();
-    s.tex = codeCanvas(s.head ? '{ ^_^ } main' : CODE[s.i][mode === 'err' || mode === 'fake' ? 1 : 0], mode, s.head);
+    s.tex = codeCanvas(s.head ? (mode === 'fixed' ? BOSS_HEAD[Boss.kind || 'loop'][1] : (Boss.kind === 'deadline' ? ['⏰ D-3', '⏰ D-3', '⏰ D-1', '⏰ D-DAY'][Boss.phase] || '⏰ D-3' : BOSS_HEAD.loop[0])) : BOSS_CODE[s.i][mode === 'err' || mode === 'fake' ? 1 : 0], mode, s.head);
     s.mat.map = s.tex; s.mat.needsUpdate = true;
   }
   update(dt, ws, t) {
@@ -1935,8 +2073,14 @@ class Snake {
 }
 const Boss = {
   snakes: [], phase: 0, fixed: 0, total: 16, spawnT: 0, ending: false, endT: 0, transT: 0, t: 0, r: null,
-  start(seed, from = 1) {
+  start(seed, from = 1, kind = 'loop') {
+    this.kind = kind; BOSS_CODE = kind === 'deadline' ? CODE_DL : CODE;
     this.dispose();
+    this.dl = kind === 'deadline' ? { handT: 6, handWarn: 0, handSweep: 0, handAng: 0, night: 0, bar: 0 } : null;
+    if (this.dl) { // 데드라인 몸통: 아레나 가운데 큰 그림
+      const mat = new THREE.SpriteMaterial({ map: TEX.deadline || TEX.glow, color: TEX.deadline ? 0xffffff : 0xFF4D5E, transparent: true, fog: false, depthWrite: false });
+      this.body = new THREE.Sprite(mat); this.body.position.set(0, 9, -8); this.body.scale.setScalar(15); this.body.renderOrder = 1; Game.scene.add(this.body);
+    }
     this.r = mulberry32(seed + 555);
     this.phase = 0; this.fixed = 0; this.ending = false; this.endT = 0; this.t = 0; this.spawnT = 2; this.atkT = 3; this.misT = 7;
     this.realDir = this.r() < 0.5 ? 1 : -1;
@@ -1949,7 +2093,7 @@ const Boss = {
     }
     this.startPhase(from);
   },
-  dispose() { for (const s of this.snakes) s.dispose(); this.snakes = []; },
+  dispose() { for (const s of this.snakes) s.dispose(); this.snakes = []; if (this.body) { Game.scene.remove(this.body); this.body.material.dispose(); this.body = null; } },
   real() { return this.snakes[0]; },
   startPhase(n) {
     this.phase = n;
@@ -1967,6 +2111,13 @@ const Boss = {
       this.snakes.push(fake);
     }
     if (n > 1) { Game.cover.hp = Game.cover.max; Game.cover.broken = false; UI.toast(L('엄폐물 보강 완료', 'Cover reinforced', '遮蔽物を補強しました', '掩体已加固')); } // 단계마다 엄폐물 수리
+    if (this.dl) {
+      this.real().setMode(this.real().segs[0], 'norm');
+      if (n === 1) UI.hint(L('빨갛게 빛나는 "급한 할 일"만 맞아요! 시계 바늘이 돌면 숨으세요', 'Only the glowing red "rushed tasks" take damage! Hide when the clock hands sweep', '赤く光る「急ぎのタスク」だけにダメージ! 時計の針が回ったら隠れて', '只有发红光的“赶工任务”会受伤！时针扫过时快隐蔽'), 5);
+      else { UI.banner('PHASE ' + n, n === 2 ? L('D-1 밤샘! 화면이 점점 어두워져요', 'D-1: All-nighter! The screen keeps getting darker', 'D-1 徹夜! 画面がどんどん暗くなる', 'D-1 通宵！画面越来越暗') : L('D-DAY! 배포 막대가 다 차기 전에 고치세요', 'D-DAY! Fix it before the deploy bar fills', 'D-DAY! デプロイバーが満タンになる前に直せ', 'D-DAY！在部署条满之前修好'), 2.2); SND.play('phase'); Game.spawnHotfix(); }
+      if (n > 1) { Game.cover.hp = Game.cover.max; Game.cover.broken = false; }
+      return;
+    }
     if (n === 1) UI.hint(L('빨갛게 빛나는 "오류 줄"만 맞아요! 모두 고치면 다음 단계', 'Only the glowing red "error lines" take damage! Fix them all to advance', '赤く光る「エラー行」だけにダメージが入る! すべて直せば次の段階へ', '只有发红光的“错误行”会受伤！全部修好进入下一阶段'), 5);
     else { UI.banner('PHASE ' + n, n === 2 ? L('속도 증가! 버그를 더 많이 뱉어요', 'Speed up! It spits out more bugs', 'スピードアップ! バグをもっと吐き出す', '速度提升！吐出更多Bug') : L('복붙 오류! 진짜만 빛나요', 'Copy-paste error! Only the real one glows', 'コピペエラー! 本物だけが光る', '复制粘贴错误！只有真身会发光'), 2.2); SND.play('phase'); Game.spawnHotfix(); }
   },
@@ -1977,6 +2128,7 @@ const Boss = {
     if (s.hp > 0) return 'dmg';
     s.fixed = true; s.err = false; s.snake.setMode(s, 'fixed'); s.mat.color.setRGB(1, 1, 1); s.mesh.scale.set(4.4, 0.7, 1);
     this.fixed++;
+    if (this.dl) this.dl.bar = Math.max(0, this.dl.bar - 0.2); // 할 일을 고치면 배포 막대가 줄어듦
     const left = this.real().segs.filter((x) => x.err && !x.fixed).length;
     if (left === 0) {
       if (this.phase < 3) this.transT = 1.2;
@@ -1993,7 +2145,45 @@ const Boss = {
     real.segs.forEach((s, i) => { s.end = base.clone().addScaledVector(U, 4.6 - i * 0.48).addScaledVector(R, s.head ? -0.3 : 0); s.mesh.scale.set(s.head ? 3.2 : 3.6, s.head ? 0.8 : 0.45, 1); });
     this.endBase = base;
     for (let k = 1; k < this.snakes.length; k++) this.snakes[k].fadeOut = true;
+    if (this.dl) { this.dl.bar = 0; this.dl.handWarn = this.dl.handSweep = 0; UI.toast(L('마감 연장! 다음 버전은 천천히', 'Deadline extended! Next version: take it slow', '締め切り延長! 次のバージョンはゆっくり', '截止日期延长！下个版本慢慢来')); }
     Game.onBossSuccess();
+  },
+  // 데드라인 특수 공격: 1단계부터 시계 바늘 쓸기 · 2단계 밤샘(어두워짐) · 3단계 배포 막대
+  updateDeadline(dt) {
+    const d = this.dl;
+    d.handT -= dt;
+    if (d.handT <= 0 && !d.handWarn && !d.handSweep) { d.handWarn = 1.5; d.handAng = -0.4; SND.play('warn'); }
+    if (d.handWarn > 0) { d.handWarn -= dt; if (d.handWarn <= 0) { d.handWarn = 0; d.handSweep = 0.9; SND.play('rush'); } }
+    if (d.handSweep > 0) {
+      d.handSweep -= dt; d.handAng += dt * 3.6;
+      if (!d.hitThis && Game.outK > 0.45) { d.hitThis = true; Game.hurt(12, 'packet'); Game.pop(Game.W / 2, Game.H * 0.4, L('시계 바늘에 맞았다!', 'Hit by the clock hand!', '時計の針に当たった!', '被时针扫中！'), '#FF4D5E'); }
+      if (d.handSweep <= 0) { d.handSweep = 0; d.hitThis = false; d.handT = [0, 7, 6, 5][this.phase] * Game.fm; }
+    }
+    if (this.phase >= 2) d.night = Math.min(0.55, d.night + dt * 0.012); else d.night = Math.max(0, d.night - dt * 0.2);
+    if (this.phase >= 3) {
+      d.bar += dt / (24 / Game.D.bossSpd);
+      if (d.bar >= 1) { d.bar = 0.45; Game.hurt(28, 'missile'); UI.banner('', L('강제 배포!', 'FORCED DEPLOY!', '強制デプロイ!', '强制部署！'), 1.4); SND.play('crash'); }
+    }
+  },
+  draw2D(g) {
+    const d = this.dl; if (!d || this.ending) return;
+    const W = Game.W, H = Game.H;
+    if (d.night > 0.01) { g.fillStyle = `rgba(4,4,14,${d.night})`; g.fillRect(0, 0, W, H); }
+    if (d.handWarn > 0 || d.handSweep > 0) { // 시계 바늘: 예고(점선) → 쓸기(굵은 빨간 막대)
+      const cx = W / 2, cy = H * 0.22, len = Math.hypot(W, H);
+      g.save(); g.translate(cx, cy); g.rotate(d.handAng + Math.PI / 2);
+      if (d.handWarn > 0) { g.globalAlpha = 0.5 + 0.5 * Math.sin(Game.time * 20); g.setLineDash([18, 14]); g.strokeStyle = '#FF4D5E'; g.lineWidth = 6; g.beginPath(); g.moveTo(0, 0); g.lineTo(0, len); g.stroke(); g.setLineDash([]); }
+      else { g.globalAlpha = 0.85; g.fillStyle = '#FF4D5E'; g.fillRect(-26, 0, 52, len); g.fillStyle = '#2a070c'; g.fillRect(-8, 0, 16, len); }
+      g.restore(); g.globalAlpha = 1;
+      g.font = 'bold 34px ui-monospace,Menlo,monospace'; g.textAlign = 'center'; g.fillStyle = '#FFD34D';
+      if (d.handWarn > 0) { g.lineWidth = 6; g.strokeStyle = '#000'; const t = L('시계 바늘이 돈다 — 숨어!', 'Clock hands incoming — HIDE!', '時計の針が来る — 隠れて!', '时针来了 — 快隐蔽！'); g.strokeText(t, W / 2, H * 0.3); g.fillText(t, W / 2, H * 0.3); }
+    }
+    if (this.phase >= 3) { // 배포 막대
+      const bw = Math.min(620, W * 0.5), x = W / 2 - bw / 2, y = 96;
+      g.fillStyle = 'rgba(8,10,8,.85)'; g.fillRect(x - 6, y - 26, bw + 12, 50); g.strokeStyle = '#FF4D5E'; g.lineWidth = 2; g.strokeRect(x - 6, y - 26, bw + 12, 50);
+      g.fillStyle = '#2a0a0e'; g.fillRect(x, y, bw, 16); g.fillStyle = d.bar > 0.75 && Math.sin(Game.time * 18) > 0 ? '#FFD34D' : '#FF4D5E'; g.fillRect(x, y, bw * d.bar, 16);
+      g.font = 'bold 15px ui-monospace,Menlo,monospace'; g.textAlign = 'center'; g.fillStyle = '#E8EDE2'; g.fillText(L('배포까지', 'DEPLOY IN', 'デプロイまで', '距离部署') + ` ${Math.round((1 - d.bar) * 100)}%`, W / 2, y - 8);
+    }
   },
   update(dt, ws) {
     this.t += dt * ws;
@@ -2001,7 +2191,12 @@ const Boss = {
       if (sn.fadeOut) sn.alpha = Math.max(0, sn.alpha - dt * 1.5);
       sn.update(dt, this.ending ? 0 : ws, this.t);
     }
+    if (this.body) { // 데드라인 몸통: 숨쉬듯 흔들리고, 끝나면 사라짐
+      this.body.position.y = 9 + Math.sin(this.t * 1.4) * 0.4; this.body.material.rotation = Math.sin(this.t * 0.9) * 0.05;
+      if (this.ending) { this.body.material.opacity = Math.max(0, this.body.material.opacity - dt * 0.8); this.body.scale.multiplyScalar(1 - dt * 0.3); }
+    }
     if (this.ending) return;
+    if (this.dl && this.transT <= 0 && Game.canEnemiesAct()) this.updateDeadline(dt * ws);
     if (this.transT > 0) { this.transT -= dt; if (this.transT <= 0) this.startPhase(this.phase + 1); return; }
     // 머리에서 에러 패킷(예고 후, 숨으면 막힘) · 2단계부터 관통 미사일
     if (Game.canEnemiesAct()) {
@@ -2035,16 +2230,30 @@ const STAGES = [
   { id: 4, key: 'server', name: L('테스트 서버실', 'Test Server Room', 'テストサーバールーム', '测试服务器机房'), theme: 0xFF5FA2, sky: 0x2a0f24, count: 27, mix: { basic: 4, throw: 3, clone: 4, ghost: 3, e404: 5 }, intro: ['e404'], join: 3, fog: [14, 80, 26, 130], light: [0.6, 1.05], cover: 0x5a3a52 },
   { id: 5, key: 'physics', name: L('물리 고장 구역', 'Broken Physics Zone', '物理崩壊エリア', '物理故障区'), theme: 0xB07CFF, sky: 0x22163a, count: 30, mix: { basic: 4, throw: 3, clone: 4, ghost: 3, e404: 5, loop: 4 }, intro: ['loop'], fog: [18, 100, 30, 150], light: [0.75, 1.1], cover: 0x6a4a9a },
   { id: 6, key: 'boss', name: L('중간 보스 "메인 루프"', 'Mid-boss "Main Loop"', '中ボス「メインループ」', '中Boss“主循环”'), theme: 0xC6F432, sky: 0x0f2a12, boss: true, fog: [30, 120, 40, 170], light: [0.7, 1.1], cover: 0x3a4a3a },
+  // ---- 2장 「레거시 코드」 ----
+  { id: 7, ch: 2, key: 'archive', name: L('지원 종료 보관소', 'Deprecated Archive', 'サポート終了アーカイブ', '停止支持档案馆'), theme: 0xFFB347, sky: 0x2a2014, count: 26, mix: { deprecated: 7, basic: 3, throw: 3, ghost: 2, clone: 2 }, intro: ['deprecated'], join: 4, fog: [16, 90, 28, 140], light: [0.65, 1.05], cover: 0x8a7a5a },
+  { id: 8, ch: 2, key: 'fork', name: L('브랜치 분기점', 'Branch Fork', 'ブランチ分岐点', '分支岔路'), theme: 0xB07CFF, sky: 0x141a2e, count: 28, mix: { merge: 6, deprecated: 4, clone: 3, throw: 3, e404: 3 }, intro: ['merge'], fog: [18, 100, 30, 150], light: [0.7, 1.1], cover: 0x4a3a6a },
+  { id: 9, ch: 2, key: 'prod', name: L('운영 서버 — 금요일 18:00', 'Production — Friday 6PM', '本番サーバー — 金曜18:00', '生产服务器 — 周五18:00'), theme: 0xFF4D5E, sky: 0x220a0e, count: 30, mix: { leak: 6, merge: 4, deprecated: 4, throw: 3, ghost: 2, loop: 2 }, intro: ['leak'], fog: [12, 80, 24, 130], light: [0.5, 1.0], cover: 0x3a2a2e },
+  { id: 10, ch: 2, key: 'deadline', name: L('최종 보스 「데드라인」', 'Final Boss "The Deadline"', 'ラスボス「デッドライン」', '最终Boss“截止日期”'), theme: 0xFF4D5E, sky: 0x2a0808, boss: true, fog: [30, 120, 40, 170], light: [0.7, 1.1], cover: 0x4a2a2a },
 ];
 // 엄폐 종류: low = 낮은 벽 (웅크렸다가 일어나 벽 위로 쏨), side = 세로 기둥 (기대 서 있다가 오른쪽으로 몸을 빼서 쏨)
 const COVER_KINDS = [['low', 'side', 'low'], ['side', 'low', 'side'], ['low', 'low', 'side'], ['side', 'low', 'low'], ['low', 'side', 'side']];
 const COVER_U = [0.1, 0.45, 0.8]; // 엄폐 지점 (레일 위치)
+// 장(章): 1장 = 스테이지 1~6 (중간 보스까지), 2장 = 스테이지 7~10 (최종 보스 데드라인까지)
+const chOf = (i) => (STAGES[i] && STAGES[i].ch) || 1;
+const chStages = (ch) => STAGES.map((d, i) => i).filter((i) => chOf(i) === ch);
+const chFirst = (ch) => chStages(ch)[0];
+const chPos = (i) => { const l = chStages(chOf(i)); return { n: l.indexOf(i) + 1, total: l.length }; };
+let CUR_CH = 1; // 지금 플레이 중인 장 (스토리 엔딩 고를 때 씀)
+// 난이도 곡선용 순번: 장 안에서 몇 번째인지 (2장은 1장 중반 정도에서 시작) — 절대 번호로 하면 2장이 너무 어려워짐
+const diffIdx = (i) => chPos(i).n - 1 + (chOf(i) === 2 ? 2.5 : 0);
 // 분대: 직접 조작 1명 + 나머지 자동 사격
 const SQUAD = [
   { key: 'dot', name: L('도트', 'Dot', 'ドット', '多特'), role: L('디버거', 'Debugger', 'デバッガー', '调试器'), kind: 'rifle', label: L('연사', 'Rapid', '連射', '连射'), color: '#C6F432', rate: 9, dmg: 1, mag: 36, reload: 1.1, heat: 2.4, aiRate: 1.0, aiDmg: 1 },
   { key: 'rex', name: L('렉스', 'Rex', 'レックス', '雷克斯'), role: L('리팩터', 'Refactor', 'リファクタ', '重构'), kind: 'shotgun', label: L('산탄', 'Spread', '散弾', '散弹'), color: '#FFD34D', rate: 1.6, dmg: 1, pellets: 7, mag: 8, reload: 1.5, heat: 13, aiRate: 0.4, aiDmg: 2 },
   { key: 'pin', name: L('핀', 'Pin', 'ピン', '平'), role: L('프로파일러', 'Profiler', 'プロファイラ', '分析器'), kind: 'sniper', label: L('저격', 'Sniper', '狙撃', '狙击'), color: '#6fe7ff', charge: 0.85, dmg: 8, mag: 5, reload: 1.6, heat: 22, aiRate: 0.22, aiDmg: 4 },
   { key: 'ada', name: L('에이다', 'Ada', 'エイダ', '艾达'), role: L('테스터', 'Tester', 'テスター', '测试员'), kind: 'launcher', label: L('런처', 'Launcher', 'ランチャー', '发射器'), color: '#FF5FA2', rate: 1.25, dmg: 3, splash: 1, mag: 6, reload: 1.6, heat: 16, aiRate: 0.33, aiDmg: 3 },
+  { key: 'cobol', name: L('코볼', 'Cobol', 'コボル', '科博'), role: L('레거시 장인', 'Legacy Veteran', 'レガシー職人', '遗留代码匠人'), kind: 'beam', label: L('리뷰 빔', 'Review Beam', 'レビュービーム', '审查光束'), color: '#FFB347', rate: 10, dmg: 0.55, chain: 2, mag: 60, reload: 1.5, heat: 1.6, aiRate: 0.9, aiDmg: 1 },
 ];
 const GLITCH = {
   tear: { name: L('화면 찢어짐', 'Screen Tear', '画面の裂け目', '画面撕裂'), dur: 4 },
@@ -2065,12 +2274,13 @@ const DIFF = {
 };
 DIFF.tutorial = Object.assign({}, DIFF.easy, { key: 'tutorial', name: L('튜토리얼', 'Tutorial', 'チュートリアル', '教程'), label: L('튜토리얼', 'Tutorial', 'チュートリアル', '教程'), maxOn: 4, count: 1 });
 // 약점 무기: 맞는 무기로 쏘면 피해 2배 (산탄은 돌격형을 밀어내고, 저격은 무한루프 껍질을 뚫음)
-const WEAK = { basic: 'shotgun', clone: 'shotgun', mini: 'launcher', throw: 'sniper', ghost: 'sniper', loop: 'sniper', e404: 'rifle', missile: 'rifle' };
+const WEAK = { basic: 'shotgun', clone: 'shotgun', mini: 'launcher', throw: 'sniper', ghost: 'sniper', loop: 'sniper', e404: 'rifle', missile: 'rifle', merge: 'beam', deprecated: 'beam', leak: 'launcher' };
 const KIND_INFO = {
   rifle: { member: 0, glyph: L('연', 'D', 'D', 'D'), color: '#C6F432', name: L('연사(도트)', 'Rapid (Dot)', '連射(ドット)', '连射（多特）') },
   shotgun: { member: 1, glyph: L('산', 'R', 'R', 'R'), color: '#FFD34D', name: L('산탄(렉스)', 'Spread (Rex)', '散弾(レックス)', '散弹（雷克斯）') },
   sniper: { member: 2, glyph: L('저', 'P', 'P', 'P'), color: '#6fe7ff', name: L('저격(핀)', 'Sniper (Pin)', '狙撃(ピン)', '狙击（平）') },
   launcher: { member: 3, glyph: L('캡', 'A', 'A', 'A'), color: '#FF5FA2', name: L('런처(에이다)', 'Launcher (Ada)', 'ランチャー(エイダ)', '发射器（艾达）') },
+  beam: { member: 4, glyph: L('빔', 'C', 'C', 'C'), color: '#FFB347', name: L('리뷰 빔(코볼)', 'Review Beam (Cobol)', 'レビュービーム(コボル)', '审查光束（科博）') },
 };
 const _proj = new THREE.Vector3();
 
@@ -2200,7 +2410,7 @@ const Game = {
 
   // ----- 분대 -----
   isTut() { return !!(this.run && this.run.diff === 'tutorial'); },
-  memberUnlocked(i) { if (this.isTut()) return true; const s = this.run ? this.run.stage : 0; return i === 0 || (i === 1 && s >= 1) || (i === 2 && s >= 2) || (i === 3 && s >= 3); },
+  memberUnlocked(i) { if (this.isTut()) return true; const s = this.run ? this.run.stage : 0; if (i === 4) return s >= 6; return i === 0 || (i === 1 && s >= 1) || (i === 2 && s >= 2) || (i === 3 && s >= 3); }, // 코볼은 2장(스테이지 7)부터
   unlocked(w) { if (this.isTut()) return true; return w === 2 ? (this.run ? this.run.stage >= 2 : false) : this.memberUnlocked(w); }, // 2 = 롤백
   get cur() { return this.weapon; },
   member() { return this.squad[this.weapon]; },
@@ -2241,7 +2451,7 @@ const Game = {
       m.cd -= dt;
       while (m.cd <= 0 && m.ammo > 0) {
         m.cd += 1 / m.d.rate;
-        m.d.kind === 'rifle' ? this.fireRifle(m) : m.d.kind === 'launcher' ? this.fireLauncher(m) : this.fireShotgun(m);
+        m.d.kind === 'rifle' ? this.fireRifle(m) : m.d.kind === 'launcher' ? this.fireLauncher(m) : m.d.kind === 'beam' ? this.fireBeam(m) : this.fireShotgun(m);
       }
     } else m.cd = Math.max(m.cd, 0);
     if (this.out && m.ammo <= 0 && m.reloadT <= 0) {
@@ -2288,6 +2498,26 @@ const Game = {
     }
     if (any) { this.run.st.hits++; this.S.hits++; }
     this.run.st.blastMax = Math.max(this.run.st.blastMax, cloneFix);
+  },
+  fireBeam(m) { // 코볼: 리뷰 빔 — 조준한 버그에 꾸준히, 가까운 버그 2마리로 연쇄
+    this.shotCommon(m, m.d.heat);
+    this.run.st.shots++; this.S.shots++;
+    if (Math.random() < 0.35) SND.play('tick');
+    const a = this.aim(), g = this.gunPos(), r = this.retR() * 1.15;
+    const t = this.findTarget(a.x, a.y, r);
+    if (!t) { this.tracers.push({ x0: g.x, y0: g.y, x1: a.x, y1: a.y, t: 0, w: 4, c: m.d.color }); return; }
+    this.tracers.push({ x0: g.x, y0: g.y, x1: t.sx, y1: t.sy, t: 0, w: 5, c: m.d.color });
+    let any = this.damage(t, m.d.dmg, false, false, 'beam');
+    // 연쇄: 처음 맞은 버그에서 가까운 순서로
+    let from = t; const done = new Set([t]);
+    for (let k = 0; k < (m.d.chain || 2); k++) {
+      let best = null, bd = 220;
+      for (const b of this.bugs) if (b.alive && b.hostile && b.onScreen && !done.has(b) && !b.downT && (b.type !== 'ghost' || b.vis)) { const d = Math.hypot(b.sx - from.sx, b.sy - from.sy); if (d < bd) { bd = d; best = b; } }
+      if (!best) break;
+      done.add(best); this.tracers.push({ x0: from.sx, y0: from.sy, x1: best.sx, y1: best.sy, t: 0, w: 3, c: '#FFE0A8' });
+      if (this.damage(best, m.d.dmg * 0.7, false, false, 'beam')) any = true; from = best;
+    }
+    if (any) { this.run.st.hits++; this.S.hits++; }
   },
   fireLauncher(m) { // 에이다: 테스트 캡슐 — 조준점에서 터져 주변을 한꺼번에
     this.shotCommon(m, m.d.heat);
@@ -2373,6 +2603,8 @@ const Game = {
         dmg *= 2;
         if (!t.weakShown) { t.weakShown = true; this.pop(t.sx, t.sy - t.sr - 40, L('약점! ×2', 'Weak spot! ×2', '弱点! ×2', '弱点！×2'), KIND_INFO[kind].color); this.run.st.weak++; }
       }
+      if (t.downT > 0) return false; // 머지 충돌: 쓰러진 쪽은 짝이 고쳐질 때까지 대기
+      if (t.type === 'deprecated' && kind !== 'beam') dmg *= 0.5; // 지원 종료: 최신 무기는 절반만
       if (kind === 'shotgun' && t.role === 'rush') t.pos.addScaledVector(this.camF, 0.45); // 산탄: 밀어냄
       if (t.type === 'loop' && !t.vuln && kind !== 'sniper') {
         if (!ally) { if (Math.random() < 0.3) SND.play('deflect'); PFX.spark(t.pos, [0.85, 0.7, 1], 3, 3); if (Math.random() < 0.25) this.pop(t.sx, t.sy - 20, L('튕김!', 'Deflect!', '弾かれた!', '被弹开！'), '#d9c2ff'); }
@@ -2384,6 +2616,8 @@ const Game = {
       if (t.hp <= 0) {
         if (t.role === 'missile') this.killMissile(t);
         else if (t.type === 'clone') this.split(t);
+        else if (t.type === 'merge' && t.partner && t.partner.alive && !t.partner.downT) { t.down(); this.pop(t.sx, t.sy - 30, L('짝을 2초 안에!', 'Fix its pair in 2s!', '2秒以内に相方も!', '2秒内修好另一只！'), '#B07CFF'); }
+        else if (t.type === 'merge' && t.partner && t.partner.alive && t.partner.downT) { const p = t.partner; this.fixKind = ally ? null : kind; this.fixBug(t); p.downT = 0; p.alive && this.fixBug(p); this.fixKind = null; this.pop(t.sx, t.sy - 50, L('충돌 해결!', 'Conflict resolved!', 'コンフリクト解決!', '冲突已解决！'), '#3DE0D0'); SND.play('combo'); this.run.st.merges = (this.run.st.merges || 0) + 1; }
         else { this.perfectShot = !!crit; this.fixKind = ally ? null : kind; this.fixBug(t); this.perfectShot = false; this.fixKind = null; }
       }
       return true;
@@ -2616,17 +2850,19 @@ const Game = {
   },
 
   // ----- 진행 -----
-  newRun(daily, diff) {
+  newRun(daily, diff, ch) {
+    ch = ch === 2 ? 2 : 1; CUR_CH = ch;
     const seed = daily ? DAILY_SEED : NORMAL_SEED;
     const r = mulberry32(seed ^ 0x9e3779b9);
     const gw = {}; for (const k of Object.keys(GLITCH)) gw[k] = daily ? 0.5 + r() : 1;
     this.run = {
       daily, seed, diff: diff || 'normal', stage: 0, score: 0, stab: 100, streak: 0, maxStreak: 0, gw,
-      st: { fixed: { basic: 0, clone: 0, mini: 0, ghost: 0, e404: 0, loop: 0, throw: 0, boss: 0 }, shots: 0, hits: 0, crashes: 0, contacts: 0,
+      st: { fixed: { basic: 0, clone: 0, mini: 0, ghost: 0, e404: 0, loop: 0, throw: 0, boss: 0, merge: 0, leak: 0, deprecated: 0 }, shots: 0, hits: 0, crashes: 0, contacts: 0,
         glitch: { tear: 0, inv: 0, flip: 0, slip: 0, pix: 0 }, pair: 0, rollbacks: 0, tele: 0, bossTime: 0, blastMax: 0, perfect: 0, hotfix: 0, overheat: 0, trojan: 0, dash: 0, blocked: 0, missiles: 0, weak: 0 },
-      crashStreak: [0, 0, 0, 0, 0], help: [false, false, false, false, false], stageRes: [], snap: null,
+      crashStreak: STAGES.map(() => 0), help: STAGES.map(() => false), stageRes: [], snap: null, ch,
     };
     this.weapon = 0; this.seen = {};
+    if (ch === 2 && diff !== 'tutorial') { const go = () => Story.beforeStage(chFirst(2), () => this.startStage(chFirst(2))); /* 2장 인트로 → 코볼 합류 장면 → 스테이지 7 */ if (!Store.get('ch2IntroSeen', false)) { Store.set('ch2IntroSeen', true); this.state = 'paused'; return Story.play(STORY.ch2intro, go); } return go(); }
     this.startStage(0);
   },
   snapshot() { const r = this.run; r.snap = { score: r.score, stab: r.stab, streak: r.streak, maxStreak: r.maxStreak, st: JSON.parse(JSON.stringify(r.st)) }; },
@@ -2678,7 +2914,7 @@ const Game = {
     this.S = {
       def, idx, u: covers[0].u, t: 0, covers, ci: 0, wi: 0, waveT: 0, waveQ: [], waveIdle: 0, phase: 'fight', moveT: 0,
       fixed: 0, shots: 0, hits: 0, expected: 1, started: false, introT: 2.2, ending: false, rb: this.D.rb, rush: false,
-      trickT: 5, jamT: rnd(16, 26), score0: r.score, tutorial: idx === 0, warned: false,
+      trickT: 5, jamT: rnd(16, 26), score0: r.score, tutorial: idx === 0 && !this.isTut(), warned: false,
     };
     if (!def.boss) {
       let e = 0; for (const c of covers) for (const w of c.waves) for (const q of w) if (q.type !== 'hotfix') e += q.type === 'clone' ? 3 : 1;
@@ -2687,7 +2923,7 @@ const Game = {
     } else this.S.expected = 16;
     const help = r.help[idx];
     // 뒤 스테이지일수록 빠르게 (+8%/스테이지), 엄폐 지점을 지날수록 또 빠르게 (loadWave)
-    this.baseSpd = (1 + idx * 0.08) * (help ? 0.8 : 1) * this.D.spd;
+    this.baseSpd = (1 + diffIdx(idx) * 0.08) * (help ? 0.8 : 1) * this.D.spd;
     this.bugSpeedMul = this.baseSpd;
     this.fm = this.D.fireMul * (help ? 1.35 : 1); // 적 공격 간격
     this.dmgK = this.D.dmg * (help ? 0.8 : 1);
@@ -2701,7 +2937,7 @@ const Game = {
     if (!this.memberUnlocked(this.weapon)) this.weapon = 0;
     this.ret.x = this.W / 2; this.ret.y = this.H * 0.42;
     FX.u.tear = FX.u.inv = FX.u.pix = FX.u.hit = FX.u.slow = 0; FX.u.wipeOn = 0;
-    if (def.boss) { this.camera.position.set(0, 1.2, 24); this.look.set(0, 5, 0); Boss.start(r.seed, r.bossCk || 1); this.S.fixed = Boss.fixed; if ((r.bossCk || 1) > 1) UI.toast(L('체크포인트: 보스 ', 'Checkpoint: from boss phase ', 'チェックポイント: ボス フェーズ ', '检查点：从 Boss 阶段') + r.bossCk + L('단계부터', '', '', '')); }
+    if (def.boss) { this.camera.position.set(0, 1.2, 24); this.look.set(0, 5, 0); Boss.start(r.seed, r.bossCk || 1, def.key === 'deadline' ? 'deadline' : 'loop'); this.S.fixed = Boss.fixed; if ((r.bossCk || 1) > 1) UI.toast(L('체크포인트: 보스 ', 'Checkpoint: from boss phase ', 'チェックポイント: ボス フェーズ ', '检查点：从 Boss 阶段') + r.bossCk + L('단계부터', '', '', '')); }
     else { const P = World.curve.getPointAt(this.S.u), T = World.curve.getTangentAt(this.S.u); this.camera.position.set(P.x, 1.1, P.z); this.look.copy(P).addScaledVector(T, 10); this.look.y = 1.9; }
     this.camera.lookAt(this.look);
     this.state = 'play';
@@ -2721,6 +2957,7 @@ const Game = {
     if (def.join === 1) UI.tutor('join_rex');
     if (def.join === 2) { UI.tutor('join_pin'); UI.tutor('rollback'); }
     if (def.join === 3) UI.tutor('join_ada');
+    if (def.join === 4) UI.tutor('join_cobol');
     if (def.join === 1 && !Store.get('pairTip', false)) { Store.set('pairTip', true); setTimeout(() => { if (this.state === 'play' && this.S && this.S.def === def) UI.hint(L('팁: 한 분대원으로 고치고 1.5초 안에 다른 분대원으로 또 고치면 페어 프로그래밍 보너스!', 'Tip: fix a bug, then fix another with a different member within 1.5s for a Pair Programming bonus!', 'ヒント: 1人で直したあと1.5秒以内に別のメンバーでも直すとペアプロボーナス!', '提示：修好一只Bug后，1.5秒内换另一名队员再修一只，可获得结对编程奖励！'), 5); }, 9000); }
     if (this.S.idx === 0 || def.join) UI.tutor('weak');
   },
@@ -2766,7 +3003,17 @@ const Game = {
       opt.anchor = P.clone().addScaledVector(T, dist).addScaledVector(N, side);
       opt.anchor.y = phys ? rnd(3, 6) : rnd(1.6, 4.4);
     }
+    if (type === 'merge') { // 짝 두 마리: 왼쪽(<<<)·오른쪽(>>>)
+      const o2 = Object.assign({}, opt, { anchor: opt.anchor && opt.anchor.clone().addScaledVector(N, 2.6) }); opt.side = 'l'; o2.side = 'r'; o2.intro = false;
+      const a = this.spawnBugAt(type, pos, opt), b = this.spawnBugAt(type, pos.clone().addScaledVector(N, 2.6), o2);
+      a.partner = b; b.partner = a; this.S.expected += 1; return;
+    }
     this.spawnBugAt(type, pos, opt);
+  },
+  leakBurst(b) { // 메모리 누수: 다 커지면 터지며 작은 버그 3마리
+    PFX.fix(b.pos, [0.43, 0.9, 1], 1.4); SND.play('split'); this.pop(b.sx, b.sy - 30, L('메모리 폭발!', 'Memory overflow!', 'メモリ爆発!', '内存溢出！'), '#6FE7FF');
+    for (let k = 0; k < 3; k++) { const m = this.spawnBugAt('mini', b.pos.clone().addScaledVector(this.camR, (k - 1) * 1.2), {}); m.sep = this.camR.clone().multiplyScalar((k - 1) * 3); }
+    this.S.expected += 2; b.remove();
   },
   hostiles() { return this.bugs.filter((b) => b.alive && b.hostile).length; },
   updateWaves(dt, ws) {
@@ -2813,7 +3060,7 @@ const Game = {
     r.stab = Math.min(100, r.stab + 30);
     r.crashStreak[S.idx] = 0;
     const acc = S.shots ? S.hits / S.shots : 0;
-    const par = S.def.boss ? 150 : 95 + S.idx * 12;
+    const par = S.def.boss ? 150 : 95 + diffIdx(S.idx) * 12;
     const timeBonus = Math.max(0, Math.round((par - S.t) * 20)) + Math.round(this.cover.hp) * 5;
     r.score += timeBonus;
     r.stageRes[S.idx] = { fixed: S.fixed, acc, time: S.t, score: r.score - S.score0, timeBonus };
@@ -3061,7 +3308,7 @@ const Game = {
   },
   // 지금 화면의 버그에 맞는 캐릭터 버튼을 깜빡여 알려 줌
   updateSuggest() {
-    const w = { rifle: 0, shotgun: 0, sniper: 0, launcher: 0 };
+    const w = { rifle: 0, shotgun: 0, sniper: 0, launcher: 0, beam: 0 };
     for (const b of this.bugs) {
       if (!b.alive || !b.hostile || !b.onScreen) continue;
       const k = WEAK[b.type]; if (!k) continue;
@@ -3136,7 +3383,7 @@ const Game = {
     if (this.gunImgs) return;
     this.gunImgs = SQUAD.map((s) => gunCanvas(s.color));
     this.fpImgs = [];
-    [ASSETS.gun, ASSETS.gun_refactor, ASSETS.gun_sniper, ASSETS.gun_ada].forEach((url, i) => {
+    [ASSETS.gun, ASSETS.gun_refactor, ASSETS.gun_sniper, ASSETS.gun_ada, ASSETS.gun_cobol].forEach((url, i) => {
       if (!url) return;
       const im = new Image();
       im.onload = () => { im.muzzle = findMuzzle(im); };
@@ -3236,6 +3483,7 @@ const Game = {
     const inGame = this.state === 'play' || this.state === 'crashing' || this.state === 'clearing' || this.state === 'tutor';
     if (!inGame) { this.tracers = []; this.pops = []; return; }
     const mono = 'ui-monospace,Menlo,monospace';
+    if (this.S && this.S.def.boss && Boss.dl) Boss.draw2D(g);
     this.drawCoverImg(g);
     if (this.S && this.S.phase === 'move') this.drawMoveEdges(g);
     if (this.blastFx) { const b = this.blastFx; b.t += dt; const k = b.t / 0.35; if (k >= 1) this.blastFx = null; else { if (IMG.capsule && k < 0.3) { const q = k / 0.3, cs = 46 * (1 - q * 0.5); g.save(); g.translate(lerp(b.x0, b.x, q), lerp(b.y0, b.y, q)); g.rotate(Math.atan2(b.y - b.y0, b.x - b.x0) + 0.45); g.drawImage(IMG.capsule, -cs / 2, -cs / 2, cs, cs); g.restore(); } g.globalAlpha = 1 - k; g.strokeStyle = '#FF5FA2'; g.lineWidth = 6; g.beginPath(); g.arc(b.x, b.y, b.r * (0.4 + k * 0.6), 0, 6.283); g.stroke(); g.fillStyle = 'rgba(255,95,162,.18)'; g.fill(); g.globalAlpha = 1; } }
@@ -3389,7 +3637,7 @@ const Game = {
   // 엄폐물 그림 (assets/cover_<스테이지>.png 또는 cover.png 가 있으면 3D 블록 대신 사용)
   coverImg() {
     if (!this.S) return null;
-    const key = 'cover_' + this.S.def.key, url = ASSETS[key] || ASSETS.cover;
+    const key = 'cover_' + (this.S.def.key === 'deadline' ? 'prod' : this.S.def.key), url = ASSETS[key] || ASSETS.cover; // 데드라인 아레나는 운영 서버 엄폐물
     if (!url) return null;
     this._covImgs = this._covImgs || {};
     let im = this._covImgs[url]; if (!im) { im = this._covImgs[url] = new Image(); im.src = url; }
@@ -3465,6 +3713,9 @@ const DEX = [
   { t: 'e404', role: L('사격', 'Shooter', '射撃', '射击'), hp: 8, desc: L('조준선이 1초 이상 겹치면 근처로 순간이동해요.', 'Teleports nearby if your crosshair stays on it for over 1 second.', '照準を1秒以上合わせると近くにテレポートする。', '准星停留超过1秒就会瞬移到附近。'), tip: L('오래 겨누지 말고 연사로 빠르게 끝내세요. 연사가 약점.', 'Don\'t aim too long — finish it fast with Rapid. Weak to Rapid.', '長く狙わず、連射で素早く倒そう。連射が弱点。', '别瞄太久，用连射快速解决。弱点是连射。') },
   { t: 'loop', role: L('사격 · 미사일', 'Shooter · Missile', '射撃 · ミサイル', '射击 · 导弹'), hp: 10, desc: L('빙글빙글 돌며 관통 미사일을 쏴요. 껍질 때문에 빛나는 지점에서만 맞아요.', 'Spins around firing piercing missiles. Its shell means only the glowing spot takes damage.', 'ぐるぐる回りながら貫通ミサイルを撃つ。殻のせいで光る部分にしか当たらない。', '一边转圈一边发射穿透导弹。因为外壳，只有发光的部位能被击中。'), tip: L('저격은 껍질을 뚫어서 언제든 맞아요. 미사일은 숨어도 맞으니 쏴서 떨어뜨리세요.', 'Sniper pierces the shell and always hits. Missiles hit you even in cover, so shoot them down.', '狙撃は殻を貫通していつでも当たる。ミサイルは隠れても当たるので撃ち落とそう。', '狙击能穿透外壳随时命中。导弹隐蔽也会被击中，要把它打下来。') },
   { t: 'missile', role: L('관통탄', 'Piercing round', '貫通弾', '穿透弹'), hp: 2, desc: L('무한루프 버그와 보스가 쏘는 미사일. 엄폐물을 뚫어요.', 'Missiles fired by Infinite Loop Bugs and the boss. They go through cover.', '無限ループバグとボスが撃つミサイル。遮蔽物を貫通する。', '无限循环Bug和Boss发射的导弹。会穿透掩体。'), tip: L('숨지 말고 연사로 격추하세요. 보라색 "관통!" 표시가 경고예요.', 'Don\'t hide — shoot it down with Rapid. The purple "PIERCE!" mark is your warning.', '隠れずに連射で撃ち落とそう。紫の「貫通!」表示が警告だ。', '别躲，用连射把它击落。紫色“穿透！”标记就是警告。') },
+  { t: 'merge', role: L('사격 · 한 쌍', 'Shooter · Pair', '射撃 · ペア', '射击 · 成对'), hp: 5, desc: L('항상 두 마리가 한 쌍으로 와요. 한 마리만 고치면 2초 뒤 되살아나요.', 'Always comes as a pair. Fix only one and it revives after 2 seconds.', 'いつも2匹1組で来る。片方だけ直すと2秒後に復活する。', '总是成对出现。只修好一只，2秒后会复活。'), tip: L('둘 다 2초 안에! 코볼의 연쇄 빔이면 한 번에', 'Both within 2s! Cobol\'s chain beam hits both', '2秒以内に両方! コボルの連鎖ビームなら一度に', '2秒内两只都修！科博的连锁光束能一次命中') },
+  { t: 'leak', role: L('돌격 · 성장', 'Rusher · Grows', '突撃 · 成長', '突击 · 成长'), hp: 4, desc: L('천천히 다가오면서 점점 커지고 단단해져요. 다 크면 터져서 작은 버그 3마리가 나와요.', 'Creeps closer while growing bigger and tougher. At full size it bursts into 3 mini bugs.', 'ゆっくり近づきながらどんどん大きく硬くなる。最大になると破裂して小さいバグが3匹出る。', '慢慢靠近，越长越大越硬。长到最大会爆开，变成3只小Bug。'), tip: L('작을 때 빨리. 에이다의 런처가 약점', 'Get it while small. Weak to Ada\'s launcher', '小さいうちに。エイダのランチャーが弱点', '趁小快打。弱点是艾达的发射器') },
+  { t: 'deprecated', role: L('돌격 · 떼', 'Rusher · Swarm', '突撃 · 群れ', '突击 · 成群'), hp: 6, desc: L('느릿느릿 떼로 오는 낡은 버그. 최신 무기에는 피해가 절반만 들어가요.', 'Old, slow bugs that come in swarms. Modern weapons deal only half damage.', 'のろのろと群れで来る古いバグ。最新の武器はダメージが半分しか入らない。', '慢吞吞成群而来的老旧Bug。新武器只能造成一半伤害。'), tip: L('코볼의 리뷰 빔은 정상 피해 + 연쇄', 'Cobol\'s Review Beam deals full damage and chains', 'コボルのレビュービームは通常ダメージ+連鎖', '科博的审查光束造成正常伤害并连锁') },
   { t: 'hotfix', role: L('아이템', 'Item', 'アイテム', '道具'), hp: 1, desc: L('가끔 둥실 떠다니는 긴급 패치 꾸러미.', 'An emergency patch pack that sometimes floats by.', 'ときどき漂ってくる緊急パッチパック。', '偶尔飘过来的紧急补丁包。'), tip: L('쏘면 안정성 +20, 화면 고장 복구, 엄폐물 보강. 상 난이도에선 가짜(붉게 깜빡임)도 있어요.', 'Shoot it: Stability +20, glitches repaired, cover reinforced. On Hard some are fakes (flashing red).', '撃つと安定性+20、画面の不具合を修復、遮蔽物を補強。ハードでは偽物(赤く点滅)もある。', '击中后稳定性+20、修复画面故障、加固掩体。困难难度下也有假货（红色闪烁）。') },
 ];
 const SQUAD_INFO = [
@@ -3472,6 +3723,7 @@ const SQUAD_INFO = [
   { name: L('렉스', 'Rex', 'レックス', '雷克斯'), role: L('리팩터 · 산탄', 'Refactor · Spread', 'リファクタ · 散弾', '重构 · 散弹'), desc: L('한 번에 7발을 넓게 퍼뜨리고, 달려오는 버그를 뒤로 밀어내요.', 'Fires 7 pellets in a wide spread and knocks charging bugs back.', '7発を広く撃ち、突っ込んでくるバグを押し返す。', '一次散射7发，把冲过来的Bug击退。'), weak: L('기본 · 복제 · 작은 복제 버그', 'Basic · Clone · Mini Clone', 'ベーシック · クローン · ミニクローン', '基础 · 克隆 · 迷你克隆') },
   { name: L('핀', 'Pin', 'ピン', '平'), role: L('프로파일러 · 저격', 'Profiler · Sniper', 'プロファイラ · 狙撃', '分析器 · 狙击'), desc: L('누르고 있으면 충전, 떼거나 다 차면 발사. 멀리 있는 적과 겹쳐 있는 적을 한 번에 꿰뚫어요.', 'Hold to charge, release (or wait for full) to fire. Pierces distant and lined-up enemies in one shot.', '押してチャージ、離すか満タンで発射。遠くの敵や重なった敵を一撃で貫く。', '按住蓄力，松开或蓄满时发射。一发贯穿远处和重叠的敌人。'), weak: L('throw · 투명 · 무한루프 버그 · 보스 오류 줄', 'Throw · Ghost · Infinite Loop · Boss error lines', 'スロー · ゴースト · 無限ループ · ボスのエラー行', '投掷 · 幽灵 · 无限循环 · Boss错误行') },
   { name: L('에이다', 'Ada', 'エイダ', '艾达'), role: L('테스터 · 런처', 'Tester · Launcher', 'テスター · ランチャー', '测试员 · 发射器'), desc: L('테스트 캡슐을 쏘면 조준한 자리에서 터져 주변 버그를 한꺼번에 고쳐요. 탄창은 작지만 한 방이 넓어요.', 'Fires test capsules that burst where you aim, fixing every bug around it. Small magazine, big blast.', 'テストカプセルを撃つと狙った場所で弾け、周りのバグをまとめて直す。弾倉は小さいが一発が広い。', '发射测试胶囊，在瞄准处爆开，一次修复周围所有Bug。弹匣小，但范围大。'), weak: L('작은 복제 버그 · 몰려 있는 버그', 'Mini Clones · clustered bugs', 'ミニクローン · 群れたバグ', '迷你克隆 · 聚集的Bug') },
+  { name: L('코볼', 'Cobol', 'コボル', '科博'), role: L('레거시 장인 · 리뷰 빔', 'Legacy Veteran · Review Beam', 'レガシー職人 · レビュービーム', '遗留代码匠人 · 审查光束'), desc: L('누르고 있는 동안 나가는 연속 광선. 맞은 버그에서 가까운 버그 2마리로 연쇄로 튀어요. 2장에서 합류.', 'A continuous beam while you hold. Chains from the target to 2 nearby bugs. Joins in Chapter 2.', '押している間出続ける光線。当たったバグから近くの2匹へ連鎖する。第2章で合流。', '按住时持续发射的光束，会从目标连锁到附近2只Bug。第2章加入。'), weak: L('머지 충돌 · 지원 종료 버그', 'Merge Conflict · Deprecated', 'マージコンフリクト · サポート終了', '合并冲突 · 停止支持') },
 ];
 function dexPic(t) {
   if (t === 'hotfix') return ASSETS.item_hotfix ? Object.assign(new Image(), { src: ASSETS.item_hotfix }) : hotfixCanvas(0);
@@ -3486,6 +3738,7 @@ const TUT = {
   join_rex: { tag: L('분대 합류', 'Squad joined', '分隊合流', '队员加入'), title: L('렉스 합류 — 산탄', 'Rex joins — Spread', 'レックス合流 — 散弾', '雷克斯加入 — 散弹'), body: L('한 번에 7발이 넓게 퍼지고, 달려오는 버그를 <b>뒤로 밀어내요</b>. 기본·복제 버그의 약점이에요.<br>아래 렉스 아이콘을 누르세요', 'Fires 7 pellets in a wide spread and <b>knocks charging bugs back</b>. Basic and Clone bugs are weak to it.<br>Click the Rex icon below', '7発が広がり、突っ込んでくるバグを<b>押し返す</b>。ベーシック・クローンバグの弱点だ。<br>下のレックスのアイコンをクリック', '一次散射7发，把冲过来的Bug<b>击退</b>。是基础和克隆Bug的弱点。<br>点击下方雷克斯图标') + (IS_TOUCH ? '.' : L(' (2번 키).', ' (key 2).', ' (2キー)。', '（按键2）。')) + L(' 조작하지 않는 동료는 옆에서 알아서 쏴요.', ' Squad members you don\'t control shoot on their own.', ' 操作していない仲間は自分で撃ってくれる。', ' 未操控的队友会自己开火。'), pics: [1] },
   join_pin: { tag: L('분대 합류', 'Squad joined', '分隊合流', '队员加入'), title: L('핀 합류 — 저격', 'Pin joins — Sniper', 'ピン合流 — 狙撃', '平加入 — 狙击'), body: L('<b>누르고 있으면 충전</b>되고, 떼거나 다 차면 발사돼요. 겹친 적을 꿰뚫고, 무한루프 버그의 껍질도 뚫어요.<br>멀리서 던지는 버그와 보스 오류 줄의 약점이에요', '<b>Hold to charge</b>, release or wait for full to fire. Pierces lined-up enemies and Infinite Loop shells.<br>Throwers and boss error lines are weak to it', '<b>押してチャージ</b>、離すか満タンで発射。重なった敵や無限ループの殻を貫く。<br>遠くから投げるバグとボスのエラー行の弱点だ', '<b>按住蓄力</b>，松开或蓄满时发射。可贯穿重叠的敌人和无限循环的外壳。<br>是远程投掷Bug和Boss错误行的弱点') + (IS_TOUCH ? '.' : L(' (3번 키).', ' (key 3).', ' (3キー)。', '（按键3）。')), pics: [2] },
   join_ada: { tag: L('분대 합류', 'Squad joined', '分隊合流', '队员加入'), title: L('에이다 합류 — 런처', 'Ada joins — Launcher', 'エイダ合流 — ランチャー', '艾达加入 — 发射器'), body: L('테스트 캡슐이 조준한 자리에서 <b>터져서</b> 주변 버그를 한꺼번에 고쳐요. 작은 복제 버그 떼의 약점이에요.<br>아래 에이다 아이콘을 누르세요', 'Test capsules <b>burst</b> where you aim and fix every bug nearby. Mini Clone swarms are weak to it.<br>Click the Ada icon below', 'テストカプセルが狙った場所で<b>弾けて</b>、周りのバグをまとめて直す。ミニクローンの群れの弱点だ。<br>下のエイダのアイコンをクリック', '测试胶囊会在瞄准处<b>爆开</b>，一次修复周围的Bug。是迷你克隆群的弱点。<br>点击下方艾达图标') + (IS_TOUCH ? '.' : L(' (4번 키).', ' (key 4).', ' (4キー)。', '（按键4）。')), pics: [3] },
+  join_cobol: { tag: L('분대 합류', 'Squad joined', '分隊合流', '队员加入'), title: L('코볼 합류 — 리뷰 빔', 'Cobol joins — Review Beam', 'コボル合流 — レビュービーム', '科博加入 — 审查光束'), body: L('누르고 있는 동안 광선이 나가고, 맞은 버그에서 가까운 버그로 <b>연쇄</b>로 튀어요. 머지 충돌·지원 종료 버그의 약점이에요.<br>아래 코볼 아이콘을 누르세요', 'Hold to fire a beam that <b>chains</b> from the target to nearby bugs. Strong against Merge Conflict and Deprecated bugs.<br>Click the Cobol icon below', '押している間ビームが出て、当たったバグから近くのバグへ<b>連鎖</b>する。マージコンフリクト・サポート終了バグの弱点だ。<br>下のコボルのアイコンをクリック', '按住发射光束，会从目标<b>连锁</b>到附近的Bug。是合并冲突和停止支持Bug的弱点。<br>点击下方科博图标') + (IS_TOUCH ? '.' : L(' (5번 키).', ' (key 5).', ' (5キー)。', '（按键5）。')), pics: [4] },
   rollback: { tag: L('분대 스킬', 'Squad skill', '分隊スキル', '小队技能'), title: L('롤백 — 3초 슬로우', 'Rollback — 3s slow-mo', 'ロールバック — 3秒スロー', '回滚 — 3秒慢动作'), body: L('누르면 3초 동안 세상이 30% 속도로 느려지고, 날아오던 공격은 되감기고, 화면 고장 하나가 바로 고쳐져요.<br>스테이지마다 정해진 횟수만 쓸 수 있어요. 위급할 때 버튼이 반짝여요', 'Slows the world to 30% for 3 seconds, rewinds incoming attacks and instantly repairs one glitch.<br>Limited uses per stage. The button flashes when you are in danger', '3秒間、世界の速度が30%になり、飛んでくる攻撃は巻き戻され、画面の不具合が1つすぐ直る。<br>ステージごとに使える回数が決まっている。ピンチになるとボタンが光る', '3秒内世界速度降至30%，飞来的攻击被倒带，并立即修复一个画面故障。<br>每关使用次数有限。危急时按钮会闪烁') + (IS_TOUCH ? '.' : L(' (스페이스).', ' (Space).', ' (スペース)。', '（空格）。')) },
   cover_broken: { tag: L('위험', 'Danger', '危険', '危险'), title: L('엄폐물이 부서졌어요', 'Your cover is destroyed', '遮蔽物が壊れた', '掩体被摧毁了'), body: L('이제 숨어도 에러 패킷에 맞아요. 던지는 버그부터 빨리 잡으세요.<br>다음 엄폐 지점에 가면 새 엄폐물이 생기고, 핫픽스를 쏘면 보강돼요.', 'Error packets now hit you even while hiding. Take out the throwers fast.<br>The next cover point gives you new cover, and a Hotfix reinforces it.', '隠れていてもエラーパケットが当たるようになった。投げるバグから素早く倒そう。<br>次の遮蔽ポイントで新しい遮蔽物が手に入り、ホットフィックスで補強できる。', '现在隐蔽也会被错误数据包击中。快先解决投掷的Bug。<br>到下一个掩体点会有新掩体，热修复可以加固掩体。') },
 };
@@ -3532,13 +3785,18 @@ const UI = {
     click('#btnAskTutYes', () => { Store.set('tutAsked', true); this.only(); Game.newRun(false, 'tutorial'); });
     click('#btnAskTutNo', () => { Store.set('tutAsked', true); this.showDiff(); });
     click('#btnDiffBack', () => this.only('#scrTitle'));
+    $$('.chcard').forEach((b) => b.addEventListener('click', () => {
+      SND.init(); const c = +b.dataset.ch;
+      if (c === 2 && !this.ch2Open()) { SND.play('jam'); this.toast(L('1장을 끝까지 깨면 열려요', 'Clear Chapter 1 to unlock', '第1章をクリアすると解放', '通关第1章后解锁')); return; }
+      SND.play('click'); this.pendingCh = c; Store.set('lastCh', c); this.syncCh();
+    }));
     $$('.dcard').forEach((b) => b.addEventListener('click', () => {
       SND.init();
       if (b.dataset.d === 'tutorial') { SND.play('click'); this.only(); Game.newRun(false, 'tutorial'); return; }
       if (b.dataset.d === 'hard' && !this.hardOpen()) { SND.play('jam'); this.toast(L('난이도 중을 한 번 깨면 열려요', 'Clear Normal once to unlock', 'ノーマルを一度クリアすると解放', '通关一次普通难度后解锁')); return; }
       SND.play('click'); Store.set('diff', b.dataset.d); this.only();
-      if (this.pendingMode === 'free') return Free.start(b.dataset.d, false);
-      Game.newRun(this.pendingDaily, b.dataset.d);
+      if (this.pendingMode === 'free') return Free.start(b.dataset.d, false, this.pendingCh);
+      Game.newRun(this.pendingDaily, b.dataset.d, this.pendingCh);
     }));
     click('#btnResume', () => this.resume());
     click('#btnPauseSet', () => this.showSettings('#scrPause'));
@@ -3550,7 +3808,7 @@ const UI = {
     click('#btnRebuild', () => { this.only(); if (Free.active) return Free.rebuild(); Game.rebuild(); });
     click('#btnCrashTitle', () => Game.toTitle());
     click('#btnCopy', () => this.copyNote());
-    click('#btnAgain', () => { if (Free.active) { this.only(); return Free.start(Free.run.diff, Free.run.daily); } this.pendingDaily = !!(Game.run && Game.run.daily); this.only(); Game.newRun(this.pendingDaily, Game.run ? Game.run.diff : 'normal'); });
+    click('#btnAgain', () => { if (Free.active) { this.only(); return Free.start(Free.run.diff, Free.run.daily, Free.run.ch); } this.pendingDaily = !!(Game.run && Game.run.daily); this.only(); Game.newRun(this.pendingDaily, Game.run ? Game.run.diff : 'normal', Game.run ? Game.run.ch : 1); });
     click('#btnResTitle', () => Game.toTitle());
     $('#pauseBtn').addEventListener('pointerdown', (e) => { e.stopPropagation(); e.preventDefault(); SND.init(); this.pause(); });
     // 설정
@@ -3612,10 +3870,16 @@ const UI = {
       box.appendChild(row);
     }
   },
+  syncCh() {
+    const open = this.ch2Open(); if (!open) this.pendingCh = 1;
+    $$('.chcard').forEach((b) => { b.classList.toggle('sel', +b.dataset.ch === this.pendingCh); b.classList.toggle('locked', +b.dataset.ch === 2 && !open); });
+    $('.dcard.tut').classList.toggle('hidden', this.pendingMode === 'free' || this.pendingCh === 2);
+  },
   only(id) { for (const s of SCREENS) $(s).classList.toggle('hidden', s !== id); },
   showTitle() { this.only('#scrTitle'); $('#hud').classList.add('hidden'); this.hint(''); $('#banner').classList.add('hidden'); },
   showHUD() {
     this.only(); $('#hud').classList.remove('hidden');
+    $$('.mem[data-m="4"]').forEach((b) => b.classList.toggle('hidden', !Game.run || Game.isTut() || chOf(Game.run.stage) !== 2)); // 코볼 버튼은 2장에서만
     // 분대 얼굴 그리기
     $$('.mem').forEach((b, i) => { const c = b.querySelector('.pt'), im = IMG.portrait && IMG.portrait[i]; if (!im) return;
       const draw = () => { const g = c.getContext('2d'); const big = im instanceof HTMLImageElement; g.imageSmoothingEnabled = big; g.imageSmoothingQuality = 'high'; g.clearRect(0, 0, 64, 64); g.drawImage(im, 0, 0, 64, 64); };
@@ -3624,6 +3888,8 @@ const UI = {
     $('#helpBadge').classList.toggle('hidden', !Game.run.help[Game.run.stage]);
     this._hud = {};
   },
+  pendingCh: 1,
+  ch2Open() { return this.ch2OpenMem || !!Store.get('records', {}).ch1Clear; },
   startFree() {
     this.pendingDaily = false; this.pendingMode = 'free';
     if (!Store.get('introSeen', false) && !this.introMem) { this.introMem = true; this.only(); return Story.intro(() => this.startFree()); }
@@ -3724,6 +3990,7 @@ const UI = {
   showDiff() {
     const fm = this.pendingMode === 'free';
     $('.dcard.tut').classList.toggle('hidden', fm);
+    this.pendingCh = this.ch2Open() ? (Store.get('lastCh', 1) || 1) : 1; this.syncCh();
     const open = this.hardOpen(), hc = $('.dcard.hard');
     hc.classList.toggle('locked', !open);
     hc.setAttribute('aria-disabled', String(!open));
@@ -3753,7 +4020,7 @@ const UI = {
     const rec = Store.get('records', {});
     const st = rec.stages || {};
     let h = L('<table><tr><th>스테이지</th><th>최고 점수</th><th>최고 정확도</th></tr>', '<table><tr><th>Stage</th><th>Best score</th><th>Best accuracy</th></tr>', '<table><tr><th>ステージ</th><th>最高スコア</th><th>最高命中率</th></tr>', '<table><tr><th>关卡</th><th>最高分</th><th>最高命中率</th></tr>');
-    STAGES.forEach((d, i) => { const s = st[i]; h += `<tr><td>${d.id}. ${d.name}</td><td>${s ? s.score.toLocaleString() : '-'}</td><td>${s ? Math.round(s.acc * 100) + '%' : '-'}</td></tr>`; });
+    STAGES.forEach((d, i) => { const s = st[i]; if (i === chFirst(2)) h += `<tr><td colspan="3" style="color:#FFB347;padding-top:10px">${L('2장: 레거시 코드', 'Chapter 2: Legacy Code', '第2章: レガシーコード', '第2章：遗留代码')}${rec.ch1Clear ? '' : ' 🔒'}</td></tr>`; h += `<tr><td>${d.id}. ${d.name}</td><td>${s ? s.score.toLocaleString() : '-'}</td><td>${s ? Math.round(s.acc * 100) + '%' : '-'}</td></tr>`; });
     h += '</table>';
     const daily = rec.daily && rec.daily.date === TODAY_KEY ? gradeName(rec.daily.grade) : '-';
     h += L(`<p style="font-size:13px">오늘의 빌드 <b style="color:var(--lime)">${DAILY_VER}</b> 최고 등급: <b>${daily}</b>`, `<p style="font-size:13px">Daily Build <b style="color:var(--lime)">${DAILY_VER}</b> best grade: <b>${daily}</b>`, `<p style="font-size:13px">今日のビルド <b style="color:var(--lime)">${DAILY_VER}</b> 最高評価: <b>${daily}</b>`, `<p style="font-size:13px">今日构建 <b style="color:var(--lime)">${DAILY_VER}</b> 最高评价：<b>${daily}</b>`) + (rec.best ? L(` · 전체 최고 점수 <b>${rec.best.toLocaleString()}</b>`, ` · All-time best score <b>${rec.best.toLocaleString()}</b>`, ` · 通算最高スコア <b>${rec.best.toLocaleString()}</b>`, ` · 历史最高分 <b>${rec.best.toLocaleString()}</b>`) : '') + '</p>';
@@ -3810,7 +4077,7 @@ const UI = {
   clQ: [], clT: 0,
   codeStart(def) {
     $('#codeLogBody').innerHTML = ''; this.clQ = [];
-    this.clPush([['cmd', `$ build stage${def.id}.${def.key} --watch`], ['trace', L(`  ${def.boss ? 'mainLoop()' : 'world'} 로딩 중…`, `  ${def.boss ? 'mainLoop()' : 'world'} loading…`, `  ${def.boss ? 'mainLoop()' : 'world'} 読み込み中…`, `  ${def.boss ? 'mainLoop()' : 'world'} 加载中…`)], ['ok', L('  ready. 버그 감시 시작', '  ready. Watching for bugs', '  ready. バグ監視開始', '  ready. 开始监视Bug')]]);
+    this.clPush([['cmd', `$ build stage${def.id}.${def.key} --watch`], ['trace', L(`  ${def.key === 'deadline' ? 'deadline()' : def.boss ? 'mainLoop()' : 'world'} 로딩 중…`, `  ${def.key === 'deadline' ? 'deadline()' : def.boss ? 'mainLoop()' : 'world'} loading…`, `  ${def.key === 'deadline' ? 'deadline()' : def.boss ? 'mainLoop()' : 'world'} 読み込み中…`, `  ${def.key === 'deadline' ? 'deadline()' : def.boss ? 'mainLoop()' : 'world'} 加载中…`)], ['ok', L('  ready. 버그 감시 시작', '  ready. Watching for bugs', '  ready. バグ監視開始', '  ready. 开始监视Bug')]]);
   },
   clPush(lines) {
     this.clQ.push(...lines);
@@ -3829,9 +4096,12 @@ const UI = {
       e404: [[`- fetch("/${v}.json")`, `+ fetch("/assets/${v}.json")`], [`- load("${v}_final_v2.png")`, `+ load("${v}.png")`]],
       loop: [[`- while (true) ${m}();`, `+ while (running) ${m}();`], [`- function ${m}() { ${m}(); }`, `+ function ${m}() { if (done) return; }`]],
       hotfix: [[`+ stability += 20;`, `+ glitches.clear();`]],
+      merge: [[`- <<<<<<< HEAD`, `+ ${v}.${m}(merged);`], [`- >>>>>>> feature/${v}`, `+ // conflict resolved`]],
+      leak: [[`- ${v}s.push(new Array(1e9));`, `+ ${v}s.length = 0;`], [`- setInterval(${m}, 1);`, `+ clearInterval(${m}Timer);`]],
+      deprecated: [[`- ${v}.${m}Legacy();  // @deprecated`, `+ ${v}.${m}();`], [`- import ${v} from 'old-${v}@0.1';`, `+ import ${v} from '${v}';`]],
     };
-    let pair = seg ? [`- ${CODE[seg.i][1].trim()}`, `+ ${CODE[seg.i][0].trim()}`] : P(T[type] || T.basic);
-    const file = seg ? 'mainLoop' : type === 'hotfix' ? 'hotfix' : v;
+    let pair = seg ? [`- ${BOSS_CODE[seg.i][1].trim()}`, `+ ${BOSS_CODE[seg.i][0].trim()}`] : P(T[type] || T.basic);
+    const file = seg ? (Boss.kind === 'deadline' ? 'deadline' : 'mainLoop') : type === 'hotfix' ? 'hotfix' : v;
     const lines = type === 'hotfix'
       ? [['cmd', '$ deploy hotfix --now'], ['add', '  ' + pair[0]], ['add', '  ' + pair[1]]]
       : [['cmd', `@@ ${file}.js:${n} @@`], ['del', pair[0]], ['add', pair[1]], ['cmd', `$ run ${file}.js`]];
@@ -3845,6 +4115,7 @@ const UI = {
       basic: `TypeError: ${v}.update is not a function`, clone: L(`RangeError: ${v} 복제가 너무 많음`, `RangeError: too many ${v} clones`, `RangeError: ${v} のクローンが多すぎる`, `RangeError: ${v} 克隆过多`), mini: L(`Warning: 중복된 ${v} 발견`, `Warning: duplicate ${v} found`, `Warning: 重複した ${v} を発見`, `Warning: 发现重复的 ${v}`),
       trojan: L(`SecurityError: hotfix.exe 는 핫픽스가 아닙니다`, `SecurityError: hotfix.exe is not a hotfix`, `SecurityError: hotfix.exe はホットフィックスではありません`, `SecurityError: hotfix.exe 不是热修复`),
       ghost: `ReferenceError: ${v} is not defined`, e404: `404 Not Found: /${v}.json`, loop: `RangeError: Maximum call stack size exceeded`,
+      merge: `CONFLICT (content): Merge conflict in ${v}.js`, leak: `FATAL ERROR: JavaScript heap out of memory`, deprecated: `DeprecationWarning: ${v}.update() is deprecated`,
       packet: `UncaughtException: throw new Error("${v}")`, missile: L(`FatalError: infiniteLoop() 관통 — 엄폐 무시`, `FatalError: infiniteLoop() pierced — cover ignored`, `FatalError: infiniteLoop() 貫通 — 遮蔽無視`, `FatalError: infiniteLoop() 穿透 — 无视掩体`),
     }[type] || L(`Error: ${v} 붕괴`, `Error: ${v} collapsed`, `Error: ${v} が崩壊`, `Error: ${v} 崩溃`);
     const code = String(Math.floor(r() * 1e6)).padStart(6, '0');
@@ -3866,12 +4137,13 @@ const UI = {
   },
   showClear() {
     const r = Game.run, i = Game.S.idx, res = r.stageRes[i];
-    $('#clrTitle').textContent = L(`패치 완료 ${i + 1}/${STAGES.length}`, `Patch applied ${i + 1}/${STAGES.length}`, `パッチ完了 ${i + 1}/${STAGES.length}`, `补丁完成 ${i + 1}/${STAGES.length}`);
+    const cp = chPos(i);
+    $('#clrTitle').textContent = L(`패치 완료 ${cp.n}/${cp.total}`, `Patch applied ${cp.n}/${cp.total}`, `パッチ完了 ${cp.n}/${cp.total}`, `补丁完成 ${cp.n}/${cp.total}`);
     $('#clrStats').innerHTML = [
       [L('스테이지', 'Stage', 'ステージ', '关卡'), STAGES[i].name], [L('고친 버그', 'Bugs fixed', '修復したバグ', '修复的Bug'), res.fixed + L('마리', '', '', '')], [L('정확도', 'Accuracy', '命中率', '命中率'), Math.round(res.acc * 100) + '%'],
       [L('걸린 시간', 'Time', 'かかった時間', '用时'), fmtTime(res.time)], [L('시간 보너스', 'Time bonus', 'タイムボーナス', '时间奖励'), '+' + res.timeBonus.toLocaleString()], [L('안정성 회복', 'Stability restored', '安定性回復', '稳定性恢复'), '+30% → ' + Math.round(r.stab) + '%'],
     ].map(([k, v]) => `<span class="k">${k}</span><span class="v">${v}</span>`).join('') + L(`<span class="k full">총점</span><span class="v full">${r.score.toLocaleString()}</span>`, `<span class="k full">Total</span><span class="v full">${r.score.toLocaleString()}</span>`, `<span class="k full">合計</span><span class="v full">${r.score.toLocaleString()}</span>`, `<span class="k full">总分</span><span class="v full">${r.score.toLocaleString()}</span>`);
-    $('#btnNext').textContent = STAGES[i + 1] && STAGES[i + 1].boss ? L('중간 보스 "메인 루프" ▶', 'Mid-boss "Main Loop" ▶', '中ボス「メインループ」 ▶', '中Boss“主循环” ▶') : L('다음 스테이지 ▶', 'Next stage ▶', '次のステージ ▶', '下一关 ▶');
+    $('#btnNext').textContent = STAGES[i + 1] && STAGES[i + 1].boss ? STAGES[i + 1].name + ' ▶' : L('다음 스테이지 ▶', 'Next stage ▶', '次のステージ ▶', '下一关 ▶');
     this.only('#scrClear');
   },
   showCrash() {
@@ -4016,6 +4288,7 @@ function fmtTime(s) { s = Math.max(0, s || 0); return Math.floor(s / 60) + ':' +
 window.addEventListener('load', () => {
   try { UI.init(); Game.init(); }
   catch (e) {
+    console.error('init failed', e && e.stack || e);
     document.body.innerHTML = L('<div style="padding:24px;color:#eee;font-family:sans-serif">이 기기에서 3D(WebGL)를 시작할 수 없어요.<br>다른 브라우저로 열어 주세요.<br><small style="color:#888">', '<div style="padding:24px;color:#eee;font-family:sans-serif">3D (WebGL) could not start on this device.<br>Please update your graphics driver.<br><small style="color:#888">', '<div style="padding:24px;color:#eee;font-family:sans-serif">このデバイスでは3D(WebGL)を開始できませんでした。<br>グラフィックドライバーを更新してください。<br><small style="color:#888">', '<div style="padding:24px;color:#eee;font-family:sans-serif">此设备无法启动3D（WebGL）。<br>请更新显卡驱动。<br><small style="color:#888">') + String(e && e.message || e) + '</small></div>';
   }
 });
@@ -4209,6 +4482,20 @@ const STORY = {
     { pic: 'end3', t: L('패치 스쿼드', 'The Patch Squad', 'パッチ・スクワッド', '补丁小队'), b: L('도트: "수고했어, 다들."<br>렉스: "다음 버그는 어디야? 다 갈아엎어 주지!"<br>핀: "…방금 메인 루프가 웃은 것 같은데."<br>에이다: "회귀 테스트까지 통과! 완벽해."', 'Dot: "Good work, everyone."<br>Rex: "Where\'s the next bug? I\'ll refactor it all!"<br>Pin: "...Did the Main Loop just smile?"<br>Ada: "Regression tests passed! Perfect."', 'ドット:「おつかれ、みんな。」<br>レックス:「次のバグはどこだ? 全部リファクタしてやる!」<br>ピン:「…今、メインループが笑った気がする。」<br>エイダ:「回帰テストもパス! 完璧!」', '多特：“辛苦了，大家。”<br>雷克斯：“下一个Bug在哪？我全给它重构了！”<br>平：“……刚才主循环好像笑了。”<br>艾达：“回归测试也通过了！完美。”'), art: 'squad' },
     { pic: 'end4', t: L('그런데…', 'But...', 'でも…', '可是……'), b: L('이 세계를 처음 망가뜨린 건<br>누구였을까?<br><br><b>— 1장 끝 · 다음 임무 준비 중 —</b>', 'who broke this world<br>in the first place?<br><br><b>— END OF CHAPTER 1 · NEXT MISSION IN PREPARATION —</b>', 'この世界を最初に壊したのは<br>誰だったのだろう?<br><br><b>— 第1章 完 · 次の任務 準備中 —</b>', '最初把这个世界弄坏的<br>到底是谁？<br><br><b>— 第1章 完 · 下一个任务准备中 —</b>'), art: 'mystery' },
   ],
+  // ---- 2장 ----
+  ch2intro: [
+    { pic: 'ch2_intro', t: L('2장: 레거시 코드', 'CHAPTER 2: LEGACY CODE', '第2章: レガシーコード', '第2章：遗留代码'), b: L('메인 루프를 고친 다음 날 밤.<br>분대는 세계를 처음 망가뜨린 기록을 찾아냈습니다.', 'The night after the Main Loop was fixed,<br>the squad found the record of what first broke the world.', 'メインループを直した翌日の夜。<br>分隊は世界を最初に壊した記録を見つけた。', '修好主循环的第二天夜里，<br>小队找到了最初弄坏世界的记录。') },
+    { pic: 'ch2_intro', art: 'gitlog', t: 'git log --reverse', b: L('금요일 오후 6시. <b>git push --force</b>.<br>작성자 칸은… 비어 있었습니다.', 'Friday, 6:00 PM. <b>git push --force</b>.<br>The author field was... empty.', '金曜日 午後6時。<b>git push --force</b>。<br>作成者の欄は…空だった。', '星期五 下午6点。<b>git push --force</b>。<br>作者一栏……是空的。') },
+    { pic: 'ch2_intro', t: L('기록은 더 깊은 곳을 가리켰습니다', 'The log pointed deeper', '記録はもっと深い場所を指していた', '记录指向了更深处'), b: L('아무도 읽지 못하는 오래된 코드.<br><b>레거시</b>의 세계로.', 'Into old code that no one can read anymore.<br>Into the world of <b>legacy</b>.', '誰にも読めない古いコードへ。<br><b>レガシー</b>の世界へ。', '进入谁也看不懂的旧代码，<br>进入<b>遗留</b>的世界。') },
+  ],
+  cobolJoin: [
+    { pic: 'cobol_join', t: L('새 분대원 합류', 'A new squad member', '新メンバー合流', '新队员加入'), b: L('코볼: "…젊은 친구들이 메인 루프를 고쳤다고?<br>이 코드, 내가 30년 전에 짰던 거야. 따라와."', 'Cobol: "...You kids fixed the Main Loop?<br>I wrote this code thirty years ago. Follow me."', 'コボル:「…若いのがメインループを直したって?<br>このコードは30年前に俺が書いたんだ。ついて来い。」', '科博：“……你们这些年轻人修好了主循环？<br>这段代码是我三十年前写的。跟我来。”') },
+  ],
+  ending2: [
+    { pic: 'ch2_end', t: L('마감 연장', 'DEADLINE EXTENDED', '締め切り延長', '截止日期延长'), b: L('데드라인이 사라진 자리에 작은 메모 한 장이 남았습니다.<br><b>"다음 버전은 천천히, 테스트하면서 만들자."</b>', 'Where the Deadline stood, a small note remained:<br><b>"Next version: slow down, and test as we go."</b>', 'デッドラインが消えた場所に、小さなメモが一枚残っていた。<br><b>「次のバージョンはゆっくり、テストしながら作ろう。」</b>', '截止日期消失的地方，留下了一张小纸条：<br><b>“下个版本慢慢来，边做边测试。”</b>') },
+    { pic: 'ch2_end', art: 'squad', t: L('패치 스쿼드', 'The Patch Squad', 'パッチ・スクワッド', '补丁小队'), b: L('코볼: "서두르면… 결국 우리가 다시 고치게 되지."<br>에이다: "그럼 3장은요?"<br>도트: "…일단 오늘은 퇴근하자."', 'Cobol: "Rush it... and we end up fixing it again."<br>Ada: "So what about Chapter 3?"<br>Dot: "...Let\'s just go home for today."', 'コボル:「急げば…結局また俺たちが直すことになる。」<br>エイダ:「じゃあ第3章は?」<br>ドット:「…今日はもう帰ろう。」', '科博：“赶工……最后还是得我们来修。”<br>艾达：“那第3章呢？”<br>多特：“……今天先下班吧。”') },
+    { pic: 'end4', art: 'mystery', t: L('— 2장 끝 —', '— END OF CHAPTER 2 —', '— 第2章 完 —', '— 第2章 完 —'), b: L('<b>다음 버전 준비 중</b><br>플레이해 주셔서 고맙습니다!', '<b>Next version in preparation</b><br>Thank you for playing!', '<b>次のバージョン 準備中</b><br>遊んでくれてありがとう!', '<b>下个版本准备中</b><br>感谢游玩！') },
+  ],
   adaJoin: [
     { pic: 'ada_join', t: L('새 분대원 합류', 'A new squad member', '新メンバー合流', '新队员加入'), b: L('에이다: "안녕! 오늘부터 QA 담당 에이다야.<br>테스트 안 한 코드는 고장 난 코드라고~ 서버실은 내가 맡을게!"', 'Ada: "Hi! I\'m Ada, your new QA tester.<br>Untested code is broken code~ Leave the server room to me!"', 'エイダ:「やっほー! 今日からQA担当のエイダだよ。<br>テストしてないコードは壊れたコード~ サーバールームは任せて!」', '艾达：“嗨！我是今天起负责QA的艾达。<br>没测过的代码就是坏代码~ 服务器机房交给我吧！”') },
   ],
@@ -4220,6 +4507,10 @@ const STORY = {
     [3, L('안녕, 신입 테스터 에이다야! 테스트 안 한 코드는 고장 난 코드라고~', 'Hi, I\'m Ada, your new tester! Untested code is broken code~', 'やっほー、新人テスターのエイダだよ! テストしてないコードは壊れたコードだからね~', '嗨，我是新来的测试员艾达！没测过的代码就是坏代码哦~')],
     [0, L('중력이 제멋대로야. 미사일은 숨어도 맞으니까 쏴서 떨어뜨려!', 'Gravity\'s gone haywire. Missiles hit you even in cover — shoot them down!', '重力がめちゃくちゃだ。ミサイルは隠れても当たるから撃ち落とせ!', '重力乱套了。导弹隐蔽也会被击中，把它们打下来！')],
     [1, L('저게 메인 루프야? 세상의 심장이 폭주하고 있어!', 'That\'s the Main Loop? The heart of the world is running wild!', 'あれがメインループ? 世界の心臓が暴走してる!', '那就是主循环？世界的心脏正在失控！')],
+    [4, L('먼지 냄새… 이 보관소, 내가 마지막으로 불 끈 곳이야.', 'Smells like dust... I was the last one to turn off the lights here.', 'ホコリの匂い…この保管庫、最後に電気を消したのは俺だ。', '一股灰尘味……这个档案馆，最后关灯的人是我。')],
+    [3, L('쌍둥이 버그예요! 한 마리만 고치면 다시 살아나요, 둘 다 동시에!', 'Twin bugs! Fix only one and it comes back — get both at once!', '双子バグだよ! 片方だけ直すと復活する、両方同時に!', '双胞胎Bug！只修一只会复活，两只一起修！')],
+    [1, L('금요일 18시 운영 서버라니… 제일 무서운 곳이잖아!', 'Production at 6PM on a Friday... the scariest place there is!', '金曜18時の本番サーバー…一番怖い場所じゃないか!', '周五18点的生产服务器……这可是最可怕的地方！')],
+    [0, L('저게 데드라인이야. 이 세계를 서두르게 만든 장본인.', 'That\'s the Deadline. The one that made this world rush.', 'あれがデッドラインだ。この世界を急がせた張本人。', '那就是截止日期。逼着这个世界赶工的罪魁祸首。')],
   ],
 };
 
@@ -4227,7 +4518,7 @@ const Story = {
   active: false, list: null, i: 0, done: null, readyT: 0,
   // 장면 그림: ChatGPT 그림이 있으면 그것, 없으면 게임 그림으로 꾸밈
   art(p) {
-    const big = ASSETS['story_' + p.pic];
+    const big = p.art === 'gitlog' ? null : ASSETS['story_' + p.pic];
     if (big) return `<img class="stbig" src="${big}" alt="">`;
     const im = (k, cls = '') => (ASSETS[k] ? `<img class="${cls}" src="${ASSETS[k]}" alt="">` : '');
     const S = ['dot', 'rex', 'pin'];
@@ -4239,6 +4530,7 @@ const Story = {
       case 'dot': return `<div class="stc">${im('char_dot', 'stchar big')}</div>`;
       case 'world': return `<div class="stc strow">${['cover_forest', 'cover_city', 'cover_subway'].map((k) => im(k, 'stcov')).join('')}</div>`;
       case 'mystery': return `<div class="stc"><div class="stq">?</div></div>`;
+      case 'gitlog': { const ln = [['commit 0000000 (HEAD -> main)', 'ok'], ['Author: <unknown>', ''], ['Date:   Fri 18:00', ''], ['', ''], ['    hotfix (urgent!!!) — tests skipped', 'err'], ['    git push --force origin main', 'err']]; return `<div class="stc"><div class="stterm">${ln.map(([t, c], i) => `<div class="stl ${c}" style="animation-delay:${0.2 + i * 0.4}s">${t || '&nbsp;'}</div>`).join('')}</div></div>`; }
       case 'commit': { // 타자 치듯 한 줄씩 나오는 터미널
         const ln = [['$ git commit -m "' + L('고침 (아마도)', 'fix (probably)', '修正(たぶん)', '修复（大概）') + '"', ''], ['$ git push --force origin main', ''], ['$ deploy world.exe --skip-tests', ''], ['  ▶ deploying... ██████████ 100%', 'ok'], ['  ✖ FATAL: MainLoop panicked at frame 60', 'err'], ['  ✖ Segmentation fault (core dumped)', 'err']];
         return `<div class="stc"><div class="stterm">${ln.map(([t, c], i) => `<div class="stl ${c}" style="animation-delay:${0.2 + i * 0.5}s">${t}</div>`).join('')}<div class="stl cur" style="animation-delay:${0.2 + ln.length * 0.5}s">_</div></div></div>`;
@@ -4290,9 +4582,16 @@ const Story = {
     const d = this.done; this.done = null; if (d) d();
   },
   intro(done) { this.play(STORY.intro, () => { Store.set('introSeen', true); if (done) done(); }); },
-  ending(done) { this.play(STORY.ending, done); },
+  ending(done) { // 장에 따라 엔딩이 다름. 1장을 깨면 2장이 열림
+    const ch = CUR_CH; const rec = Store.get('records', {}); rec['ch' + ch + 'Clear'] = true; Store.set('records', rec);
+    this.play(ch === 2 ? STORY.ending2 : STORY.ending, done);
+  },
   // 에이다가 합류하는 스테이지 직전 (처음 한 번)
-  beforeStage(idx, go) { if (STAGES[idx] && STAGES[idx].join === 3 && !Store.get('adaSeen', false)) { Store.set('adaSeen', true); return this.play(STORY.adaJoin, go); } go(); },
+  beforeStage(idx, go) {
+    if (STAGES[idx] && STAGES[idx].join === 3 && !Store.get('adaSeen', false)) { Store.set('adaSeen', true); return this.play(STORY.adaJoin, go); }
+    if (STAGES[idx] && STAGES[idx].join === 4 && !Store.get('cobolSeen', false)) { Store.set('cobolSeen', true); return this.play(STORY.cobolJoin, go); }
+    go();
+  },
   // 스테이지 시작 한마디 (화면 왼쪽 아래, 얼굴 + 이름 + 대사)
   say(stageIdx) {
     const ln = STORY.lines[stageIdx]; if (!ln) return;
@@ -4347,9 +4646,14 @@ const FREE_SKILLS = [
     e: { name: L('테스트 드론', 'Test Drone', 'テストドローン', '测试无人机'), cd: 14, desc: L('8초 동안 버그를 자동으로 쏘는 드론', 'A drone that auto-fires at bugs for 8s', '8秒間バグを自動で撃つドローン', '8秒内自动射击Bug的无人机') },
     q: { name: L('회귀 테스트', 'Regression Test', '回帰テスト', '回归测试'), desc: L('조준한 구역에 테스트 캡슐 비가 쏟아짐', 'A rain of test capsules on the aimed area', '狙ったエリアにテストカプセルの雨', '测试胶囊如雨般落向瞄准区域') },
   },
+  { // 코볼 · 레거시 장인
+    shift: { name: L('롤백 스텝', 'Rollback Step', 'ロールバックステップ', '回滚步'), cd: 8, desc: L('2초 전 위치로 되돌아가고, 그동안 받은 피해의 절반을 회복', 'Snap back to where you were 2s ago and recover half the damage taken since', '2秒前の位置に戻り、その間に受けたダメージの半分を回復', '回到2秒前的位置，并恢复期间所受伤害的一半') },
+    e: { name: L('코드 리뷰', 'Code Review', 'コードレビュー', '代码审查'), cd: 11, desc: L('앞쪽 부채꼴의 버그에 리뷰 표시: 4초 동안 느려지고 받는 피해 +30%', 'Mark bugs in a cone ahead: slowed and +30% damage taken for 4s', '前方の扇形のバグにレビュー印: 4秒間遅くなり被ダメージ+30%', '标记前方扇形区域的Bug：4秒内减速，受到伤害+30%') },
+    q: { name: L('레거시 마이그레이션', 'Legacy Migration', 'レガシー移行', '遗留迁移'), desc: L('주변 버그를 모두 5초 동안 "지원 종료" 상태로 — 움직이지도 공격하지도 못함', 'Every nearby bug becomes "deprecated" for 5s — no moving, no attacking', '周りのバグを5秒間「サポート終了」に — 動けず攻撃もできない', '周围所有Bug进入“停止支持”状态5秒 — 无法移动也无法攻击') },
+  },
 ];
 const FREE_ZONES = [0.2, 0.52, 0.84];
-const FREE_HALFW = { forest: 6, city: 7.2, subway: 3.3, server: 4.2, physics: 6.5 };
+const FREE_HALFW = { forest: 6, city: 7.2, subway: 3.3, server: 4.2, physics: 6.5, archive: 6, fork: 6.5, prod: 4.2 };
 
 const Free = {
   active: false, S: null, run: null, D: null, keys: {}, locked: false,
@@ -4400,15 +4704,17 @@ const Free = {
   unlock() { this.busy = true; try { if (document.pointerLockElement) document.exitPointerLock(); } catch (e) { /* 없음 */ } setTimeout(() => { this.busy = false; }, 50); },
 
   // ----- 시작 / 스테이지 -----
-  start(diff, daily) {
+  start(diff, daily, ch) {
+    ch = ch === 2 ? 2 : 1; CUR_CH = ch;
     if (Tut.active) Tut.stop();
     Game.clearEntities(); Game.coverMesh.visible = false; if (Game.sideWall) Game.sideWall.visible = false;
     this.active = true; this.D = DIFF[diff] || DIFF.normal;
     this.run = { diff, daily: !!daily, seed: daily ? DAILY_SEED : 12345, stage: 0, score: 0, crashes: 0, shots: 0, hits: 0, fixed: 0, blocked: 0, dmgBy: {}, t0: Game.time, best: 0, streak: 0, maxStreak: 0 };
     this.mem = SQUAD.map((d) => ({ d, ammo: d.mag, reloadT: 0, cd: { shift: 0, e: 0 }, ult: 0 }));
-    this.member = 0;
+    this.member = 0; this.run.ch = ch;
     $('#hud').classList.add('hidden'); UI.only(); UI.hint('');
     document.body.classList.add('freeops');
+    if (ch === 2) { const go = () => Story.beforeStage(chFirst(2), () => this.startStage(chFirst(2))); if (!Store.get('ch2IntroSeen', false)) { Store.set('ch2IntroSeen', true); Game.state = 'paused'; return Story.play(STORY.ch2intro, go); } return go(); }
     this.startStage(0);
   },
   stop() {
@@ -4466,10 +4772,10 @@ const Free = {
     // 처음엔 조작 안내 (클릭하면 시작 — 마우스 잠금에 클릭이 필요해서)
     this.intro = true; this.showIntro();
   },
-  waveSize(idx, zi, w) { return Math.round((4 + idx * 1.1 + zi * 0.8 + w * 1.5) * this.D.count); },
+  waveSize(idx, zi, w) { return Math.round((4 + diffIdx(idx) * 1.1 + zi * 0.8 + w * 1.5) * this.D.count); },
   showIntro() {
     const el = $('#freeIntro'); el.classList.remove('hidden');
-    const sk = FREE_SKILLS.map((s, i) => `<div class="fi-m" style="--c:${SQUAD[i].color}"><b>${SQUAD[i].name}</b> <span>${SQUAD[i].label}</span><div>⇧ ${s.shift.name} · E ${s.e.name} · Q ${s.q.name}</div></div>`).join('');
+    const sk = FREE_SKILLS.slice(0, this.squadN()).map((s, i) => `<div class="fi-m" style="--c:${SQUAD[i].color}"><b>${SQUAD[i].name}</b> <span>${SQUAD[i].label}</span><div>⇧ ${s.shift.name} · E ${s.e.name} · Q ${s.q.name}</div></div>`).join('');
     el.querySelector('.fi-sk').innerHTML = sk;
     el.querySelectorAll('[data-kb]').forEach((b) => { b.textContent = b.dataset.kb.split(' ').map((a) => keyName(KB(a))).join(' '); });
     this.unlock();
@@ -4535,7 +4841,11 @@ const Free = {
     }
     return z.c.clone().add(new THREE.Vector3(rnd(-3, 3), 0, rnd(-3, 3)));
   },
-  spawnBug(type, pos, opt) { const b = new FreeBug(this, type, pos || this.spawnPos(), opt); this.bugs.push(b); return b; },
+  spawnBug(type, pos, opt) {
+    const b = new FreeBug(this, type, pos || this.spawnPos(), Object.assign({ side: type === 'merge' ? 'l' : null }, opt)); this.bugs.push(b);
+    if (type === 'merge' && !(opt && opt.side)) { const q = b.pos.clone().add(FV.e.set(rnd(-2.5, 2.5), 0, rnd(-2.5, 2.5))); const c = new FreeBug(this, type, q, { side: 'r' }); this.bugs.push(c); b.partner = c; c.partner = b; if (this.S) this.S.expected += 1; }
+    return b;
+  },
   spawnHotfix() { if (!this.active || !this.S || this.S.phase !== 'fight') return; const p = this.spawnPos(5, 9); p.y = 1.6; this.spawnBug('hotfix', p, { trojan: this.D.trojan && RNG() < this.D.trojan }); },
 
   // ----- 이동 범위 -----
@@ -4586,12 +4896,13 @@ const Free = {
   // ----- 분대원 · 무기 -----
   cur() { return this.mem[this.member]; },
   select(i) {
-    if (i === this.member || i < 0 || i >= SQUAD.length) return;
+    if (i === this.member || i < 0 || i >= this.squadN()) return;
     if (this.charge > 0) this.charge = 0;
     this.member = i; SND.play('click');
     UI.toast(`${SQUAD[i].name} · ${SQUAD[i].label}`);
   },
-  cycle(dir) { const N = SQUAD.length; this.select((this.member + dir + N) % N); },
+  squadN() { return this.run && this.run.ch === 2 ? SQUAD.length : 4; }, // 코볼은 2장에서만
+  cycle(dir) { const N = this.squadN(); this.select((this.member + dir + N) % N); },
   reload() { const m = this.cur(); if (m.reloadT > 0 || m.ammo >= m.d.mag || this.debugT > 0) return; m.reloadT = m.d.reload * (this.p.crouch ? 0.6 : 1); SND.play('reload'); },
   toggleCrouch() { this.p.crouch = !this.p.crouch; SND.play(this.p.crouch ? 'block' : 'move'); },
   eye() { return lerp(1.62, 0.92, this.p.crouchK) + this.p.pos.y; },
@@ -4614,6 +4925,7 @@ const Free = {
     if (this.fireCd > 0) return;
     if (m.d.kind === 'rifle') { this.fireCd = 1 / m.d.rate; this.fireRay(m, m.d.dmg, 0.012, 'rifle'); SND.play('rifle'); }
     else if (m.d.kind === 'launcher') { this.fireCd = 1 / m.d.rate; this.fireLauncher(m); }
+    else if (m.d.kind === 'beam') { this.fireCd = 1 / m.d.rate; this.fireBeam(m); }
     else { this.fireCd = 1 / m.d.rate; for (let i = 0; i < m.d.pellets; i++) this.fireRay(m, m.d.dmg, 0.065, 'shotgun', i > 0); SND.play('spread'); }
     if (this.debugT <= 0) m.ammo--;
     this.recoil = 1; this.run.shots += m.d.kind === 'shotgun' ? m.d.pellets : 1;
@@ -4624,6 +4936,27 @@ const Free = {
     if (this.debugT <= 0) m.ammo--;
     SND.play('snipe'); this.recoil = 1.6; this.run.shots++;
     if (k >= 1) this.pop(Game.W / 2, Game.H / 2 - 60, L('풀차지!', 'Full charge!', 'フルチャージ!', '满蓄力！'), '#6fe7ff');
+  },
+  // 코볼: 리뷰 빔 — 조준한 버그에 꾸준히 + 가까운 버그 2마리로 연쇄
+  fireBeam(m) {
+    const o = FV.a.copy(Game.camera.position), dir = this.ray().clone();
+    const hits = this.rayTargets(o, dir, 45);
+    let block = 45; for (const c of this.allCovers()) { const t = this.segHitsCover(o, FV.b.copy(o).addScaledVector(dir, 45), c); if (t >= 0) block = Math.min(block, t * 45); }
+    const h = hits.find((x) => x.t <= block);
+    const a = o.clone().addScaledVector(dir, 1.2).add(FV.d.set(0, -0.25, 0));
+    if (!h) { this.tracers.push({ a, b: o.clone().addScaledVector(dir, block), t: 0, c: m.d.color, w: 3 }); return; }
+    const p0 = h.o.pos || h.o.hitPos(); this.tracers.push({ a, b: p0.clone(), t: 0, c: m.d.color, w: 4 });
+    let any = this.hitTarget(h.o, m.d.dmg * (h.crit ? 1.5 : 1), h.crit, 'beam', dir);
+    let from = h.o; const done = new Set([h.o]);
+    for (let k = 0; k < (m.d.chain || 2); k++) {
+      let best = null, bd = 7;
+      for (const b of this.bugs) if (b.alive && b.role !== 'item' && !done.has(b) && !b.downT && b.hittable()) { const d = b.pos.distanceTo(from.pos); if (d < bd) { bd = d; best = b; } }
+      if (!best) break;
+      done.add(best); this.tracers.push({ a: from.pos.clone(), b: best.pos.clone(), t: 0, c: '#FFE0A8', w: 2 });
+      if (this.hitTarget(best, m.d.dmg * 0.7, false, 'beam', null)) any = true; from = best;
+    }
+    if (any) { this.run.hits++; this.hitMark = 0.12; }
+    if (Math.random() < 0.3) SND.play('tick');
   },
   // 에이다: 조준한 첫 지점(버그·엄폐물·바닥)에서 캡슐이 터짐
   aimPoint(maxT = 40) {
@@ -4748,11 +5081,12 @@ const Free = {
       if (!this.active) return;
       if (S.def.boss) { this.unlock(); Game.state = 'paused'; Story.ending(() => this.showResult()); return; }
       this.unlock(); Game.state = 'paused';
-      $('#clrTitle').textContent = L(`패치 완료 ${S.idx + 1}/${STAGES.length}`, `Patch applied ${S.idx + 1}/${STAGES.length}`, `パッチ完了 ${S.idx + 1}/${STAGES.length}`, `补丁完成 ${S.idx + 1}/${STAGES.length}`);
+      const cp = chPos(S.idx);
+      $('#clrTitle').textContent = L(`패치 완료 ${cp.n}/${cp.total}`, `Patch applied ${cp.n}/${cp.total}`, `パッチ完了 ${cp.n}/${cp.total}`, `补丁完成 ${cp.n}/${cp.total}`);
       const acc = this.run.shots ? this.run.hits / this.run.shots : 0;
       $('#clrStats').innerHTML = [[L('스테이지', 'Stage', 'ステージ', '关卡'), S.def.name], [L('고친 버그', 'Bugs fixed', '修復したバグ', '修复的Bug'), S.fixed], [L('남은 안정성', 'Stability left', '残り安定性', '剩余稳定性'), Math.round(this.p.hp) + '% (+' + bonus.toLocaleString() + ')'], [L('명중률', 'Accuracy', '命中率', '命中率'), Math.round(acc * 100) + '%']]
         .map(([k, v]) => `<span class="k">${k}</span><span class="v">${v}</span>`).join('') + `<span class="k full">${L('총점', 'Total', '合計', '总分')}</span><span class="v full">${this.run.score.toLocaleString()}</span>`;
-      $('#btnNext').textContent = STAGES[S.idx + 1] && STAGES[S.idx + 1].boss ? L('중간 보스 "메인 루프" ▶', 'Mid-boss "Main Loop" ▶', '中ボス「メインループ」 ▶', '中Boss“主循环” ▶') : L('다음 스테이지 ▶', 'Next stage ▶', '次のステージ ▶', '下一关 ▶');
+      $('#btnNext').textContent = STAGES[S.idx + 1] && STAGES[S.idx + 1].boss ? STAGES[S.idx + 1].name + ' ▶' : L('다음 스테이지 ▶', 'Next stage ▶', '次のステージ ▶', '下一关 ▶');
       UI.only('#scrClear');
     }, 2700);
   },
@@ -4818,6 +5152,22 @@ const Free = {
         for (const b of this.bugs.slice()) if (b.alive && b.role !== 'item' && (b.markT > 0 || b.onScreen)) { this.tracers.push({ a: Game.camera.position.clone().add(FV.d.set(0, -0.3, 0)), b: b.hitPos().clone(), t: 0, c: '#6fe7ff', w: 5 }); b.damage(b.markT > 0 ? 40 : 18, true, 'sniper', null); n++; }
         if (this.bossObj) for (const nd of this.bossObj.nodes) if (nd.alive) { this.bossObj.hit(nd, 12); }
         UI.banner('', 'GARBAGE COLLECTED ×' + n, 1.4);
+      }
+    } else if (i === 4) {
+      if (slot === 'shift') { // 2초 전 위치로
+        const h = this.hist && this.hist.find((x) => this.S.t - x.t >= 2) || (this.hist && this.hist[0]);
+        if (h) { PFX.spark(p.pos, [1, 0.7, 0.3], 12, 5); p.pos.copy(h.pos); p.hp = Math.min(100, p.hp + Math.max(0, (h.hp - p.hp) * 0.5)); p.iT = 0.4; }
+        SND.play('rollback'); this.marks.push({ pos: p.pos.clone(), t: 0, dur: 0.6, kind: 'bp' });
+      }
+      if (slot === 'e') { // 앞쪽 부채꼴 리뷰 표시
+        let n = 0; for (const b of this.bugs) if (b.alive && b.role !== 'item') { FV.d.subVectors(b.pos, p.pos); FV.d.y = 0; const d = FV.d.length(); if (d < 30 && FV.d.normalize().dot(fw) > 0.8) { b.reviewT = 4; b.markT = Math.max(b.markT, 0.01); n++; } }
+        this.marks.push({ pos: p.pos.clone().addScaledVector(fw, 8), t: 0, dur: 0.8, kind: 'scan', R: 14 }); SND.play('aim');
+        this.pop(Game.W / 2, Game.H * 0.36, L(`${n}마리 리뷰`, `${n} reviewed`, `${n}匹レビュー`, `已审查${n}只`), '#FFB347');
+      }
+      if (slot === 'q') {
+        let n = 0; for (const b of this.bugs) if (b.alive && b.role !== 'item' && b.pos.distanceTo(p.pos) < 16) { b.freezeT = 5; b.migT = 5; n++; }
+        for (const s of this.shots) if (s.alive && s.kind === 'packet' && s.pos.distanceTo(p.pos) < 16) s.kill(true);
+        this.marks.push({ pos: p.pos.clone(), t: 0, dur: 0.9, kind: 'wave', R: 16 }); SND.play('phase'); UI.banner('', 'LEGACY MIGRATION ×' + n, 1.4);
       }
     } else {
       if (slot === 'shift') { p.dashV.copy(fw).multiplyScalar(26); p.dashT = 0.3; p.iT = 0.25; this.heals.push({ pos: p.pos.clone(), t: 5 }); SND.play('rush'); }
@@ -4907,6 +5257,7 @@ const Free = {
     this.hitMark = Math.max(0, (this.hitMark || 0) - dt);
     this.updateWeapon(dt);
     this.updateAda(dt * ws);
+    this.hist = (this.hist || []).filter((h) => S.t - h.t < 2.6); if (!this.hist.length || S.t - this.hist[this.hist.length - 1].t > 0.1) this.hist.push({ t: S.t, pos: p.pos.clone(), hp: p.hp });
     this.updateCaps(dt * ws);
     // 구역 진행
     if (S.phase === 'travel' && !S.def.boss) {
@@ -5052,7 +5403,7 @@ const Free = {
     g.font = `bold 22px ${mono}`; g.fillStyle = '#E8EDE2'; g.fillText(obj, W / 2, 64);
     if (this.debugT > 0) { g.fillStyle = '#FFD34D'; g.font = `bold 18px ${mono}`; g.fillText(`DEBUG MODE ${this.debugT.toFixed(1)}s`, W / 2, 92); }
     // 분대원 (아래 가운데)
-    const NM = this.mem.length, bw = NM > 3 ? 128 : 150, bh = 74, bx = W / 2 - (bw * NM + 10 * (NM - 1)) / 2, by = H - bh - 26;
+    const NM = this.squadN(), bw = NM > 4 ? 112 : NM > 3 ? 128 : 150, bh = 74, bx = W / 2 - (bw * NM + 10 * (NM - 1)) / 2, by = H - bh - 26;
     for (let i = 0; i < NM; i++) {
       const x = bx + i * (bw + 10), m = this.mem[i], sel = i === this.member;
       box(x, by, bw, bh); if (sel) { g.strokeStyle = m.d.color; g.lineWidth = 3; g.strokeRect(x, by, bw, bh); }
@@ -5090,7 +5441,8 @@ class FreeBug {
     this.vel = new THREE.Vector3(); this.fireT = this.def.fire ? rnd(1.0, 2.2) : 0; this.biteT = 0; this.aimT = 0; this.aimDur = 0.9;
     this.freezeT = 0; this.markT = 0; this.vis = true; this.vuln = true; this.trojan = !!opt.trojan; this.lookT = 0;
     this.anchor = null;
-    this.mat = new THREE.SpriteMaterial({ map: (TEX[type] || TEX.basic)[0], transparent: true, fog: false });
+    this.side = opt.side || null; this.texK = type === 'merge' ? 'merge_' + (this.side || 'l') : type;
+    this.mat = new THREE.SpriteMaterial({ map: (TEX[this.texK] || TEX.basic)[0], transparent: true, fog: false });
     this.spr = new THREE.Sprite(this.mat); this.spr.scale.setScalar(0.01); Game.scene.add(this.spr);
     if (type === 'loop') { this.ang = rnd(0, 6.28); this.ring = new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX.ring, transparent: true, fog: false, depthWrite: false })); Game.scene.add(this.ring); }
     SND.play('spawn');
@@ -5104,6 +5456,9 @@ class FreeBug {
     if (!this.alive) return false;
     const F = this.F;
     if (this.role === 'item') { this.collect(); return true; }
+    if (this.downT > 0) return false;
+    if (this.type === 'deprecated' && kind !== 'beam') dmg *= 0.5;
+    if (this.reviewT > 0) dmg *= 1.3;
     if (this.type === 'loop' && !this.vuln && kind !== 'sniper' && F.debugT <= 0) { if (Math.random() < 0.3) SND.play('deflect'); PFX.spark(this.pos, [0.85, 0.7, 1], 3, 3); return false; }
     if (kind && WEAK[this.type] === kind) { dmg *= 2; if (!this.weakShown) { this.weakShown = true; F.pop2(this.pos, L('약점! ×2', 'Weak spot! ×2', '弱点! ×2', '弱点！×2'), KIND_INFO[kind].color); } }
     if (this.markT > 0) dmg *= 1.5;
@@ -5118,6 +5473,8 @@ class FreeBug {
   }
   die() {
     const F = this.F;
+    if (this.type === 'merge' && this.partner && this.partner.alive && !this.partner.downT) { this.downT = 2; this.hp = 0; F.pop2(this.pos, L('짝을 2초 안에!', 'Fix its pair in 2s!', '2秒以内に相方も!', '2秒内修好另一只！'), '#B07CFF'); return; }
+    if (this.type === 'merge' && this.partner && this.partner.alive && this.partner.downT) { const p = this.partner; p.downT = 0; F.onFix(p); p.remove(); F.pop2(this.pos, L('충돌 해결!', 'Conflict resolved!', 'コンフリクト解決!', '冲突已解决！'), '#3DE0D0'); SND.play('combo'); }
     if (this.type === 'clone' && !this.noSplit) {
       SND.play('split'); F.pop2(this.pos, L('분열!', 'Split!', '分裂!', '分裂！'), '#FFD34D');
       for (let i = 0; i < 2; i++) { const p = this.pos.clone().add(FV.d.set(rnd(-1.5, 1.5), 0, rnd(-1.5, 1.5))); const m = F.spawnBug('mini', p); m.vel.set(rnd(-4, 4), 0, rnd(-4, 4)); }
@@ -5134,9 +5491,20 @@ class FreeBug {
   update(dt, rdt) {
     const F = this.F, P = F.p.pos, d = this.freezeT > 0 ? 0 : dt;
     this.age += rdt; this.freezeT = Math.max(0, this.freezeT - rdt); this.markT = Math.max(0, this.markT - rdt);
-    this.ft += d; if (this.ft > 0.14) { this.ft = 0; this.frame ^= 1; this.mat.map = (TEX[this.type] || TEX.basic)[this.frame]; }
+    this.ft += d; if (this.ft > 0.14) { this.ft = 0; this.frame ^= 1; this.mat.map = (TEX[this.texK] || TEX.basic)[this.frame]; }
+    if (this.downT > 0) { // 머지 충돌: 짝을 기다림
+      this.downT -= rdt; this.mat.opacity = 0.25 + Math.sin(this.age * 20) * 0.1; this.spr.position.copy(this.pos);
+      if (this.downT <= 0) { this.downT = 0; this.hp = this.maxHp; this.mat.opacity = 1; F.pop2(this.pos, L('되살아났다!', 'Revived!', '復活した!', '复活了！'), '#B07CFF'); SND.play('split'); }
+      return;
+    }
+    this.reviewT = Math.max(0, (this.reviewT || 0) - rdt); this.migT = Math.max(0, (this.migT || 0) - rdt);
+    if (this.type === 'leak' && F.S.phase === 'fight' && this.freezeT <= 0) { // 메모리 누수: 커지다 터짐
+      this.grow = Math.min(1, (this.grow || 0) + rdt / 10);
+      const want = Math.round(this.def.hp * (1 + this.grow * 1.6)); if (want > this.maxHp) { this.hp += want - this.maxHp; this.maxHp = want; }
+      if (this.grow >= 1) { PFX.fix(this.pos, [0.43, 0.9, 1], 1.4); SND.play('split'); F.pop2(this.pos, L('메모리 폭발!', 'Memory overflow!', 'メモリ爆発!', '内存溢出！'), '#6FE7FF'); for (let k = 0; k < 3; k++) { const m = F.spawnBug('mini', this.pos.clone().add(FV.e.set(rnd(-1.5, 1.5), 0, rnd(-1.5, 1.5)))); m.vel.set(rnd(-4, 4), 0, rnd(-4, 4)); } F.S.expected += 2; this.remove(); return; }
+    }
     this.flash = Math.max(0, this.flash - rdt * 6);
-    const sp = this.def.spd * F.D.spd * (F.S.help ? 0.8 : 1);
+    const sp = this.def.spd * F.D.spd * (F.S.help ? 0.8 : 1) * (this.reviewT > 0 ? 0.5 : 1);
     FV.a.set(P.x - this.pos.x, 0, P.z - this.pos.z); const dist = FV.a.length(); FV.a.divideScalar(dist || 1);
     if (this.role === 'item') { this.pos.y = 1.6 + Math.sin(this.age * 2.5) * 0.3; if (dist < 1.3) this.collect(); else if (this.age > 9) this.remove(); }
     else if (this.role === 'rush') {
@@ -5170,7 +5538,7 @@ class FreeBug {
       if (F.zones[F.S.zi]) { const z = F.zones[F.S.zi], dx = this.pos.x - z.c.x, dz = this.pos.z - z.c.z, dd = Math.hypot(dx, dz); if (dd > z.R - 0.6) { this.pos.x = z.c.x + dx / dd * (z.R - 0.6); this.pos.z = z.c.z + dz / dd * (z.R - 0.6); } }
       for (const c of F.allCovers()) { const y = this.pos.y; F.pushOut(this.pos, c, this.radius() * 0.8); this.pos.y = y; }
     }
-    const scale = this.def.size * Math.min(1, this.age / 0.3), sq = Math.sin(this.age * 14) * 0.07;
+    const scale = this.def.size * Math.min(1, this.age / 0.3) * (this.type === 'leak' ? 1 + (this.grow || 0) * 0.9 : 1), sq = Math.sin(this.age * 14) * 0.07;
     this.spr.position.copy(this.pos); this.spr.scale.set(scale * (1 + sq), scale * (1 - sq), 1);
     this.mat.rotation = Math.sin(this.age * 5) * 0.12;
     if (this.type !== 'loop') { if (this.freezeT > 0) this.mat.color.setRGB(0.75, 1.2, 0.5); else if (this.flash > 0) this.mat.color.setScalar(1 + this.flash * 2); else if (this.trojan && Math.sin(this.age * 9) > 0.6) this.mat.color.setRGB(1, 0.55, 0.55); else this.mat.color.setScalar(1); }
@@ -5228,7 +5596,8 @@ class FreeWall {
 class FreeBoss {
   constructor(F) {
     this.F = F; this.phase = 1; this.fixed = 0; this.t = 0; this.atkT = 3; this.spawnT = 5; this.nodes = [];
-    this.mat = new THREE.SpriteMaterial({ map: TEX.loop[0], transparent: true, fog: false }); this.spr = new THREE.Sprite(this.mat); this.spr.scale.setScalar(9); this.spr.position.set(0, 7, 0); Game.scene.add(this.spr);
+    this.dl = F.S.def.key === 'deadline' ? { handT: 6, warn: 0, night: 0, bar: 0 } : null;
+    this.mat = new THREE.SpriteMaterial({ map: this.dl && TEX.deadline ? TEX.deadline : TEX.loop[0], transparent: true, fog: false }); this.spr = new THREE.Sprite(this.mat); this.spr.scale.setScalar(this.dl ? 12 : 9); this.spr.position.set(0, 7, 0); Game.scene.add(this.spr);
     this.ring = new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX.ring, transparent: true, fog: false, depthWrite: false })); this.ring.scale.setScalar(16); this.ring.position.copy(this.spr.position); Game.scene.add(this.ring);
     const c = document.createElement('canvas'); c.width = 128; c.height = 40; const g = c.getContext('2d');
     g.fillStyle = '#3a0a10'; g.fillRect(0, 0, 128, 40); g.strokeStyle = '#FF4D5E'; g.lineWidth = 4; g.strokeRect(2, 2, 124, 36); g.fillStyle = '#FF8A95'; g.font = 'bold 20px monospace'; g.textAlign = 'center'; g.fillText('ERR();', 64, 27);
@@ -5248,7 +5617,7 @@ class FreeBoss {
     if (!n.alive) return false;
     n.hp -= dmg; n.mat.color.setScalar(2); PFX.spark(n.pos, [1, 0.5, 0.5], 3, 3); if (Math.random() < 0.4) SND.play('tick');
     if (n.hp <= 0) {
-      n.alive = false; Game.scene.remove(n.spr); n.mat.dispose(); this.fixed++; this.F.S.fixed++; this.F.run.score += 400; this.F.run.fixed++;
+      n.alive = false; Game.scene.remove(n.spr); n.mat.dispose(); this.fixed++; this.F.S.fixed++; this.F.run.score += 400; this.F.run.fixed++; if (this.dl) this.dl.bar = Math.max(0, this.dl.bar - 0.2);
       this.F.cur().ult = Math.min(100, this.F.cur().ult + 10);
       PFX.fix(n.pos, [1, 0.3, 0.37], 1.6); SND.play('hit', this.fixed); World.colorizeNear(n.pos, 3);
       if (!this.nodes.some((x) => x.alive)) {
@@ -5271,7 +5640,14 @@ class FreeBoss {
     if (this.dead) return;
     const F = this.F, sp = [1, 1.4, 1.8][this.phase - 1] * F.D.spd;
     this.t += dt; this.spr.position.y = 7 + Math.sin(this.t * 1.5) * 0.6; this.ring.position.copy(this.spr.position); this.ring.material.rotation += dt * sp;
-    const s = 9 * (1 + Math.sin(this.t * 6) * 0.04); this.spr.scale.setScalar(s);
+    const s = (this.dl ? 12 : 9) * (1 + Math.sin(this.t * 6) * 0.04); this.spr.scale.setScalar(s);
+    if (this.dl) { // 데드라인 특수 공격
+      const d = this.dl; d.handT -= dt;
+      if (d.handT <= 0 && !d.warn) { d.warn = 1.6; SND.play('warn'); UI.banner('', L('시계 바늘 충격파 — 엄폐!', 'Clock-hand shockwave — TAKE COVER!', '時計の針の衝撃波 — 遮蔽して!', '时针冲击波 — 快隐蔽！'), 1.4); }
+      if (d.warn > 0) { d.warn -= dt; if (d.warn <= 0) { d.warn = 0; d.handT = [7, 6, 5][this.phase - 1]; SND.play('boom'); Game.shake = 0.5; this.F.marks.push({ pos: this.spr.position.clone().setY(0), t: 0, dur: 0.8, kind: 'wave', R: 30 }); if (!(F.p.crouch && F.nearCover())) F.hurt(12, this.spr.position, 'missile'); else F.pop(Game.W / 2, Game.H * 0.4, L('엄폐 성공!', 'Covered!', '遮蔽成功!', '隐蔽成功！'), '#C6F432'); } }
+      d.night = this.phase >= 2 ? Math.min(0.5, d.night + dt * 0.012) : 0;
+      if (this.phase >= 3) { d.bar += dt / (26 / F.D.spd); if (d.bar >= 1) { d.bar = 0.45; F.hurt(26, this.spr.position, 'missile'); UI.banner('', L('강제 배포!', 'FORCED DEPLOY!', '強制デプロイ!', '强制部署！'), 1.4); } }
+    }
     for (const n of this.nodes) { if (!n.alive) continue; n.a += dt * 0.5 * sp; n.pos.set(Math.cos(n.a) * n.r, n.h + Math.sin(this.t + n.a) * 0.8, Math.sin(n.a) * n.r); n.spr.position.copy(n.pos); n.mat.color.lerp(FV.a.set(1, 1, 1), Math.min(1, dt * 6)); }
     this.atkT -= dt; this.spawnT -= dt;
     if (this.atkT <= 0) {
@@ -5282,12 +5658,18 @@ class FreeBoss {
     }
     if (this.spawnT <= 0) {
       this.spawnT = [8, 6.5, 5.5][this.phase - 1];
-      const n = this.phase + 1, types = ['basic', 'clone', 'throw', 'ghost', 'e404'];
+      const n = this.phase + 1, types = this.dl ? ['deprecated', 'merge', 'leak', 'throw', 'ghost'] : ['basic', 'clone', 'throw', 'ghost', 'e404'];
       const on = F.bugs.filter((b) => b.alive && b.role !== 'item').length;
       for (let i = 0; i < n && on + i < F.D.maxOn; i++) F.spawnBug(types[Math.floor(RNG() * Math.min(types.length, 2 + this.phase))]);
     }
   }
   draw2D(g) {
+    const d = this.dl, W = Game.W, H = Game.H;
+    if (d) {
+      if (d.night > 0.01) { g.fillStyle = `rgba(4,4,14,${d.night})`; g.fillRect(0, 0, W, H); }
+      if (d.warn > 0) { g.fillStyle = `rgba(255,77,94,${0.12 + 0.12 * Math.sin(Game.time * 20)})`; g.fillRect(0, 0, W, H); }
+      if (this.phase >= 3) { const bw = Math.min(620, W * 0.5), x = W / 2 - bw / 2, y = 112; g.fillStyle = 'rgba(8,10,8,.85)'; g.fillRect(x - 6, y - 26, bw + 12, 50); g.fillStyle = '#2a0a0e'; g.fillRect(x, y, bw, 16); g.fillStyle = '#FF4D5E'; g.fillRect(x, y, bw * d.bar, 16); g.font = 'bold 15px ui-monospace,Menlo,monospace'; g.textAlign = 'center'; g.fillStyle = '#E8EDE2'; g.fillText(L('배포까지', 'DEPLOY IN', 'デプロイまで', '距离部署') + ` ${Math.round((1 - d.bar) * 100)}%`, W / 2, y - 8); }
+    }
     for (const n of this.nodes) { if (!n.alive) continue; const s = this.F.project(n.pos); if (!s) continue; const w = 54; g.fillStyle = '#000'; g.fillRect(s.x - w / 2 - 1, s.y - 30, w + 2, 6); g.fillStyle = '#FF4D5E'; g.fillRect(s.x - w / 2, s.y - 29, w * n.hp / n.max, 4); }
   }
 }
