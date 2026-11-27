@@ -9,6 +9,8 @@ const STAGES = [
   { id: 5, key: 'physics', name: L('물리 고장 구역', 'Broken Physics Zone', '物理崩壊エリア', '物理故障区'), theme: 0xB07CFF, sky: 0x22163a, count: 30, mix: { basic: 4, throw: 3, clone: 4, ghost: 3, e404: 5, loop: 4 }, intro: ['loop'], fog: [18, 100, 30, 150], light: [0.75, 1.1], cover: 0x6a4a9a },
   { id: 6, key: 'boss', name: L('중간 보스 "메인 루프"', 'Mid-boss "Main Loop"', '中ボス「メインループ」', '中Boss“主循环”'), theme: 0xC6F432, sky: 0x0f2a12, boss: true, fog: [30, 120, 40, 170], light: [0.7, 1.1], cover: 0x3a4a3a },
 ];
+// 엄폐 종류: low = 낮은 벽 (웅크렸다가 일어나 벽 위로 쏨), side = 세로 기둥 (기대 서 있다가 오른쪽으로 몸을 빼서 쏨)
+const COVER_KINDS = [['low', 'side', 'low'], ['side', 'low', 'side'], ['low', 'low', 'side'], ['side', 'low', 'low'], ['low', 'side', 'side']];
 const COVER_U = [0.1, 0.45, 0.8]; // 엄폐 지점 (레일 위치)
 // 분대: 직접 조작 1명 + 나머지 자동 사격
 const SQUAD = [
@@ -620,7 +622,7 @@ const Game = {
       const items = pool.slice(k, k + counts[c]); k += counts[c];
       const half = Math.ceil(items.length / 2);
       const waves = [items.slice(0, half), items.slice(half)].map((w) => w.map((type) => ({ type })));
-      covers.push({ u: COVER_U[c], waves });
+      covers.push({ u: COVER_U[c], waves, kind: COVER_KINDS[(def.id - 1) % COVER_KINDS.length][c] });
     }
     // 새 버그 소개: 첫 엄폐 지점 맨 앞에 혼자, 천천히
     const intro = def.intro.slice();
@@ -743,7 +745,7 @@ const Game = {
       S.moveT += dt;
       const k = smooth(clamp(S.moveT / 2.6, 0, 1));
       S.u = lerp(S.covers[S.ci - 1].u, S.covers[S.ci].u, k);
-      if (S.moveT >= 2.6) { S.phase = 'fight'; this.loadWave(); UI.toast(L(`엄폐 지점 ${S.ci + 1}/3`, `Cover point ${S.ci + 1}/3`, `遮蔽ポイント ${S.ci + 1}/3`, `掩体点 ${S.ci + 1}/3`)); }
+      if (S.moveT >= 2.6) { S.phase = 'fight'; this.loadWave(); UI.toast(L(`엄폐 지점 ${S.ci + 1}/3`, `Cover point ${S.ci + 1}/3`, `遮蔽ポイント ${S.ci + 1}/3`, `掩体点 ${S.ci + 1}/3`) + ' · ' + (this.coverKind() === 'side' ? L('기둥 — 오른쪽으로 몸을 빼서 쏴요', 'Pillar — lean out right to shoot', '柱 — 右に身を乗り出して撃つ', '柱子 — 向右探身射击') : L('낮은 벽 — 일어나서 쏴요', 'Low wall — stand up to shoot', '低い壁 — 立ち上がって撃つ', '矮墙 — 起身射击'))); }
       return;
     }
     if (S.def.boss || S.def.tutorial) return;
@@ -908,7 +910,8 @@ const Game = {
       this.glitches = this.glitches.filter((g) => g.t > 0);
     }
     // 카메라: 숨으면 낮게, 나오면 엄폐물 위로
-    const eye = lerp(1.08, 1.78, this.outK);
+    const sideK = this.coverKind() === 'side' ? 1 : 0;
+    const eye = sideK ? lerp(1.5, 1.62, this.outK) : lerp(1.08, 1.78, this.outK);
     const tp = this.tpK(); // 3인칭 정도 (숨으면 1)
     if (S.def.boss) {
       this.camera.position.set(Math.sin(this.time * 0.15) * 0.6 + tp * 0.8, eye + 0.4 + tp * 0.5, 24 + tp * 2.6);
@@ -918,8 +921,8 @@ const Game = {
       const moving = S.phase === 'move';
       const bob = moving ? Math.abs(Math.sin(S.moveT * 9)) * 0.12 : 0;
       this.camera.position.set(P.x, (moving ? 1.55 : eye) + bob + tp * 0.55, P.z);
-      this.camera.position.addScaledVector(T, -2.3 * tp).addScaledVector(N, 0.75 * tp);
-      const tgt = V1.copy(P).addScaledVector(T, 10); tgt.y = moving ? 1.6 : lerp(1.9, 2.3, this.outK);
+      this.camera.position.addScaledVector(T, -2.3 * tp).addScaledVector(N, 0.75 * tp + (moving ? 0 : sideK * 1.1 * this.outK));
+      const tgt = V1.copy(P).addScaledVector(T, 10).addScaledVector(N, moving ? 0 : sideK * 1.1 * this.outK); tgt.y = moving ? 1.6 : lerp(1.9, 2.3, this.outK);
       this.look.lerp(tgt, Math.min(1, dt * (moving ? 3 : 8)));
     }
     this.camera.lookAt(this.look);
@@ -933,13 +936,13 @@ const Game = {
     this.updateCamBasis();
     // 엄폐물 위치 (카메라 기준)
     const cm = this.coverMesh;
-    cm.visible = S.phase !== 'move' && this.state !== 'clearing' && !this.coverImg();
+    cm.visible = S.phase !== 'move' && this.state !== 'clearing' && !this.coverImg() && this.coverKind() === 'low';
     cm.position.y = lerp(-0.74, -1.2, this.outK) + (this.cover.broken ? -0.25 : 0);
     cm.rotation.z = this.cover.broken ? 0.12 : 0;
     this.coverMat.color.set(S.def.cover); if (this.cover.broken) this.coverMat.color.multiplyScalar(0.45);
     // 기댈 벽: 화면 왼쪽 26% 지점에 오른쪽 모서리가 오게, 3인칭일 때만
     const tpk = this.tpK(), sw = this.sideWall;
-    sw.visible = tpk > 0.15 && this.state !== 'clearing' && S.phase !== 'move' && !this.sideUrl(); // 그림이 있으면 2D로 그림
+    sw.visible = tpk > 0.15 && this.state !== 'clearing' && S.phase !== 'move' && !this.sideUrl() && this.coverKind() === 'side'; // 그림이 있으면 2D로 그림
     if (sw.visible) {
       const hw = 2.1 * this.tanHalf * this.camera.aspect, right = (0.26 * 2 - 1) * hw;
       sw.position.set(right - 0.65 - (1 - tpk) * 1.6, 0.2, -2.1);
@@ -974,16 +977,18 @@ const Game = {
     }
   },
   sideUrl() { return this.S && (ASSETS['cover_side_' + this.S.def.key] || ASSETS.cover_side); }, // 스테이지별 옆 벽 → 없으면 공용
+  coverKind() { const S = this.S; if (!S) return 'low'; if (S.def.boss || S.def.tutorial) return 'low'; const c = S.covers && S.covers[S.ci]; return (c && c.kind) || 'low'; },
   tpK() { return this.S && this.S.phase === 'move' ? 1 : clamp(1 - this.outK, 0, 1); },
   // 엄폐 중 3인칭: 조작 중인 캐릭터 전신 (assets/char_*.png 또는 코드 그림)
   drawChar(g) {
-    const a = clamp(1 - this.outK * 2.2, 0, 1); if (a <= 0.01 || !IMG.char) return;
+    const a = clamp(1 - this.outK * 2.2, 0, 1); if (!IMG.char) return;
     const P = (IMG.pose && IMG.pose[this.weapon]) || { base: IMG.char[this.weapon] || IMG.char[0] };
     const incoming = this.attacks.some((q) => q.t > q.dur * 0.45) || this.bugs.some((b) => b.alive && b.role !== 'shoot' && b.hostile && b.dist < 6);
     const moving = this.S.phase === 'move';
     // 이동 중: 달리는 뒷모습 (run/run2를 번갈아). 그림이 없으면 기본 자세가 통통 튀며 대신함
     const runIm = P.run && (P.run2 && Math.floor(this.S.moveT * 6) % 2 ? P.run2 : P.run);
-    const im = moving && runIm ? runIm : this.hurtT > 0 ? (P.hurt || P.base) : incoming ? (P.flinch || P.base) : P.base;
+    const low = !moving && this.coverKind() === 'low', crouch = low && P.crouch;
+    const im = moving && runIm ? runIm : crouch ? (this.hurtT > 0 ? (P.crouchHurt || P.crouch) : incoming ? (P.crouchFlinch || P.crouch) : P.crouch) : this.hurtT > 0 ? (P.hurt || P.base) : incoming ? (P.flinch || P.base) : P.base;
     const iw = im.naturalWidth || im.width, ih = im.naturalHeight || im.height; if (!iw) return;
     const W = this.W, H = this.H, S = this.S;
     const h = W < H ? H * 0.5 : H * 0.72, w = h * iw / ih;
@@ -993,23 +998,26 @@ const Game = {
       if (runIm) cx = W * 0.5; // 뒷모습은 화면 가운데에서 앞으로 달려감
       y -= Math.abs(Math.sin(S.moveT * 9)) * h * 0.05; cx += Math.sin(S.moveT * 4.5) * w * 0.04;
     }
+    if (low && !crouch) y += h * 0.3; // 웅크린 그림이 아직 없으면 서 있는 그림을 낮춰 벽 뒤에 숨은 것처럼
+    if (low) cx -= W * 0.03;
     y += this.outK * h * 0.35; // 일어서며 화면 밖으로
     if (this.attacks.some((q) => q.t > q.dur * 0.6)) cx += (Math.random() - 0.5) * 4; // 움찔
     const br = 1 + Math.sin(this.time * 2.2) * 0.012; // 숨쉬기
     // 기댈 벽 그림 (assets/cover_side.png): 오른쪽 모서리가 캐릭터 왼쪽 어깨쯤
     const sideUrl = this.sideUrl();
-    if (sideUrl && S.phase !== 'move') {
+    if (sideUrl && S.phase !== 'move' && this.coverKind() === 'side') {
       this._sideImgs = this._sideImgs || {};
       let si = this._sideImgs[sideUrl]; if (!si) { si = this._sideImgs[sideUrl] = new Image(); si.src = sideUrl; }
       if (si.complete && si.naturalWidth) {
         const sh = H * 1.04, swd = sh * si.naturalWidth / si.naturalHeight;
-        const right = cx - w * 0.16 - (1 - a) * swd * 0.6; // 나올 때 왼쪽으로 빠짐
-        g.save(); g.globalAlpha = a; g.imageSmoothingEnabled = false;
+        const right = lerp(cx - w * 0.16, W * 0.09, clamp(this.outK, 0, 1)); // 나오면 몸을 오른쪽으로 빼서, 기둥 가장자리가 화면 왼쪽에 남음
+        g.save(); g.globalAlpha = 1; g.imageSmoothingEnabled = false;
         if (this.hudFlipped) { g.translate(W, 0); g.scale(-1, 1); } // UI 뒤집힘 고장: 오른쪽으로
         g.drawImage(si, right - swd, H - sh, swd, sh);
         g.restore();
       }
     }
+    if (a <= 0.01) return;
     if (this.hudFlipped) cx = W - cx;
     g.save(); g.globalAlpha = a; g.imageSmoothingEnabled = im instanceof HTMLImageElement;
     g.translate(cx, y + h); g.scale(this.hudFlipped ? -1 : 1, br); g.drawImage(im, -w / 2, -h, w, h);
@@ -1018,7 +1026,7 @@ const Game = {
   },
   // 지금 화면의 버그에 맞는 캐릭터 버튼을 깜빡여 알려 줌
   updateSuggest() {
-    const w = { rifle: 0, shotgun: 0, sniper: 0 };
+    const w = { rifle: 0, shotgun: 0, sniper: 0, launcher: 0 };
     for (const b of this.bugs) {
       if (!b.alive || !b.hostile || !b.onScreen) continue;
       const k = WEAK[b.type]; if (!k) continue;
@@ -1353,7 +1361,7 @@ const Game = {
     return im.complete && im.naturalWidth ? im : null;
   },
   drawCoverImg(g) {
-    const im = this.coverImg(); if (!im || this.S.phase === 'move' || this.state === 'clearing') return;
+    const im = this.coverImg(); if (!im || this.S.phase === 'move' || this.state === 'clearing' || this.coverKind() !== 'low') return;
     const W = this.W, H = this.H;
     // 가로 폭에 맞추고, 세로가 모자라면 아래로 쌓아서 채움 (세로 폰에서 크게 확대되지 않게)
     const w = Math.max(W * 1.08, 520), h = w * im.naturalHeight / im.naturalWidth;

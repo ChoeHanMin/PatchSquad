@@ -25,6 +25,11 @@ const ASSET_SPEC = {
   char_dot_run: { width: C, keep: true }, char_dot_run2: { width: C, keep: true },
   char_rex_run: { width: C, keep: true }, char_rex_run2: { width: C, keep: true },
   char_pin_run: { width: C, keep: true }, char_pin_run2: { width: C, keep: true },
+  // 낮은 벽 뒤 웅크린 자세 (기본·움찔·피격, 캔버스는 서 있는 그림과 같은 크기)
+  char_dot_crouch: { width: C, keep: true }, char_dot_crouch_flinch: { width: C, keep: true }, char_dot_crouch_hurt: { width: C, keep: true },
+  char_rex_crouch: { width: C, keep: true }, char_rex_crouch_flinch: { width: C, keep: true }, char_rex_crouch_hurt: { width: C, keep: true },
+  char_pin_crouch: { width: C, keep: true }, char_pin_crouch_flinch: { width: C, keep: true }, char_pin_crouch_hurt: { width: C, keep: true },
+  char_ada_crouch: { width: C, keep: true }, char_ada_crouch_flinch: { width: C, keep: true }, char_ada_crouch_hurt: { width: C, keep: true },
   cover: { width: 2172 }, cover_side: { height: 1500 },
   cover_side_forest: { height: 1500 }, cover_side_city: { height: 1500 }, cover_side_subway: { height: 1500 }, cover_side_physics: { height: 1500 }, cover_side_boss: { height: 1500 }, cover_forest: { width: 2172 }, cover_city: { width: 2172 }, cover_subway: { width: 2172 }, cover_physics: { width: 2172 }, cover_boss: { width: 2172 },
   // 스토리 그림 (선택, 16:9) — 없으면 게임 그림으로 장면을 꾸밈

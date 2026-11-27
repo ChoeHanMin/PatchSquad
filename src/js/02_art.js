@@ -125,6 +125,10 @@ function buildTextures() {
     run: ASSETS['char_' + s.key + '_run'] ? imgOf(ASSETS['char_' + s.key + '_run']) : null,
     run2: ASSETS['char_' + s.key + '_run2'] ? imgOf(ASSETS['char_' + s.key + '_run2']) : null,
     hurt: ASSETS['char_' + s.key + '_hurt'] ? imgOf(ASSETS['char_' + s.key + '_hurt']) : IMG.char[i],
+    // 낮은 벽 뒤 웅크린 자세 (assets/char_*_crouch*.png) — 없으면 null (서 있는 그림을 낮춰서 대신)
+    crouch: ASSETS['char_' + s.key + '_crouch'] ? imgOf(ASSETS['char_' + s.key + '_crouch']) : null,
+    crouchFlinch: ASSETS['char_' + s.key + '_crouch_flinch'] ? imgOf(ASSETS['char_' + s.key + '_crouch_flinch']) : null,
+    crouchHurt: ASSETS['char_' + s.key + '_crouch_hurt'] ? imgOf(ASSETS['char_' + s.key + '_crouch_hurt']) : null,
   }));
   // 무한루프 껍질 링
   {
