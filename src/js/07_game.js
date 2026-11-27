@@ -696,6 +696,7 @@ const Game = {
     const S = this.S, c = S.covers[S.ci];
     this.bugSpeedMul = this.baseSpd * (1 + S.ci * 0.06 + S.wi * 0.02); // 지점·웨이브가 넘어갈수록 빨라짐
     S.waveQ = (c.waves[S.wi] || []).map((q) => Object.assign({}, q));
+    S.trickN = 0; // 상: 웨이브마다 추가 버그는 최대 4마리 (느리게 잡으면 웨이브가 끝나지 않던 문제)
     S.waveT = 0; S.waveIdle = 0;
     if (S.ci === S.covers.length - 1 && S.wi === 0 && !S.rush && !S.def.boss) {
       S.rush = true; setTimeout(() => { if (this.S === S && this.state === 'play') { UI.banner('BUG RUSH', L('마지막 엄폐 지점! 버그가 몰려와요', 'Last cover point! Here they come', '最後の遮蔽ポイント! 押し寄せてくる', '最后的掩体点！它们冲过来了'), 1.8); SND.play('rush'); MUS.tempoMul = 0.82; } }, 300);
@@ -749,12 +750,12 @@ const Game = {
     S.waveT += dt * ws;
     while (S.waveQ.length && S.waveQ[0].at <= S.waveT && this.hostiles() < this.maxOn()) { const q = S.waveQ.shift(); this.spawnEntry(q.type, q.intro); }
     // 상: 웨이브 중에도 계속 추가
-    if (this.D.trickle && S.waveQ.length + this.hostiles() > 0) {
+    if (this.D.trickle && S.waveQ.length + this.hostiles() > 0 && (S.trickN || 0) < 4) {
       S.trickT -= dt * ws;
       if (S.trickT <= 0 && this.hostiles() < this.maxOn()) {
         S.trickT = this.D.trickle * rnd(0.7, 1.3);
         const t = pick(Object.keys(S.def.mix).filter((x) => x !== 'loop'));
-        this.spawnEntry(t, false); S.expected += t === 'clone' ? 3 : 1;
+        this.spawnEntry(t, false); S.expected += t === 'clone' ? 3 : 1; S.trickN = (S.trickN || 0) + 1;
       }
     }
     if (!S.waveQ.length && this.hostiles() === 0 && !this.attacks.length) {
