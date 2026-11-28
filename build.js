@@ -76,13 +76,13 @@ async function loadAssets() {
     console.log(`  그림 ${name}: ${(buf.length / 1024).toFixed(1)} KB`);
   }
   // 효과음 파일 (그대로 넣음, 짧게!)
-  for (const name of ['sfx_shot', 'sfx_spread', 'sfx_snipe']) {
+  for (const name of ['sfx_shot', 'sfx_spread', 'sfx_snipe', 'bgm_title']) {
     for (const [ext, mime] of [['mp3', 'audio/mpeg'], ['ogg', 'audio/ogg'], ['wav', 'audio/wav']]) {
       const f = path.join(dir, `${name}.${ext}`);
       if (!fs.existsSync(f)) continue;
       const buf = fs.readFileSync(f);
       out[name] = `data:${mime};base64,${buf.toString('base64')}`;
-      console.log(`  소리 ${name}: ${(buf.length / 1024).toFixed(1)} KB` + (buf.length > 150 * 1024 ? '  ← 너무 큼, 1초 이하로 잘라 주세요' : ''));
+      console.log(`  소리 ${name}: ${(buf.length / 1024).toFixed(1)} KB` + (buf.length > 150 * 1024 && !name.startsWith('bgm') ? '  ← 너무 큼, 1초 이하로 잘라 주세요' : ''));
       break;
     }
   }

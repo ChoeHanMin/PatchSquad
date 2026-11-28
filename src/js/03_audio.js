@@ -115,14 +115,14 @@ const SND = {
   // assets/sfx_*.mp3|ogg|wav 가 있으면 그 소리를 씀
   bufs: {},
   loadSamples() {
-    for (const k of ['sfx_shot', 'sfx_spread', 'sfx_snipe']) {
+    for (const k of ['sfx_shot', 'sfx_spread', 'sfx_snipe', 'bgm_title']) {
       const url = ASSETS[k]; if (!url || this.bufs[k]) continue;
       this.bufs[k] = 'loading';
       try {
         const bin = atob(url.split(',')[1]); const arr = new Uint8Array(bin.length);
         for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-        this.ctx.decodeAudioData(arr.buffer, (b) => { this.bufs[k] = b; }, () => { this.bufs[k] = null; });
-      } catch (e) { this.bufs[k] = null; }
+        this.ctx.decodeAudioData(arr.buffer, (b) => { this.bufs[k] = b; if (k === 'bgm_title' && MUS.mode === 'title' && MUS.on && !MUS.fileSrc) { MUS.on = false; MUS.startTitle(); } }, () => { this.bufs[k] = null; if (k === 'bgm_title' && MUS.mode === 'title' && MUS.on && !MUS.fileSrc) { MUS.on = false; MUS.startTitle(); } }); // 타이틀 곡이 풀리면 재생, 실패하면 코드 연주로
+      } catch (e) { this.bufs[k] = null; if (k === 'bgm_title' && MUS.mode === 'title' && MUS.on && !MUS.fileSrc) { MUS.on = false; MUS.startTitle(); } }
     }
   },
   sample(k, vol) {
@@ -207,6 +207,18 @@ const MUS = {
     if (!SND.ctx) return;
     if (this.on && this.mode === 'title') return;
     this.stop();
+    // 타이틀 곡 파일(assets/bgm_title.mp3)이 있으면 그 곡을 반복 재생, 아직 안 풀렸거나 없으면 코드로 연주
+    const bgm = SND.bufs.bgm_title;
+    if (bgm === 'loading') { this.mode = 'title'; this.on = true; return; } // 곡 파일을 푸는 중: 잠깐 조용히 기다렸다가 풀리면 바로 재생
+    if (bgm) {
+      this.mode = 'title'; this.on = true; this.crash = false;
+      const t = SND.ctx.currentTime, src = SND.ctx.createBufferSource(), g = SND.ctx.createGain();
+      src.buffer = bgm; src.loop = true; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(1.0, t + 1.2);
+      src.connect(g); g.connect(SND.musG); src.start(t);
+      SND.musG.gain.cancelScheduledValues(t); SND.apply();
+      this.fileSrc = src; this.fileG = g;
+      return;
+    }
     this.mode = 'title'; this.keyRoot = 146.83; this.tempo = 74; this.prog = [0, 5, 2, 6, 0, 5, 3, 4];
     this.theme = this.THEME_A; this.layer = 4;
     this._go();
@@ -224,7 +236,13 @@ const MUS = {
     this.layer = 0;
     this._go();
   },
-  stop() { this.on = false; if (this.timer) clearInterval(this.timer); this.timer = null; },
+  stop() {
+    this.on = false; if (this.timer) clearInterval(this.timer); this.timer = null;
+    if (this.fileSrc) { // 타이틀 곡: 0.4초 동안 줄이며 끝냄
+      const t = SND.ctx.currentTime, s = this.fileSrc, g = this.fileG; g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0, t + 0.4); try { s.stop(t + 0.45); } catch (e) { /* 이미 멈춤 */ }
+      this.fileSrc = this.fileG = null;
+    }
+  },
   crashStop() { // 늘어지며 멈춤
     if (!this.on || !SND.ctx) return;
     this.crash = true;
