@@ -69,6 +69,49 @@ const SND = {
     o.connect(g); g.connect(this.sfxG); o.start(t); o.stop(t + dur + 0.02);
     if (body > 0) this.noiseHit(dur * 0.7, body, 'lowpass', 380, t);
   },
+  // ---- 분대원별 장전 소리: 장전 그림 3장(시작 → 중간 → 마무리)에 맞춰 차례로 ----
+  // key: 분대원(dot/rex/pin/ada/cobol), dur: 장전 시간(초). 시작 0, 중간 34%, 마무리 72% 지점에서 소리가 남
+  reloadSeq(key, dur = 1.5) {
+    if (!this.ctx || !settings.sound) return;
+    this.stopReload();
+    const t0 = this.ctx.currentTime, a = t0, b = t0 + dur * 0.34, c = t0 + dur * 0.72;
+    const nodes = []; this._rl = nodes;
+    const T = (f, d, type, v, f2, w) => { this.tone(f, d, type, v, f2, w); };
+    const N = (d, v, ft, fq, w) => { this.noiseHit(d, v, ft, fq, w); };
+    const K = (f0, f1, d, v, w, body) => { this.thump(f0, f1, d, v, w, body); };
+    const click = (w, f = 2400, v = 0.09) => { N(0.012, v * 2, 'highpass', 3500, w); T(f, 0.02, 'square', v, f * 0.7, w); };
+    switch (key) {
+      case 'dot': // 빠르고 깔끔: 철컥(빠짐) → 탁!(밀어 넣기) → 딸깍 + 저장 완료 삐빅
+        click(a, 1800); N(0.05, 0.12, 'bandpass', 1400, a + 0.02); K(200, 90, 0.06, 0.18, a + 0.16, 0.05); // 카트리지가 툭 떨어짐
+        K(160, 60, 0.09, 0.4, b, 0.2); click(b + 0.01, 2600, 0.11); // 손바닥으로 탁
+        click(c, 3000, 0.1); click(c + 0.06, 2200, 0.08); T(1318, 0.07, 'triangle', 0.1, null, c + 0.13); T(1976, 0.12, 'triangle', 0.09, null, c + 0.2); // 레버 + 삐빅
+        break;
+      case 'rex': // 통째로: 철커덩(꺾어 열기) → 촤르르(탄 쏟기) → 쾅! 철컥(닫기)
+        K(140, 50, 0.16, 0.5, a, 0.3); N(0.09, 0.22, 'bandpass', 900, a); click(a + 0.05, 1200, 0.12);
+        for (let i = 0; i < 3; i++) T(2600 + i * 300, 0.03, 'triangle', 0.06, 1800, a + 0.12 + i * 0.07); // 빈 껍데기 튕김
+        for (let i = 0; i < 9; i++) { const w = b + i * 0.035 + Math.random() * 0.02; T(1800 + Math.random() * 1400, 0.025, 'triangle', 0.05, null, w); N(0.02, 0.05, 'highpass', 4000, w); } // 촤르르
+        K(120, 40, 0.22, 0.7, c, 0.4); N(0.12, 0.3, 'lowpass', 1200, c); click(c + 0.03, 1500, 0.14); N(0.18, 0.08, 'bandpass', 600, c + 0.08); // 쾅 + 먼지
+        break;
+      case 'pin': // 정밀: 스르륵(노리쇠 당김) → 팅(셀 끼움) → 톡 + 조준선 웅~
+        N(0.22, 0.09, 'bandpass', 700, a); T(220, 0.22, 'sawtooth', 0.04, 440, a); click(a + 0.22, 2000, 0.08);
+        T(3520, 0.18, 'sine', 0.1, null, b); T(5274, 0.12, 'sine', 0.05, null, b + 0.01); click(b + 0.04, 3200, 0.06); // 유리 팅
+        click(c, 3600, 0.07); T(660, 0.28, 'sine', 0.06, 1320, c + 0.05); T(1320, 0.22, 'triangle', 0.04, 2640, c + 0.1); // 홀로그램
+        break;
+      case 'ada': // 장난스럽게: 뽁(뚜껑) → 퐁퐁퐁(캡슐) → 통! + 띵띵띵(체크)
+        T(900, 0.08, 'sine', 0.16, 300, a); N(0.03, 0.08, 'highpass', 3000, a); T(700, 0.1, 'triangle', 0.08, 1400, a + 0.08); // 뽁 + 빈 캡슐 통통
+        for (let i = 0; i < 3; i++) { const w = b + i * 0.09; T(520 + i * 120, 0.09, 'sine', 0.12, 1040 + i * 240, w); T(200, 0.04, 'sine', 0.06, 120, w + 0.05); } // 퐁퐁퐁
+        K(180, 70, 0.08, 0.3, c, 0.1); [0, 4, 7].forEach((s, i) => T(988 * Math.pow(2, s / 12), 0.1, 'triangle', 0.09, null, c + 0.08 + i * 0.07)); // 통 + 띵띵띵
+        break;
+      case 'cobol': // 옛날 기계: 끼익(패널) + 스윽(카드) → 착착(밀어 넣기) → 쿵! 지잉~(화면 켜짐)
+        T(320, 0.18, 'sawtooth', 0.04, 260, a); N(0.16, 0.06, 'bandpass', 2400, a + 0.04); // 끼익 + 스윽
+        for (let i = 0; i < 2; i++) { N(0.03, 0.14, 'bandpass', 1800, b + i * 0.08); K(190, 110, 0.04, 0.16, b + i * 0.08, 0.06); } // 착착
+        K(110, 45, 0.18, 0.6, c, 0.35); N(0.06, 0.2, 'lowpass', 900, c); // 쿵
+        T(60, 0.35, 'square', 0.035, 60, c + 0.1); T(7800, 0.25, 'sine', 0.025, 15000, c + 0.12); T(440, 0.2, 'triangle', 0.05, 880, c + 0.18); // 브라운관이 지잉~ 켜짐
+        break;
+      default: this.play('reload'); return;
+    }
+  },
+  stopReload() { this._rl = null; }, // (예약한 소리는 짧아서 그대로 둠)
   // assets/sfx_*.mp3|ogg|wav 가 있으면 그 소리를 씀
   bufs: {},
   loadSamples() {

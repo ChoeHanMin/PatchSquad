@@ -216,9 +216,9 @@ const Game = {
     const m = this.member(); if (!m) return;
     // 재장전: 숨어 있거나 탄이 비면 진행
     for (const q of this.squad) {
-      if (q.reloadT > 0) { q.reloadT -= dt * (this.rollT > 0 ? 1.6 : 1); if (q.reloadT <= 0) { q.reloadT = 0; q.ammo = q.d.mag; if (q === m) SND.play('reload'); } }
+      if (q.reloadT > 0) { q.reloadT -= dt * (this.rollT > 0 ? 1.6 : 1); if (q.reloadT <= 0) { q.reloadT = 0; q.ammo = q.d.mag; } }
     }
-    if (!this.out && m.ammo < m.d.mag && m.reloadT <= 0) m.reloadT = m.reloadDur = m.d.reload * (1 - m.ammo / m.d.mag * 0.5);
+    if (!this.out && m.ammo < m.d.mag && m.reloadT <= 0) { m.reloadT = m.reloadDur = m.d.reload * (1 - m.ammo / m.d.mag * 0.5); if (this.state === 'play') SND.reloadSeq(m.d.key, m.reloadDur / (this.rollT > 0 ? 1.6 : 1)); }
     if (!this.canFight()) return;
     const ready = this.out && this.outK > 0.6 && m.reloadT <= 0 && m.ammo > 0 && !(this.overT > 0);
     if (this.out && this.overT > 0 && Math.random() < dt * 3) this.pop(this.ret.x, this.ret.y - 30, L('과열!', 'Overheat!', 'オーバーヒート!', '过热！'), '#FF8A3D');
@@ -233,7 +233,7 @@ const Game = {
       }
     } else m.cd = Math.max(m.cd, 0);
     if (this.out && m.ammo <= 0 && m.reloadT <= 0) {
-      m.reloadT = m.reloadDur = m.d.reload;
+      m.reloadT = m.reloadDur = m.d.reload; SND.reloadSeq(m.d.key, m.reloadDur);
       if (!this.seen.empty) { this.seen.empty = true; UI.hint(L('탄창이 비었어요! 손을 떼고 숨으면 재장전이 빨라요', 'Out of ammo! Let go and hide to reload faster', '弾切れ! 離して隠れるとリロードが速くなる', '弹匣空了！松开隐蔽可以更快换弹'), 3); }
     }
   },

@@ -282,7 +282,7 @@ const Free = {
   },
   squadN() { return this.run && this.run.ch === 2 ? SQUAD.length : 4; }, // 코볼은 2장에서만
   cycle(dir) { const N = this.squadN(); this.select((this.member + dir + N) % N); },
-  reload() { const m = this.cur(); if (m.reloadT > 0 || m.ammo >= m.d.mag || this.debugT > 0) return; m.reloadT = m.reloadDur = m.d.reload * (this.p.crouch ? 0.6 : 1); SND.play('reload'); },
+  reload() { const m = this.cur(); if (m.reloadT > 0 || m.ammo >= m.d.mag || this.debugT > 0) return; m.reloadT = m.reloadDur = m.d.reload * (this.p.crouch ? 0.6 : 1); SND.reloadSeq(m.d.key, m.reloadDur); },
   toggleCrouch() { this.p.crouch = !this.p.crouch; SND.play(this.p.crouch ? 'block' : 'move'); },
   eye() { return lerp(1.62, 0.92, this.p.crouchK) + this.p.pos.y; },
   ray() { // 카메라 앞 방향
