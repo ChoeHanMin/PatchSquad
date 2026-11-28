@@ -143,6 +143,9 @@ function buildTextures() {
     crouch: ASSETS['char_' + s.key + '_crouch'] ? imgOf(ASSETS['char_' + s.key + '_crouch']) : null,
     crouchFlinch: ASSETS['char_' + s.key + '_crouch_flinch'] ? imgOf(ASSETS['char_' + s.key + '_crouch_flinch']) : null,
     crouchHurt: ASSETS['char_' + s.key + '_crouch_hurt'] ? imgOf(ASSETS['char_' + s.key + '_crouch_hurt']) : null,
+    // 장전 중 (숨어서): 서서 / 웅크려서
+    reload: ASSETS['char_' + s.key + '_reload'] ? imgOf(ASSETS['char_' + s.key + '_reload']) : null,
+    crouchReload: ASSETS['char_' + s.key + '_crouch_reload'] ? imgOf(ASSETS['char_' + s.key + '_crouch_reload']) : null,
   }));
   // 무한루프 껍질 링
   {

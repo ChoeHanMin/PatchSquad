@@ -44,6 +44,12 @@ const ASSET_SPEC = {
   char_cobol_crouch: { width: C, keep: true }, char_cobol_crouch_flinch: { width: C, keep: true }, char_cobol_crouch_hurt: { width: C, keep: true }, gun_cobol: { width: 1448 },
   bug_merge: { size: B }, bug_leak: { size: B }, bug_deprecated: { size: B }, boss_deadline: { size: 1024 },
   cover_archive: { width: 2172 }, cover_side_archive: { height: 1500 }, cover_fork: { width: 2172 }, cover_side_fork: { height: 1500 }, cover_prod: { width: 2172 }, cover_side_prod: { height: 1500 },
+  // 장전 모션: 1인칭 3장 + 3인칭 2장 (분대원마다)
+  gun_dot_reload1: { width: 1448 }, gun_dot_reload2: { width: 1448 }, gun_dot_reload3: { width: 1448 }, char_dot_reload: { width: C, keep: true }, char_dot_crouch_reload: { width: C, keep: true },
+  gun_rex_reload1: { width: 1448 }, gun_rex_reload2: { width: 1448 }, gun_rex_reload3: { width: 1448 }, char_rex_reload: { width: C, keep: true }, char_rex_crouch_reload: { width: C, keep: true },
+  gun_pin_reload1: { width: 1448 }, gun_pin_reload2: { width: 1448 }, gun_pin_reload3: { width: 1448 }, char_pin_reload: { width: C, keep: true }, char_pin_crouch_reload: { width: C, keep: true },
+  gun_ada_reload1: { width: 1448 }, gun_ada_reload2: { width: 1448 }, gun_ada_reload3: { width: 1448 }, char_ada_reload: { width: C, keep: true }, char_ada_crouch_reload: { width: C, keep: true },
+  gun_cobol_reload1: { width: 1448 }, gun_cobol_reload2: { width: 1448 }, gun_cobol_reload3: { width: 1448 }, char_cobol_reload: { width: C, keep: true }, char_cobol_crouch_reload: { width: C, keep: true },
   story_ch2_intro: { width: 1600 }, story_cobol_join: { width: 1600 }, story_ch2_end: { width: 1600 },
   story_end1: { width: 1600 }, story_end2: { width: 1600 }, story_end3: { width: 1600 }, story_end4: { width: 1600 },
 };

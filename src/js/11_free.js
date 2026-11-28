@@ -282,7 +282,7 @@ const Free = {
   },
   squadN() { return this.run && this.run.ch === 2 ? SQUAD.length : 4; }, // 코볼은 2장에서만
   cycle(dir) { const N = this.squadN(); this.select((this.member + dir + N) % N); },
-  reload() { const m = this.cur(); if (m.reloadT > 0 || m.ammo >= m.d.mag || this.debugT > 0) return; m.reloadT = m.d.reload * (this.p.crouch ? 0.6 : 1); SND.play('reload'); },
+  reload() { const m = this.cur(); if (m.reloadT > 0 || m.ammo >= m.d.mag || this.debugT > 0) return; m.reloadT = m.reloadDur = m.d.reload * (this.p.crouch ? 0.6 : 1); SND.play('reload'); },
   toggleCrouch() { this.p.crouch = !this.p.crouch; SND.play(this.p.crouch ? 'block' : 'move'); },
   eye() { return lerp(1.62, 0.92, this.p.crouchK) + this.p.pos.y; },
   ray() { // 카메라 앞 방향
@@ -739,8 +739,9 @@ const Free = {
   },
   drawGun(g) {
     Game.loadGunAssets();
-    const W = Game.W, H = Game.H, im = Game.fpImgs && Game.fpImgs[this.member];
-    const low = this.p.crouchK * 0.15 + (this.cur().reloadT > 0 ? 0.35 : 0);
+    const rf = Game.reloadFrame(this.member, this.cur()); // 장전 모션 그림이 있으면 무기를 내리지 않고 그 그림으로
+    const W = Game.W, H = Game.H, im = rf || (Game.fpImgs && Game.fpImgs[this.member]);
+    const low = this.p.crouchK * 0.15 + (this.cur().reloadT > 0 && !rf ? 0.35 : 0);
     const bob = Math.sin(this.p.bob) * 6;
     if (im && im.complete && im.naturalWidth) {
       const w = Math.min(W * 0.4, H * 0.56), h = w * im.naturalHeight / im.naturalWidth;

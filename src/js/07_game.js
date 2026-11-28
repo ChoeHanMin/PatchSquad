@@ -218,7 +218,7 @@ const Game = {
     for (const q of this.squad) {
       if (q.reloadT > 0) { q.reloadT -= dt * (this.rollT > 0 ? 1.6 : 1); if (q.reloadT <= 0) { q.reloadT = 0; q.ammo = q.d.mag; if (q === m) SND.play('reload'); } }
     }
-    if (!this.out && m.ammo < m.d.mag && m.reloadT <= 0) m.reloadT = m.d.reload * (1 - m.ammo / m.d.mag * 0.5);
+    if (!this.out && m.ammo < m.d.mag && m.reloadT <= 0) m.reloadT = m.reloadDur = m.d.reload * (1 - m.ammo / m.d.mag * 0.5);
     if (!this.canFight()) return;
     const ready = this.out && this.outK > 0.6 && m.reloadT <= 0 && m.ammo > 0 && !(this.overT > 0);
     if (this.out && this.overT > 0 && Math.random() < dt * 3) this.pop(this.ret.x, this.ret.y - 30, L('과열!', 'Overheat!', 'オーバーヒート!', '过热！'), '#FF8A3D');
@@ -233,7 +233,7 @@ const Game = {
       }
     } else m.cd = Math.max(m.cd, 0);
     if (this.out && m.ammo <= 0 && m.reloadT <= 0) {
-      m.reloadT = m.d.reload;
+      m.reloadT = m.reloadDur = m.d.reload;
       if (!this.seen.empty) { this.seen.empty = true; UI.hint(L('탄창이 비었어요! 손을 떼고 숨으면 재장전이 빨라요', 'Out of ammo! Let go and hide to reload faster', '弾切れ! 離して隠れるとリロードが速くなる', '弹匣空了！松开隐蔽可以更快换弹'), 3); }
     }
   },
@@ -1044,7 +1044,8 @@ const Game = {
     // 이동 중: 달리는 뒷모습 (run/run2를 번갈아). 그림이 없으면 기본 자세가 통통 튀며 대신함
     const runIm = P.run && (P.run2 && Math.floor(this.S.moveT * 6) % 2 ? P.run2 : P.run);
     const low = !moving && this.coverKind() === 'low', crouch = low && P.crouch;
-    const im = moving && runIm ? runIm : crouch ? (this.hurtT > 0 ? (P.crouchHurt || P.crouch) : incoming ? (P.crouchFlinch || P.crouch) : P.crouch) : this.hurtT > 0 ? (P.hurt || P.base) : incoming ? (P.flinch || P.base) : P.base;
+    const rel = this.member() && this.member().reloadT > 0;
+    const im = moving && runIm ? runIm : crouch ? (this.hurtT > 0 ? (P.crouchHurt || P.crouch) : incoming ? (P.crouchFlinch || P.crouch) : rel && P.crouchReload ? P.crouchReload : P.crouch) : this.hurtT > 0 ? (P.hurt || P.base) : incoming ? (P.flinch || P.base) : rel && P.reload && !low ? P.reload : P.base;
     const iw = im.naturalWidth || im.width, ih = im.naturalHeight || im.height; if (!iw) return;
     const W = this.W, H = this.H, S = this.S;
     const h = W < H ? H * 0.5 : H * 0.72, w = h * iw / ih;
@@ -1161,12 +1162,21 @@ const Game = {
     if (this.gunImgs) return;
     this.gunImgs = SQUAD.map((s) => gunCanvas(s.color));
     this.fpImgs = [];
+    // 장전 모션 1인칭 3장 (분대원마다)
+    this.reloadImgs = SQUAD.map((s) => [1, 2, 3].map((n) => { const u = ASSETS['gun_' + s.key + '_reload' + n]; return u ? imgOf(u) : null; }));
     [ASSETS.gun, ASSETS.gun_refactor, ASSETS.gun_sniper, ASSETS.gun_ada, ASSETS.gun_cobol].forEach((url, i) => {
       if (!url) return;
       const im = new Image();
       im.onload = () => { im.muzzle = findMuzzle(im); };
       im.src = url; this.fpImgs[i] = im;
     });
+  },
+  // 장전 중이면 진행도에 맞는 장전 그림 (시작 → 중간 → 마무리), 없으면 null
+  reloadFrame(i, m) {
+    if (!m || !(m.reloadT > 0) || !this.reloadImgs) return null;
+    const fr = this.reloadImgs[i]; if (!fr || !fr[0]) return null;
+    const k = 1 - m.reloadT / Math.max(0.01, m.reloadDur || m.d.reload), im = fr[k < 0.34 ? 0 : k < 0.72 ? 1 : 2] || fr[0];
+    return im.complete && im.naturalWidth ? im : null;
   },
   fpImage() {
     this.loadGunAssets();
@@ -1208,7 +1218,8 @@ const Game = {
       g.save(); g.imageSmoothingEnabled = true;
       if (fp.flip) { g.translate(fp.x + fp.w, fp.y); g.scale(-1, 1); } else g.translate(fp.x, fp.y);
       const jit = this.overT > 0 ? (Math.random() - 0.5) * 3 : 0;
-      g.drawImage(fp.im, jit, 0, fp.w, fp.h);
+      const rf = this.reloadFrame(this.weapon, m);
+      g.drawImage(rf || fp.im, jit, 0, fp.w, fp.h);
       const hk = this.D.heat ? (this.overT > 0 ? 0.75 : Math.max(0, this.heat - 40) / 60 * 0.5) : 0;
       if (hk > 0.01) { g.globalAlpha = hk; g.drawImage(hotTint(fp.im), jit, 0, fp.w, fp.h); g.globalAlpha = 1; }
       g.restore();
